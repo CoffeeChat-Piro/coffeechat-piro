@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="{% static 'css/coffeechat/profile.css' %}">
+<style>
+    .container {
+        margin-top: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    h2 {
+        margin-top: 80px;
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .flex-center {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .job-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 92px;
+        width: 100px;
+        cursor: pointer;
+        gap: 1rem;
+        border-radius: 16px;
+        background: linear-gradient(104deg, rgba(131, 233, 255, .08), rgba(133, 160, 255, .08) 45.31%), #fff;
+        margin: 10px 10px;
+        border: 1px solid rgba(94, 103, 235, 0.2);
+    }
+
+    .job-box.empty {
+        filter: grayscale(100%);
+        opacity: 0.5;
+    }
+
+    .img-container {
+        width: 40px;
+        height: 120px;
+        padding: 2px;
+        border-radius: 50%;
+        border: 1px solid rgba(94, 103, 235, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-top: 5px;
+    }
+
+    .img-container img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+
+    .text-chat {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        color: black;
+    }
+
+    .card {
+        border: 1px solid #CCCCCC;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 0 5px;
+        color: black;
+        position: relative;
+        height: 200px;
+    }
+
+    .card-hr {
+        margin: 10px 0;
+        border: 0;
+        border-top: 1px solid #e9ecef;
+        position: absolute;
+        bottom: -50px;
+    }
+
+    .card-title {
+        font-size: 21px;
+        margin: 20px 0px;
+    }
+
+    .card-text {
+        margin-bottom: 40px;
+        max-height: 9.7rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .card-url {
+        margin-bottom: 20px;
+    }
+
+    .card-review {
+        border: 1px solid #CCCCCC;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 0 5px;
+        color: black;
+        position: relative;
+        height: 360px;
+    }
+
+    .review-container {
+        margin-bottom: 230px;
+    }
+
+
+    .btn-primary {
+        background-color: rgba(11, 236, 18, 0.6);
+        color: black;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: background-color 0.3s, border 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: rgba(11, 236, 18, 0.8);
+        color: black;
+    }
+
+    .profile-info {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        position: absolute;
+        bottom: 0px;
+        border-radius: 10px;
+        justify-content: space-around;
+        margin: 15px -1px;
+        width: 82%;
+    }
+
+    .profile-info h5 {
+        margin: 0;
+    }
+
+    .profile-info p {
+        margin: 0;
+    }
+
+    .max-width-1325 {
+        width: min(1325px, 100%);
+        margin-left: auto;
+        margin-right: auto;
+        width: 80%;
+    }
+
+    .d-flex {
+        display: flex;
+        width: 95%;
+        justify-content: center;
+    }
+
+    .card-profile {
+        color: black;
+    }
+
+    .card-profile-text {
+        font-size: 14px;
+        color: black;
+    }
+
+    .profile-img {
+        width: 70px;
+        height: 70px;
+        background-color: lightgray;
+        margin-right: 0;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        border: 1px solid #CCCCCC;
+    }
+
+    .profile-img i {
+        font-size: 2.8rem;
+        color: #BBBBBB;
+    }
+
+    .profile-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+        .d-flex {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .coffeechat-card {
+            width: 100% !important;
+            margin-bottom: 1rem;
+        }
+
+        .review-container {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1rem;
+        }
+
+        .card-review {
+            width: 90% !important;
+        }
+    }
+
+    @media (max-width: 450px) {
+        .card {
+            width: 90% !important;
+            margin-bottom: 1rem;
+        }
+
+        .card-url {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .card-text {
+            margin-bottom: 20px;
+        }
+
+        .btn-none {
+            display: none;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .job-box.empty {
+                display: none;
+            }
+        }
+
+    }
+</style>
+{% load custom_filters %}
+
+<section class="container max-width-1325">
+    <h2>기수별 모아보기</h2>
+    <div class="flex-center">
+        {% for i in cohort_range %}
+        <a href="{% url 'coffeechat:cohort_profiles' cohort=i %}"
+            class="job-box {% if profile_counts|get_item:i == 0 %}empty{% endif %}">
+            <div class="img-container">
+                <img alt="{{ i }}기" loading="lazy" width="36" height="36" decoding="async" data-nimg="1"
+                    class="rounded-full" src="{% static 'images/coffeechat_logo1.png' %}" style="color: transparent;">
+            </div>
+            <span class="text-chat">{{ i }}기</span>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+
+
+
+<section class="container max-width-1325">
+    <h2 class="container">커피챗 하기☕</h2>
+    <div class="d-flex justify-content-center">
+        <div class="card" style="width: 40rem;">
+            <div class="card-body">
+                <h5 class="card-title">자유롭게 커피챗을 제안해 보세요!</h5>
+                <p class="card-text">궁금한 회사에 현재 재직중인 선배님과의 커피챗은 물론, 1:1 매칭이 가능해요.</p>
+                <div class="card-url">
+                    <a href="{% url 'coffeechat:coffeechat_list' %}" class="btn btn-primary">커피챗 신청하기</a>
+                    <a href="{% url 'coffeechat:coffeechat_howto' %}" class="btn btn-primary btn-none">커피챗 하기 이용방법</a>
+                </div>
+            </div>
+        </div>
+        <div class="card" style="width: 40rem;">
+            <div class="card-body">
+                <h5 class="card-title">먼저 프로필을 등록해 보세요!</h5>
+                <p class="card-text">궁금한 피로그래머와 다이렉트로 연결되고, 피로그래밍의 멋쟁이 후배들을 만나보세요</p>
+                <div class="card-url">
+                    <a href="{% url 'coffeechat:coffeechat_create' %}" class="btn btn-primary">커피챗 프로필 등록하기</a>
+                    <a href="{% url 'coffeechat:coffeechat_how_received' %}" class="btn btn-primary btn-none">커피챗 받기 이용
+                        방법</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="container max-width-1325">
+    <h2>커피챗 실시간 리뷰</h2>
+    <div class="review-container d-flex justify-content-center">
+        {% for review in reviews %}
+        <div class="card-review" style="width: 26rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ review.reviewer.username }} 님의 리뷰</h5>
+                <p class="card-text">{{ review.content }}</p>
+                <hr class="card-hr">
+                <div class="profile-info">
+                    <div class="profile-img">
+                        {% if review.coffeechat_request.coffeechat.receiver.profile_image %}
+                        <img src="{{ review.coffeechat_request.coffeechat.receiver.profile_image.url }}"
+                            alt="Profile Picture">
+                        {% else %}
+                        <i class="fas fa-user"></i>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'coffeechat:coffeechat_detail' review.coffeechat_request.coffeechat.pk %}">
+                        <div>
+                            <h5 class="card-title">
+                                {{ review.coffeechat_request.coffeechat.receiver.username }}
+                            </h5>
+                            <!-- {% if review.coffeechat_request.coffeechat.receiver.job %}
+                            <p class="card-profile">{{ review.coffeechat_request.coffeechat.receiver.job }}</p>
+                            {% else %}
+                            <p class="card-profile">Job information not available</p>
+                            {% endif %} -->
+                            <p class="card-profile-text">직업 {{ review.coffeechat_request.coffeechat.job }}</p>
+                            <p class="card-profile-text">피로그래밍 {{ review.coffeechat_request.coffeechat.receiver.cohort}}기</p>
+                            <p class="card-profile-text">커피챗 {{ review.coffeechat_request.coffeechat.count }}회</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

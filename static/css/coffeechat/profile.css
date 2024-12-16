@@ -1,0 +1,118 @@
+.container {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-bar-container {
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar {
+    width: 50%;
+    display: flex;
+}
+
+.search-bar input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+}
+
+.search-bar button {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-left: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #0056b3;
+}
+
+/*---------------------- profile ---------------------*/
+.profile-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.profile-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 300px; /* 고정된 너비 */
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(45deg, #ff6b6b, #f5f7fa);
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.profile-header img {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+}
+
+.profile-info {
+    margin-left: 80px; /* 이미지 크기 + 여백 */
+    color: white;
+}
+
+.profile-card h2 {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.profile-card p {
+    margin: 5px 0;
+}
+
+.profile-card a {
+    display: inline-block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.profile-card a:hover {
+    text-decoration: underline;
+}
+
+.profile-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hashtag {
+    display: inline-block;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko, en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiroTime</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hubballi&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/account/account.css' %}">
+    <style>
+        /* 프로필 이미지 업로드 스타일 */
+        .image-upload {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .upload-label {
+            cursor: pointer;
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .form-input--img {
+            display: none;
+        }
+
+        .upload-label img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        /* 삭제 버튼 스타일 */
+        .remove-image {
+            margin-left: 10px;
+            display: none;
+        }
+
+        .remove-image:focus {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="logo">
+            <img src="{% static 'images/logo.svg' %}" alt="PiroTime Logo" width="170" height="170">
+            <h1>PiroTime</h1>
+        </div>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="signup-form">
+                <div class="image-upload">
+                    <span>프로필 이미지 (선택)</span><button type="button" class="remove-image" onclick="removeImage()">이미지 삭제</button>
+                    <label for="id_profile_image" class="upload-label">
+                        <i class="fas fa-camera"></i>
+                        <img id="image-preview" alt="프로필 이미지 미리보기">
+                    </label>
+                    <input type="file" name="profile_image" id="id_profile_image" accept="image/*" class="form-input--img" onchange="previewImage(event)">
+                </div>
+                {{ form.non_field_errors }}
+                <input type="text" name="username" placeholder="아이디" class="form-input"
+                    value="{{ form.username.value|default_if_none:'' }}">
+                {% if form.username.errors %}
+                <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.username.errors|striptags|join:"" }}</div>
+                {% endif %}
+                <input type="password" name="password1" placeholder="비밀번호" class="form-input">
+                {% if form.password1.errors %}
+                <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.password1.errors|striptags|join:"" }}</div>
+                {% endif %}
+                <input type="password" name="password2" placeholder="비밀번호 확인" class="form-input">
+                {% if form.password2.errors %}
+                <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.password2.errors|striptags|join:"" }}</div>
+                {% endif %}
+                <input type="text" name="nickname" placeholder="사용자 닉네임(실명을 입력해주세요!)" class="form-input"
+                    value="{{ form.nickname.value|default_if_none:'' }}">
+                {% if form.nickname.errors %}
+                <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.nickname.errors|striptags|join:"" }}</div>
+                {% endif %}
+                <input type="text" name="phone_number" placeholder="전화번호" class="form-input"
+                    value="{{ form.phone_number.value|default_if_none:'' }}">
+                {% if form.phone_number.errors %}
+                <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">
+                    {{ form.phone_number.errors|striptags|join:"" }}
+                </div>
+                {% endif %}
+                <input type="email" name="email" placeholder="email" class="form-input"
+                    value="{{ form.email.value|default_if_none:'' }}">
+                {% if form.email.errors %}
+                <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.email.errors|striptags|join:"" }}</div>
+                {% endif %}
+                <input type="cohort" name="cohort" placeholder="기수" class="form-input">
+                {% if form.cohort.errors %}
+                <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.cohort.errors|striptags|join:"" }}</div>
+                {% endif %}          
+                <button type="submit" class="form-button">회원가입</button>
+            </div>
+        </form>
+        <div class="login">
+            <a href="{% url 'accounts:login' %}">아이디가 있으신가요? 로그인하기</a>
+        </div>
+    </div>
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const output = document.getElementById('image-preview');
+                const cameraIcon = document.querySelector('.upload-label i');
+                const removeBtn = document.querySelector('.remove-image');
+                output.src = reader.result;
+                output.style.display = 'block';
+                cameraIcon.style.display = 'none';
+                removeBtn.style.display = 'inline-block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function removeImage() {
+            const output = document.getElementById('image-preview');
+            const cameraIcon = document.querySelector('.upload-label i');
+            const removeBtn = document.querySelector('.remove-image');
+            const fileInput = document.getElementById('id_profile_image');
+
+            output.src = '';
+            output.style.display = 'none';
+            cameraIcon.style.display = 'block';
+            removeBtn.style.display = 'none';
+            fileInput.value = '';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en, ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Chat How To</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/coffeechat/howto.css' %}"> 
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'images/logo.svg' %}" alt="Logo">
+            <span>PiroTime CoffeeChat</span>
+        </div>
+        <div class="menu">
+            <!-- <span>Contents</span>
+            <div class="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div> -->
+        </div>
+    </header>
+    <main class="align-items-center">
+        <div class="circle"></div>
+        <div class="content">
+            <h1>CoffeeChat 신청 방법</h1>
+            <h2>01 파트너 탐색</h2>
+            <p>카테고리 또는 검색창을 통해 내가 궁금한 회사, 직무, 업계, 학교의 파트너를 찾아보세요.</p>
+            <h2>02 커피챗 신청</h2>
+            <p>1:1 커피챗을 하고 싶은 파트너를 찾았다면, '커피챗 제안하기' 버튼을 눌러 커피챗을 제안해보세요.</p>
+            <h2>03 파트너에게 e-mail 전송</h2>
+            <p>'커피챗 제안하기' 버튼을 눌렀다면 파트너에게 커피챗 수락 여부 e-mail이 전송돼요.</p>
+            <h2>04 파트너 커피챗 수락</h2>
+            <p>파트너가 '커피챗 수락' 했다면 파트너의 e-mail 주소가 신청자의 e-mail로 전송돼요.</p>
+            <h2>05 파트너와의 1:1 매칭 완성!</h2>
+            <p>피로그래밍 선배님과의 1:1 커피챗을 경험해보세요:&#41;</p>
+        </div>
+        <div class="card-url">
+            <a href="{% url 'coffeechat:coffeechat_list' %}" class="btn btn-primary">커피챗 신청 바로가기</a>
+        </div>
+    </main>
+</body>
+</html>

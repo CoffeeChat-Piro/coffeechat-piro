@@ -1,0 +1,170 @@
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/mypage/profile_edit.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Hubballi&display=swap" rel="stylesheet">
+
+<div class="form-container">
+    <div class="logo">
+        <img src="{% static 'images/logo.svg' %}" alt="PiroTime Logo" width="170" height="170">
+        <h1>PiroTime</h1>
+    </div>
+
+    <form method="post" action="{% url 'mypage:profile_edit' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input type="hidden" name="delete_profile_image" id="id_delete_profile_image" value="false">
+
+        <div class="form-group image-upload">
+            <div class="image-label-wrapper">
+                <span>프로필 이미지 (선택)</span>
+                <button type="button" class="remove-image" onclick="removeImage()" style="display: none;">이미지 삭제</button>
+            </div>
+            <label for="id_profile_image" class="upload-label">
+                {% if user.profile_image %}
+                    <img id="image-preview" src="{{ user.profile_image.url }}" alt="프로필 이미지 미리보기" class="profile-image">
+                {% else %}
+                    <i class="fas fa-camera"></i>
+                    <img id="image-preview" alt="프로필 이미지 미리보기" style="display: none;">
+                {% endif %}
+            </label>
+            <input type="file" name="profile_image" id="id_profile_image" accept="image/*" class="form-input--img" onchange="previewImage(event)">
+        </div>
+        {% if form.profile_image.errors %}
+            <div class="error">{{ form.profile_image.errors|striptags|join:"" }}</div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="id_username">아이디</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="error">{{ form.username.errors|striptags|join:"" }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_nickname">사용자 닉네임(실명을 입력해주세요!)</label>
+            {{ form.nickname }}
+            {% if form.nickname.errors %}
+                <div class="error">{{ form.nickname.errors|striptags|join:"" }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_phone_number">전화번호</label>
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+                <div class="error">{{ form.phone_number.errors|striptags|join:"" }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_email">이메일 주소</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="error">{{ form.email.errors|striptags|join:"" }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_cohort">기수</label>
+            {{ form.cohort }}
+            {% if form.cohort.errors %}
+                <div class="error">{{ form.cohort.errors|striptags|join:"" }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="id_intro">소개</label>
+            {{ form.intro }}
+            {% if form.intro.errors %}
+                <div class="error">{{ form.intro.errors|striptags|join:"" }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="form-button">저장</button>
+    </form>
+</div>
+
+
+<script>
+    function previewImage(event) {
+        console.log('previewImage called');
+        const reader = new FileReader();
+        const deleteImageInput = document.getElementById('id_delete_profile_image');
+        const output = document.getElementById('image-preview');
+        const cameraIcon = document.querySelector('.upload-label i');
+        const removeBtn = document.querySelector('.remove-image');
+
+        reader.onload = function() {
+            output.src = reader.result;
+            output.style.display = 'block';
+            if (cameraIcon) {
+                cameraIcon.style.display = 'none';
+            }
+            removeBtn.style.display = 'inline-block';
+            console.log('Image loaded:', reader.result);
+        }
+
+        reader.readAsDataURL(event.target.files[0]);
+        deleteImageInput.value = "false";
+        console.log('New image selected, delete_profile_image set to false');
+    }
+
+    function removeImage() {
+        console.log('removeImage called');
+        const output = document.getElementById('image-preview');
+        const cameraIcon = document.querySelector('.upload-label i');
+        const removeBtn = document.querySelector('.remove-image');
+        const fileInput = document.getElementById('id_profile_image');
+        const deleteImageInput = document.getElementById('id_delete_profile_image');
+
+        output.removeAttribute('src');
+        output.style.display = 'none';
+        if (cameraIcon) {
+            cameraIcon.style.display = 'block';
+        }
+        removeBtn.style.display = 'none';
+        fileInput.value = ""; 
+        deleteImageInput.value = "true";
+        console.log('Image removed and marked for deletion');
+    }
+
+    function initializeProfileImage() {
+        console.log('Initializing profile image');
+        const output = document.getElementById('image-preview');
+        const removeBtn = document.querySelector('.remove-image');
+        const cameraIcon = document.querySelector('.upload-label i');
+
+        if (output.src && !output.src.includes('data:') && output.src !== '') {
+            removeBtn.style.display = 'inline-block';
+            output.style.display = 'block';
+            if (cameraIcon) {
+                cameraIcon.style.display = 'none';
+            }
+            console.log('Profile image found, showing remove button');
+        } else {
+            if (cameraIcon) {
+                cameraIcon.style.display = 'block';
+            }
+            removeBtn.style.display = 'none';
+            output.style.display = 'none';
+            console.log('No profile image found');
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        console.log("JavaScript is running");
+        initializeProfileImage();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        console.log("URL Parameters:", urlParams.toString());
+    
+        if (urlParams.has('success')) {
+            alert("프로필이 성공적으로 업데이트되었습니다.");
+        } else {
+            console.log("Success parameter not found.");
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,506 @@
+@font-face {
+    font-family: 'S-CoreDream-3Light';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    unicode-range: U+AC00-D7A3, U+1100-11FF, U+3130-318F; /* 한글 음절, 자모, 호환 자모 */
+}
+
+/* @font-face {
+    font-family: 'Hubballi';
+    src: url('path-to-your-english-font.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    unicode-range: U+0020-007F; 영어범위
+} */
+
+body:lang(ko) {
+    font-family: 'S-CoreDream-3Light'; /* 한글에만 적용될 폰트 */
+}
+
+body:lang(en) {
+    font-family: 'Hubballi'; /* 영어에만 적용될 폰트 */
+}
+
+body {
+    /* font-family: 'Hubballi', sans-serif;  */
+    font-family: 'S-CoreDream-3Light', 'Hubballi';
+    position: relative;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+}
+
+#main-header {
+    height: 4rem;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    background: linear-gradient(to bottom, rgb(255, 255, 255) 40%, rgba(255, 255, 255, 0.8) 70%, rgba(255, 255, 255, 0) 100%);
+    z-index: 1000;
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+
+.header--container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.max-width-1200 {
+    width: min(1200px, 100%);
+    margin: auto;
+    padding: 0 40px;
+}
+
+#main-header ul {
+    display: flex;
+    gap: 16px;
+    font-size: 1.6rem;
+}
+
+ol, ul, li, a {
+    list-style: none;
+    text-decoration: none;
+    color: black;
+}
+
+#main-header ul a:hover {
+    color: #0BEC12;
+}
+
+#main-header ul a::before {
+    content: " ";
+}
+
+#main-header ul li:not(:last-child) a::after {
+    content: "| ";
+    padding: 20px;
+    pointer-events: none;
+    color: black;
+}
+
+.logo {
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+
+.logo img {
+    height: 40px; 
+    width: auto;
+    margin-right: 8px;
+}
+
+#hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero--left {
+    width: 50%;
+    text-align: center;
+    gap: 16px;
+}
+
+.hero--left h1 {
+    color: black;
+    font-size: 6rem;
+    font-weight: 200;
+    margin: 0;
+}
+
+.hero--right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.hero--circle__container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.hero--circle__container > div {
+    padding: 5px;
+}
+
+.hero--circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.8rem;
+}
+
+.hero--contents {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero--contents h1 {
+    color: #3CF041;
+}
+
+.hero--circle__container > div:nth-child(1) .hero--circle , .hero--circle__container > div:nth-child(4) .hero--circle {
+    background-color: #49BF4DCC;
+}
+
+.hero--circle__container > div:nth-child(2) .hero--circle, .hero--circle__container > div:nth-child(3) .hero--circle {
+    background-color: #0BEC12;
+}
+
+.about {
+    padding: 0 20px 30px 20px;
+    font-size: 1.8rem;
+    height: 500px;
+    display: flex;
+}
+
+.about-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: right;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.about-content .icon, 
+.about-content .description {
+    flex: 1; /* 두 요소가 1대 1로 너비를 나눠 가지도록 설정 */
+    max-width: 50%; /* 최대 너비를 50%로 제한 */
+}
+
+.icon {
+    font-size: 5em;
+    margin-right: 50px;
+    width: 60%;
+    text-align: center;
+}
+
+.icon img {
+    max-width: 100%; 
+    height: auto; 
+    display: block;
+    margin: 0 auto;
+}
+
+.description h2 {
+    margin: 0;
+}
+
+.description h1 {
+    color: black;
+    font-size: 3rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.description p {
+    font-size: 1.2rem;
+}
+
+.activities {
+    padding: 50px 20px;
+}
+
+.activities h1 {
+    font-size: 2rem;
+}
+
+.activity-cards {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.activity-cards > div:hover {
+    background-color: #3CF041;
+    color: white;
+    border: none;
+    transform: scale(1.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.info-activity-card {
+    flex: 1;
+    max-width: 200px;
+    height: 380px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 120px;
+    margin: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.info-activity-card h3 {
+    font-size: 1.8rem;
+}
+
+
+footer {
+    padding: 10px 0;
+    background-color: #f7f7f7;
+    text-align: center;
+    position: relative;
+    width: 100%;
+}
+
+.fa-user {
+    font-size: 1.6rem;
+}
+
+.emoji {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: black;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.emoji i {
+    color: white;
+}
+
+.footer--contact {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 0;
+}
+
+.footer--contact a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+/*-------------- main ---------------*/
+:root {
+    --primary-color: #3498db; /* 주 색상 */
+    --secondary-color: #2ecc71; /* 보조 색상 */
+    --text-color: #333;
+    --background-color: #f4f4f4;
+    --card-bg-color: #fff;
+    --card-border-color: #e0e0e0;
+    --hover-color: #2980b9;
+}
+
+main {
+    margin-bottom: 100px;
+}
+#main {
+    display: flex;
+    margin: 50px 0;
+    padding-bottom: 10rem;
+
+}
+
+.main-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.banner {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    font-size: 1.4rem;
+    height: 278px;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+}
+
+.icon-container {
+    flex: 0 0 5%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-container i {
+    font-size: 25px;
+    color: white;
+}
+
+.icon-container i:hover {
+    color: black;
+}
+
+.banner-icon i {
+    font-size: 25px;
+    color: #BBBBBB;
+}
+
+.icon-container.left .banner-icon i {
+    transform: rotate(180deg);
+}
+
+.banner-content {
+    flex: 0 0 90%;
+    text-align: center;
+}
+
+.text {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.text.active {
+    display: block;
+    opacity: 1;
+}
+
+.banner-title {
+    color: black;
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.banner-description {
+    color: black;
+    font-size: 20px;
+    font-weight: 400;
+    display: block;
+    margin-top: 10px;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+
+.content-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px; 
+    justify-items: center; 
+    align-items: center; 
+    margin-top: 40px;
+}
+
+.content-section > div {
+    width: 100%;
+}
+
+
+.content-card {
+    border-radius: 10px;
+    margin: 10px;
+    padding: 20px;
+    background: var(--card-bg-color);
+    border: 1px solid var(--card-border-color);
+    box-sizing: border-box;
+    height: 100px;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.start-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+.start-content {
+    height: 20px;
+    margin: 0;
+    font-size: 1rem;
+    color: gray;
+    display: none;
+}
+
+.content-meta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    white-space: nowrap; 
+    text-overflow: ellipsis;
+    color: var(--text-color);
+}
+
+.meta-author,
+.meta-time,
+.meta-likes {
+    flex-shrink: 0; 
+    margin-right: 10px;
+    align-items: center;
+    line-height: 1.4;
+}
+
+.meta-time {
+    margin-left: 10px;
+}
+
+.meta-likes {
+    margin-left: auto;
+}
+
+.writer {
+    color: gray;
+    font-size: 1.2rem;
+    margin-right: 5px;
+}
+
+.start-job {
+    margin-left: 10px;
+    font-size: 0.9rem;
+    font-weight: 100;
+    color: gray;
+}
+
+.content-hashtags-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.hashtag {
+    display: inline-block;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-right: 10px;
+    border: 1px solid #CCCCCC;
+    font-size: 0.85rem;
+}

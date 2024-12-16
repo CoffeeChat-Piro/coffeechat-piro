@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/account/start.css' %}">
+<style>
+    /* 반응형 디자인 - 768px 이하일 때 */
+    @media screen and (max-width: 768px) {
+        /* content-section: 1줄로 세로 나열 */
+        .content-section {
+            grid-template-columns: 1fr;
+            padding: 0px 20px 20px 0px;
+        }
+
+        /* 배너 크기 및 레이아웃 조정 */
+        .banner {
+            padding: 10px; /* 상하 좌우 여백 조정 */
+            flex-direction: column; /* 배너 내 요소들을 세로로 배치 */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative; /* 아이콘의 절대 위치를 기준으로 설정 */
+        }
+
+        /* 배너 아이콘 크기 및 위치 조정 */
+        .icon-container {
+            display: flex;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icon-container.left {
+            left: 10px;
+        }
+
+        .icon-container.right {
+            right: 10px;
+        }
+
+        /* 배너 내용 중앙 정렬 */
+        .banner-content {
+            flex: 1 1 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%; /* 부모 컨테이너 높이 전체 사용 */
+        }
+    }
+    
+    /* 반응형 디자인 - 450px 이하일 때 */
+    @media screen and (max-width: 450px) {
+        /* content-card 크기 조정 */
+        .content-card {
+            padding: 15px; /* 여백 조정 */
+        }
+
+        .banner-title {
+            font-size: 1.5rem; /* 제목 크기 조정 */
+        }
+
+        .banner-description {
+            font-size: 1rem; /* 설명 텍스트 크기 조정 */
+        }
+    }
+</style>
+<section id="main">
+    <div class="main-container">
+        <div class="banner">
+            <div class="icon-container left" onclick="BannerSlide()">
+                <div class="banner-icon"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+            <div class="banner-content">
+                <div class="text active">
+                    <span class="banner-title">PiroTime</span>
+                    <span class="banner-description">피로그래밍 동아리부원들을 위한 휴식공간입니다.
+                        <br/> 프로젝트 리뷰, 프로젝트 협업, 커피챗, IT동향 공유 게시판을 통해서 피로그래머들과 소통해보세요!
+                    </span>
+                </div>
+                <div class="text">
+                    <span class="banner-title">Project Review</span>
+                    <span class="banner-description">프로젝트에 대한 피드백과 리뷰를 받을 수 있는 공간입니다.
+                        <br/> 프로젝트에 대한 아이디어나 진행중인 프로젝트에 대한 의견을 공유해보세요!
+                    </span>
+                </div>
+                <div class="text">
+                    <span class="banner-title">Project Cooperation</span>
+                    <span class="banner-description">프로젝트 팀원들을 구할 수 있는 공간입니다.
+                        <br/>좋은 아이디어가 있는데 팀원이 부족하다면 같이 프로젝트를 진행할 팀원을 구해보세요!
+                    </span>
+                </div>
+                <div class="text">
+                    <span class="banner-title">Coffee Chat</span>
+                    <span class="banner-description">피로그래밍 선배들과 커피챗을 할 수 있는 공간입니다. 
+                        <br/>진로, 프로젝트에 대한 고민이 있다면 커피챗 해보세요!
+                    </span>
+                </div>
+                <div class="text">
+                    <span class="banner-title">IT Trend</span>
+                    <span class="banner-description">요즘 IT업계의 소식을 공유할 수 있는 공간입니다.
+                        <br/> 공유하고 싶은 따끈따끈한 소식이 있다면 공유해보세요!
+                    </span>
+                </div>
+            </div>
+            <div class="icon-container right" onclick="nextSlide()">
+                <div class="banner-icon"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+        </div>
+        <section class="content-section">
+            <div class="start-card">
+                <h3 class="start-card-title">Project Review 인기글</h3>
+                <a {% if review_most %} href="{% url 'review:review_detail' pk=review_most.pk %}" {% else %}href="#"{% endif %}">
+                    <div class="content-card">
+                        <p class="start-title">{{ review_most.title }}</p>
+                        <p class="start-content">{{ review_most.content|truncatewords:10 }}</p>
+                        <div class="content-meta">
+                            <span class="meta-author"><i class="fas fa-user writer"></i>{{ review_most.writer }}</span>
+                            <span class="meta-time">{{ review_most.date|date:"m/d" }}</span>
+                            <span class="meta-likes" style="color: red;"><i class="fa-regular fa-heart"></i> {{ review_most.likes.count }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        
+            <div class="start-card">
+                <h3 class="start-card-title">Project Cooperation 인기글</h3>
+                <a {% if coboard_most %} href="{% url 'corboard:cor_detail' pk=coboard_most.pk %}" {% else %}href="#"{% endif %}">
+                    <div class="content-card">
+                        <p class="start-title">{{ coboard_most.title }}</p>
+                        <p class="start-content">{{ coboard_most.content|truncatewords:10 }}</p>
+                        <div class="content-meta">
+                            <span class="meta-author"><i class="fas fa-user writer"></i>{{ coboard_most.writer }}</span>
+                            <span class="meta-time">{{ coboard_most.date|date:"m/d" }}</span>
+                            <span class="meta-likes" style="color: red;"><i class="fa-regular fa-heart"></i> {{ coboard_most.likes.count }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        
+            <div class="start-card">
+                <h3 class="start-card-title">CoffeeChat 인기사용자</h3>
+                <a  {% if coffeechat_most %} href="{% url 'coffeechat:coffeechat_detail' pk=coffeechat_most.id %}" {% else %}href="#"{% endif %}">
+                    <div class="content-card">
+                        <p class="start-title">{{ coffeechat_most.receiver }}<span class="start-job">{{ coffeechat_most.job }}</span></p>
+                        <div class="content-hashtags-container">
+                            <div class="content-hashtags" id="hashtags-container">
+                                {% for tag in coffeechat_most.hashtags.all %}
+                                    <span class="hashtag">#{{ tag.name }}</span>
+                                {% endfor %}
+                            </div>
+                            <span class="coffeechat-count">커피챗 {{ coffeechat_most.count }}회</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        
+            <div class="start-card">
+                <h3 class="start-card-title">IT Trend 인기글</h3>
+                <a {% if trend_most %} href="{% url 'trend:trend_detail' pk=trend_most.id %}" {% else %}href="#"{% endif %}">
+                    <div class="content-card">
+                        <p class="start-title">{{ trend_most.title }}</p>
+                        <p class="start-content">{{ trend_most.content|truncatewords:10 }}</p>
+                        <div class="content-meta">
+                            <span class="meta-author"><i class="fas fa-user writer"></i>{{ trend_most.writer }}</span>
+                            <span class="meta-time">{{ trend_most.date|date:"m/d" }}</span>
+                            <span class="meta-likes" style="color: red;"><i class="fa-regular fa-heart"></i> {{ trend_most.likes.count }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </div>
+</section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.text');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active');
+            if (i === index) {
+                slide.classList.add('active');
+            }
+        });
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    function BannerSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    setInterval(nextSlide, 5000); 
+
+    showSlide(currentSlide); 
+
+    //해시태그(coffeechat)
+    $(document).ready(function() {
+        const cardWidth = $('.content-card').width();
+        const hashtagsContainer = $('#hashtags-container');
+        const hashtags = hashtagsContainer.find('.hashtag');
+
+        let totalWidth = 0;
+
+        hashtags.each(function() {
+            totalWidth += $(this).outerWidth(true); // .outerWidth(true)로 마진 포함 너비 계산
+
+            if (totalWidth+100 > cardWidth) {
+                $(this).hide();
+            }
+        });
+    });
+</script>
+{% endblock %}

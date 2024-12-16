@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko, en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PiroTime{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hubballi&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="icon" href="{% static 'images/logo.svg' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <style>
+        @media screen and (max-width: 1250px) {
+            .header--container {
+                padding: 0 !important;
+            }
+        }
+
+        @media screen and (max-width: 800px) {
+            #main-header {
+                height: 5rem;
+            }
+        }
+
+        /* 768px이하가 되면 ul안보이게 */
+        @media screen and (max-width: 768px) {
+            #main-header {
+                padding: 0 10px;
+            }
+
+            #nav-menu ul {
+                display: none;
+            }
+        }
+
+        .active-nav {
+            color: #0BEC12 !important;
+        }
+
+        /*--- 햄버거 아이콘 -----*/
+        #hamburger-icon {
+            width: 30px;
+            height: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        #hamburger-icon > div {
+            height: 3px;
+            background-color: black;
+            transition: 0.3s;
+        }
+        #hamburger-icon > input[type="checkbox"]:checked ~ div:nth-of-type(1) {
+            transform: rotate(45deg); 
+            transform-origin: 5% 50%; 
+        }
+        #hamburger-icon > input[type="checkbox"]:checked ~ div:nth-of-type(2) {
+            display: none;
+        }
+        #hamburger-icon > input[type="checkbox"]:checked ~ div:nth-of-type(3) {
+            transform: rotate(-45deg);
+            transform-origin: 5% 50%; 
+        }
+
+        @media screen and (max-width: 900px) {
+            .footer--contact {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .social-links {
+                flex-direction: column;
+            }
+        }
+
+        /* 768px이상일 경우 햄버거는 안보이게 */
+        @media screen and (min-width: 768px) {
+            #hamburger-icon {
+                display: none;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            #main-header {
+                padding: 0 10px;
+            }
+
+            #nav-menu ul {
+                display: none;
+            }
+            
+            .main-header--container > ul {
+                display: none;
+            }
+
+            #main-header ul {
+                flex-direction: column;
+                align-items: flex-end;
+                padding-right: 30px;
+                gap: 50px;
+            }
+
+            .sidebar {
+                width: 300px;
+                height: calc(100vh - 3.9rem);
+                position: fixed;
+                background-color: aliceblue;
+                top: 60px;
+                right: -300px;
+                transition: 0.3s;
+            }
+            #hamburger-icon > input[type="checkbox"]:checked ~ .sidebar {
+                right: 0;
+            }
+
+            .footer--contact {
+                padding: 0;
+            }
+        }
+        
+        #hamburger {
+            display: none;
+        }
+
+        /* sidebar의 ul 요소에 content 제거 */
+        .sidebar ul li a::before,
+        .sidebar ul li a::after {
+            content: none !important; 
+            padding: 0 !important; 
+        }
+    </style>
+</head>
+<body>
+    <header id="main-header">
+        <div class="header--container max-width-1200">
+            <a {% if user.is_authenticated %} href="{% url 'accounts:start' %}" {% else %} href="{% url 'accounts:index' %}" {% endif %}>
+                <h1 class="logo">
+                    <img src="{% static 'images/logo.svg' %}" alt="PiroTime Logo" width="170" height="170">
+                </h1>
+            </a>
+            <nav id="nav-menu">
+                <ul>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'coffeechat:coffeechat_home' %}" id="nav-coffeechat">coffeechat</a></li>
+                        <li><a href="{% url 'accounts:logout' %}">logout</a></li>
+                        <li><a href='{% url "mypage:profile" %}' id="nav-mypage"><i class="fas fa-user"></i></a></li>
+                    {% else %}
+                        <li><a href="{% url 'accounts:login' %}">login</a></li>
+                        <li><a href="{% url 'accounts:signup' %}">signup</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <label for="hamburger" id="hamburger-icon">
+                <input type="checkbox" id="hamburger" />
+                <div></div>
+                <div></div>
+                <div></div>
+                <aside class="sidebar">
+                    <ul>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'coffeechat:coffeechat_home' %}">coffeechat</a></li>
+                            <li><a href="{% url 'accounts:logout' %}">logout</a></li>
+                            <li><a href='{% url "mypage:profile" %}'><i class="fas fa-user"></i></a></li>
+                        {% else %}
+                            <li><a href="{% url 'accounts:login' %}">login</a></li>
+                            <li><a href="{% url 'accounts:signup' %}">signup</a></li>
+                        {% endif %}
+                    </ul>
+                </aside>
+            </label>
+        </div>
+    </header>
+    
+    <main>
+        {% block content %}
+        
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div class="social-links">
+            <ul class="footer--contact">
+                <li>
+                  <a href="http://pf.kakao.com/_xdHxdXK">
+                    <div class="emoji">
+                        <i class="fa-solid fa-comment"></i>
+                    </div>
+                    카카오톡 플러스친구
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.instagram.com/pirogramming_official/">
+                    <div class="emoji">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    Instagram @pirogramming_official
+                  </a>
+                </li>
+                <li>
+                  <a target="_blank" href="mailto:pirogramming.official@gmail.com">
+                    <div class="emoji">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    pirogramming.official@gmail.com
+                  </a>
+                </li>
+              </ul>
+        </div>
+        <p>© Pirotime, 2024 All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUrl = window.location.pathname;
+            const navLinks = {
+                'review': document.getElementById('nav-review'),
+                'corboard': document.getElementById('nav-cooperation'),
+                'coffeechat': document.getElementById('nav-coffeechat'),
+                'trend': document.getElementById('nav-ittrend'),
+                'mypage': document.getElementById('nav-mypage')
+            };
+
+            for (const [key, element] of Object.entries(navLinks)) {
+                if (currentUrl.includes(key) && element) {
+                    element.classList.add('active-nav');
+                }
+            }
+
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            const navMenu = document.getElementById('nav-menu').querySelector('ul');
+
+            hamburgerIcon.addEventListener('click', function() {
+                navMenu.classList.toggle('show');
+            });
+        });
+    </script>
+</body>
+</html>

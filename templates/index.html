@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+<style>
+    section {
+        scroll-snap-align: start;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        padding: 40px 0;
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    .visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .about-rocket {
+        position: absolute;
+        left: 7rem;
+        top: 120px;
+        padding-top: 120px;
+        height: 60%;
+        width: 50%;
+    }
+
+    #rocket-fire {
+        width: 6px;
+        margin: auto;
+        background: linear-gradient(to bottom, rgba(11, 236, 18, 1) 30%, rgba(11, 236, 18, 0.5) 60%, rgba(11, 236, 18, 0) 100%);
+        position: absolute;
+        left: 29.7%;
+        transform: translate(-50%);
+        bottom: 20px;
+        height: 238px !important;
+    }
+
+    #rocket {
+        width: 50%;
+        position: absolute;
+        left: 30%;
+        bottom: 10%;
+        transform: translate(-50%);
+    }
+
+    #rocket-smoke {
+        position: absolute;
+        bottom: 40px;
+        left: -17%;
+        width: 160%;
+    }
+
+    #about {
+        height: 900px;
+        display: flex;
+        position: relative;
+        margin-bottom: 10rem;
+    }
+
+    /* 700px 이하에서 hero--right 숨기기 */
+    @media screen and (max-width: 1100px) {
+        .hero--right {
+            display: none;
+        }
+
+        .hero--left {
+            width: 100%;
+            text-align: center;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-content {
+            flex-direction: column;
+            text-align: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        .about-content .icon,
+        .about-content .description {
+            max-width: 90%;
+        }
+
+        .icon {
+            margin-bottom: 20px;
+        }
+
+        .icon img {
+            max-width: 400px;
+        }
+
+        .description {
+            text-align: center;
+        }
+
+        .activity-cards {
+            grid-template-columns: repeat(2, 1fr);
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    /* 768px 이하일 때 activities 섹션 한 줄로 세로로 나열 */
+    @media screen and (max-width: 768px) {
+        .icon img {
+            max-width: 300px;
+        }
+
+        .description h1 {
+            font-size: 1.8rem;
+        }
+
+        .activity-card {
+            flex: 1 1 48%;
+        }
+
+        .about-rocket {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 450px) {
+        .activity-card {
+            flex: 1 1 100%;
+            max-width: 350px;
+            height: 200px;
+            margin: 10px auto;
+        }
+    }
+</style>
+
+<div class="container">
+    <section id="hero" class="max-width-1200">
+        <div class="hero--contents hero--left">
+            <h1>PiroTime</h1>
+            <h2>피로그래머들을 위한 휴식공간</h2>
+        </div>
+        <div class="hero--contents hero--right">
+            <div>
+                <div class="hero--circle__container blend">
+                    <div style="width: 252px;">
+                        <div class="hero--circle">
+                            <span><strong>P</strong>otential</span>
+                        </div>
+                    </div>
+                    <div style="height: 252px;">
+                        <div class="hero--circle">
+                            <span><strong>I</strong>nsight</span>
+                        </div>
+                    </div>
+                    <div style="height: 252px;">
+                        <div class="hero--circle">
+                            <span><strong>R</strong>ise</span>
+                        </div>
+                    </div>
+                    <div style="height: 252px;">
+                        <div class="hero--circle">
+                            <span><strong>O</strong>vercome</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="info" class="about max-width-1200 animation-reveal">
+        <div class="about-content">
+            <div class="icon about">
+                <div class="about-rocket">
+                    <div id="rocket-fire" style="height: 332.108px;"></div>
+                    <img src="https://pirogramming.com/static/images/rocket.svg" id="rocket" alt="rocket"
+                        style="bottom: 37.0793%;">
+                    <img src="https://pirogramming.com/static/images/rocket-smoke.png" id="rocket-smoke"
+                        alt="rocket-smoke">
+                </div>
+            </div>
+            <div class="description">
+                <h4 style="margin: 0;">About</h4>
+                <h2>PiroTime</h2>
+                <div>
+                    <p>
+                        피로타임(PiroTime)은 피로그래밍(Pirogramming) 동아리를 수료한<br>피로그래머들이 모여, 함께 성장하고 발전하는 공간입니다.
+                    </p>
+                    <p style="font-size: 1.1rem;">
+                        이곳은 피로그래머들이 서로의 경험과 지식을 나누며,<br>
+                        실질적인 협업 기회를 창출하는 커뮤니티입니다.<br>
+                        <br>
+                        <br>
+                        단순한 프로젝트 공유를 넘어, 피드백과 리뷰를 통해 더 나은 결과물을 만들어가며, 오프라인 행사까지 함께 기획하고 참여합니다.
+                        피로타임은 진정한 네트워킹과 협력의 장을 제공하여,
+                        모든 피로그래머가 자신의<br> 가능성을 최대한 발휘할 수 있도록 지원합니다.
+                    </p>
+                    <p style="font-size: 1.1rem;">
+                        <br>
+                        이제, 피로타임과 함께 더 큰 가능성을 발견하고, 함께 성장해 나가세요.<br>
+                        <span style="font-size: 2rem;">Let's
+                            PiroTime!</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="activities max-width-1200">
+        <h1>What you can do at PiroTime</h1>
+        <br />
+        <div class="activity-cards">
+            <div class="info-activity-card">
+                <h3>Project Review</h3>
+                <p>프로젝트 공유합니다.<br /> 피드백&리뷰 받아요!</p>
+            </div>
+            <div class="info-activity-card">
+                <h3>Project Cooperation</h3>
+                <p>좋은 아이디어가 있어요?<br /> 같이 프로젝트 진행해요!</p>
+            </div>
+            <div class="info-activity-card">
+                <h3>Coffee Chat</h3>
+                <p>진로, 프로젝트 고민이<br /> 있어요? 커피챗 해요!</p>
+            </div>
+            <div class="info-activity-card">
+                <h3>IT Trend</h3>
+                <p>요즘 IT 업계의 <br />따끈따끈한 소식<br> 공유해요!</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sections = document.querySelectorAll('section');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.3 // 섹션의 40%가 보이면 나타나기
+        });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    });
+
+    const $rocketSmoke = document.querySelector("#rocket-fire");
+    const $rocket = document.querySelector("#rocket");
+
+    window.addEventListener(
+        "scroll",
+        throttle(() => {
+            const scrollPosition = window.scrollY;
+            const OFFSET = 300;  // 애니메이션이 시작될 스크롤 위치
+            const SPEED = 517; // 숫자 작을수록 빨라짐
+            let scrollPercentage;
+
+            if (scrollPosition < OFFSET) {
+                scrollPercentage = 0; // 스크롤 위치가 OFFSET보다 작으면 애니메이션 시작하지 않음
+            } else if (scrollPosition < OFFSET + SPEED) {
+                scrollPercentage = (scrollPosition - OFFSET) / SPEED; // OFFSET을 뺀 위치로 계산
+            } else {
+                scrollPercentage = 1;
+            }
+
+            $rocket.style.setProperty('bottom', `${10 + (45 - 10) * scrollPercentage}%`);
+            $rocketSmoke.style.setProperty('height', `${100 + (400 - 100) * scrollPercentage}px`);
+        }, 10)
+    );
+
+    function throttle(callback, delay) {
+        let timerId;
+        return event => {
+            if (timerId) {
+                return;
+            }
+            timerId = setTimeout(() => {
+                callback(event);
+                timerId = null;
+            }, delay);
+        };
+    }
+
+</script>
+{% endblock %}
