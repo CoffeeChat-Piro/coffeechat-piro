@@ -185,7 +185,7 @@ def detail(request, pk):
     
     is_waiting = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='WAITING').exists()
     waiting_requests = CoffeeChatRequest.objects.filter(coffeechat__receiver=profile.receiver, status='WAITING').count()
-    is_limited = waiting_requests >= 5 and not is_waiting
+    is_limited = waiting_requests >= 2 and not is_waiting
     hashtags = profile.hashtags.all()
     requests = CoffeeChatRequest.objects.filter(coffeechat=profile)
 
