@@ -22,19 +22,17 @@ class CustomUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'nickname', 'profile_image', 'cohort')  # 소개 필드 제외
+        fields = ('username', 'email', 'profile_image', 'cohort')  # 소개 필드 제외
         help_texts = {
             'username': '',
             'email': '',
-            'nickname': '',
             'profile_image': '',
             'cohort': '',
         }
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].error_messages['required'] = '아이디를 입력해 주세요.'
-        self.fields['nickname'].error_messages['required'] = '아이디를 입력해 주세요.'
+        self.fields['username'].error_messages['required'] = '이름을 입력해 주세요.'
         self.fields['password2'].error_messages['required'] = '비밀번호를 입력해 주세요.'
         self.fields['password1'].error_messages['required'] = '비밀번호를 입력해 주세요.'
         self.fields['cohort'].error_messages['required'] = '기수를 입력해 주세요.'
@@ -61,17 +59,15 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'nickname', 'profile_image', 'cohort', 'intro']
+        fields = ['username', 'email', 'profile_image', 'cohort', 'intro']
         help_texts = {
             'username': '사용자 이름을 입력하세요.',
             'email': '유효한 이메일 주소를 입력하세요.',
-            'nickname': '닉네임을 입력하세요.',
             'profile_image': '프로필 이미지를 선택하세요.',
             'cohort': '몇기인지 입력하세요.',
         }
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-input'}),
-            'nickname': forms.TextInput(attrs={'class': 'form-input'}),
             'email': forms.EmailInput(attrs={'class': 'form-input'}),
             'profile_image': forms.FileInput(attrs={'class': 'form-input--img'}),
             'cohort': forms.NumberInput(attrs={'class': 'form-input'}),

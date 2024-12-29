@@ -229,7 +229,6 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
             data = {
                 'username': user.username,
                 'email': user.email,
-                'nickname': user.nickname,
                 'profile_image': user.profile_image.url if user.profile_image else None,
                 'cohort': user.cohort,
                 'intro': user.intro,

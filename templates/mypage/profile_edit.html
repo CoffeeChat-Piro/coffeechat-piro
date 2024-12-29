@@ -35,7 +35,7 @@
         {% endif %}
 
         <div class="form-group">
-            <label for="id_username">아이디</label>
+            <label for="id_username">이름</label>
             {{ form.username }}
             {% if form.username.errors %}
                 <div class="error">{{ form.username.errors|striptags|join:"" }}</div>
@@ -43,15 +43,7 @@
         </div>
 
         <div class="form-group">
-            <label for="id_nickname">사용자 닉네임(실명을 입력해주세요!)</label>
-            {{ form.nickname }}
-            {% if form.nickname.errors %}
-                <div class="error">{{ form.nickname.errors|striptags|join:"" }}</div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            <label for="id_email">이메일 주소</label>
+            <label for="id_email">이메일</label>
             {{ form.email }}
             {% if form.email.errors %}
                 <div class="error">{{ form.email.errors|striptags|join:"" }}</div>

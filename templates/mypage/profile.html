@@ -243,9 +243,8 @@
                                     `<div class="default-profile-icon"><i class="fas fa-user"></i></div>`
                                 }
                             </div> {% endcomment %}
-                            <div class="myinfo-item"><strong>아이디</strong> {{ user.username }}</div>
-                            <div class="myinfo-item"><strong>닉네임</strong> {{ user.nickname }}</div>
-                            <div class="myinfo-item"><strong>Email</strong> {{ user.email }}</div>
+                            <div class="myinfo-item"><strong>이름</strong> {{ user.username }}</div>
+                            <div class="myinfo-item"><strong>이메일</strong> {{ user.email }}</div>
                             <div class="myinfo-item"><strong>기수</strong> {{ user.cohort }}</div>
                             <div class="myinfo-item"><strong>소개</strong> <span>{{ user.intro|default_if_none:"자기소개 없음" }}</span></div>
                             <a href="{% url 'mypage:profile_edit' %}" class="btn-primary">Edit</a>

@@ -70,7 +70,7 @@
                     <input type="file" name="profile_image" id="id_profile_image" accept="image/*" class="form-input--img" onchange="previewImage(event)">
                 </div>
                 {{ form.non_field_errors }}
-                <input type="text" name="username" placeholder="아이디" class="form-input"
+                <input type="text" name="username" placeholder="이름" class="form-input"
                     value="{{ form.username.value|default_if_none:'' }}">
                 {% if form.username.errors %}
                 <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.username.errors|striptags|join:"" }}</div>
@@ -82,11 +82,6 @@
                 <input type="password" name="password2" placeholder="비밀번호 확인" class="form-input">
                 {% if form.password2.errors %}
                 <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.password2.errors|striptags|join:"" }}</div>
-                {% endif %}
-                <input type="text" name="nickname" placeholder="사용자 닉네임(실명을 입력해주세요!)" class="form-input"
-                    value="{{ form.nickname.value|default_if_none:'' }}">
-                {% if form.nickname.errors %}
-                <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.nickname.errors|striptags|join:"" }}</div>
                 {% endif %}
                 <input type="email" name="email" placeholder="email" class="form-input"
                     value="{{ form.email.value|default_if_none:'' }}">
