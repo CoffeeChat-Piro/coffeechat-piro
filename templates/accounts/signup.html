@@ -88,13 +88,6 @@
                 {% if form.nickname.errors %}
                 <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">{{ form.nickname.errors|striptags|join:"" }}</div>
                 {% endif %}
-                <input type="text" name="phone_number" placeholder="전화번호" class="form-input"
-                    value="{{ form.phone_number.value|default_if_none:'' }}">
-                {% if form.phone_number.errors %}
-                <div class="error" style="color: lightcoral; font-weight: normal; font-size: 12px;">
-                    {{ form.phone_number.errors|striptags|join:"" }}
-                </div>
-                {% endif %}
                 <input type="email" name="email" placeholder="email" class="form-input"
                     value="{{ form.email.value|default_if_none:'' }}">
                 {% if form.email.errors %}

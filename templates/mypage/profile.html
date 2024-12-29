@@ -245,7 +245,6 @@
                             </div> {% endcomment %}
                             <div class="myinfo-item"><strong>아이디</strong> {{ user.username }}</div>
                             <div class="myinfo-item"><strong>닉네임</strong> {{ user.nickname }}</div>
-                            <div class="myinfo-item"><strong>전화번호</strong> {{ user.phone_number }}</div>
                             <div class="myinfo-item"><strong>Email</strong> {{ user.email }}</div>
                             <div class="myinfo-item"><strong>기수</strong> {{ user.cohort }}</div>
                             <div class="myinfo-item"><strong>소개</strong> <span>{{ user.intro|default_if_none:"자기소개 없음" }}</span></div>
