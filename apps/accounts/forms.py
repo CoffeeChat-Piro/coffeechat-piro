@@ -8,27 +8,18 @@ class CustomUserCreationForm(forms.ModelForm):
     password1 = forms.CharField(
         label='Password',
         widget=forms.PasswordInput,
-        help_text=''
     )
     password2 = forms.CharField(
         label='Password confirmation',
         widget=forms.PasswordInput,
-        help_text=''
     )
     cohort = forms.IntegerField(
         label='Cohort',
-        help_text='몇기인지 입력하세요.'
     )
 
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'profile_image', 'cohort')  # 소개 필드 제외
-        help_texts = {
-            'username': '',
-            'email': '',
-            'profile_image': '',
-            'cohort': '',
-        }
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -59,19 +50,12 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'profile_image', 'cohort', 'intro']
-        help_texts = {
-            'username': '사용자 이름을 입력하세요.',
-            'email': '유효한 이메일 주소를 입력하세요.',
-            'profile_image': '프로필 이미지를 선택하세요.',
-            'cohort': '몇기인지 입력하세요.',
-        }
+        fields = ['username', 'email', 'profile_image', 'cohort']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-input'}),
             'email': forms.EmailInput(attrs={'class': 'form-input'}),
             'profile_image': forms.FileInput(attrs={'class': 'form-input--img'}),
             'cohort': forms.NumberInput(attrs={'class': 'form-input'}),
-            'intro': forms.Textarea(attrs={'class': 'form-textarea', 'placeholder': '소개'}),
         }
 
     def save(self, commit=True):
