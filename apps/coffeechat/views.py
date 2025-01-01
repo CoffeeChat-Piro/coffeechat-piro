@@ -287,6 +287,7 @@ def update(req, pk):
             coffeechat.receiver = req.user
             coffeechat.count = 0  # count 필드에 기본값 설정
             coffeechat.content = form.cleaned_data['content']
+            coffeechat.profile_status = form.cleaned_data['profile_status']  # profile_status 수정
             coffeechat.save()
             
             # 해시태그 저장
@@ -306,6 +307,7 @@ def update(req, pk):
         initial_hashtags = json.dumps([{'value': hashtag.name} for hashtag in profile.hashtags.all()])
         form.fields['hashtags'].initial = initial_hashtags
         form.fields['content'].initial = profile.content
+        form.fields['profile_status'].initial = profile.profile_status  # profile_status 초기값 설정
 
     ctx = {
         'form': form,
