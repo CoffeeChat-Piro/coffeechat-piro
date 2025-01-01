@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiroTime 회원가입</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/accounts/signup.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="signup-container">
+                <div class="logo">
+                    <img src="{% static 'images/logo.png' %}" alt="PiroTime Logo">
+                    <h1>PiroTime</h1>
+                </div>
+
+                <form method="post" enctype="multipart/form-data" class="signup-form">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <input type="text" 
+                               name="username" 
+                               class="form-input" 
+                               placeholder="이름" 
+                               value="{{ form.username.value|default_if_none:'' }}" 
+                               required>
+                        {% if form.username.errors %}
+                            <div class="error">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" 
+                               name="email" 
+                               class="form-input" 
+                               placeholder="이메일" 
+                               value="{{ form.email.value|default_if_none:'' }}" 
+                               required>
+                        {% if form.email.errors %}
+                            <div class="error">{{ form.email.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" 
+                               name="cohort" 
+                               class="form-input" 
+                               placeholder="피로그래밍 기수" 
+                               value="{{ form.cohort.value|default_if_none:'' }}" 
+                               required>
+                        {% if form.cohort.errors %}
+                            <div class="error">{{ form.cohort.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" 
+                               name="password1" 
+                               class="form-input" 
+                               placeholder="비밀번호" 
+                               required>
+                        {% if form.password1.errors %}
+                            <div class="error">{{ form.password1.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" 
+                               name="password2" 
+                               class="form-input" 
+                               placeholder="비밀번호 확인" 
+                               required>
+                        {% if form.password2.errors %}
+                            <div class="error">{{ form.password2.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="profile-upload">
+                        <p>프로필 사진 선택(선택)</p>
+                        <label class="upload-button">
+                            <input type="file" 
+                                   name="profile_image" 
+                                   id="id_profile_image" 
+                                   hidden 
+                                   accept="image/*" 
+                                   onchange="previewImage(event)">
+                            <img src="{% static 'images/favicon.ico' %}" alt="Upload" class="camera-icon">
+                        </label>
+                    </div>
+
+                    <button type="submit" class="button">회원가입</button>
+                </form>
+
+                <div class="login-link">
+                    <p>이미 계정이 있으신가요? <a href="{% url 'accounts:login' %}" class="link">로그인</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const output = document.querySelector('.camera-icon');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</body>
+</html>

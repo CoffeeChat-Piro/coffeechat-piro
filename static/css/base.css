@@ -1,0 +1,87 @@
+@import url('./variables.css');
+
+.container {
+    width: var(--max-width);
+    min-height: 100vh;
+    margin: 0 auto;
+    background-color: white;
+    position: relative;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid #eee;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.logo-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.logo span {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.logout-button {
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.content {
+    min-height: calc(100vh - 120px);
+    padding-bottom: 60px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--max-width);
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: white;
+    border-top: 1px solid #eee;
+}
+
+.footer-item {
+    padding: var(--spacing-sm);
+}
+
+.footer-icon {
+    width: 24px;
+    height: 24px;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+}
+
+.footer-item:hover .footer-icon {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+    }
+
+    .footer {
+        width: 100%;
+    }
+}

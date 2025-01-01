@@ -1,5 +1,5 @@
-@import url('variables.css');
-@import url('common.css');
+@import url('../variables.css');
+@import url('./common.css');
 
 .qna-container {
     width: 100%;
