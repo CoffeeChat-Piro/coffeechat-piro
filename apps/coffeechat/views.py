@@ -23,23 +23,8 @@ from .forms import CoffeeChatForm, ReviewForm, CoffeechatRequestForm
 User = get_user_model()
 @login_required
 def home(request):
-    cohort_range = range(1, 22)  # 1기부터 21기까지의 범위
-    profile_counts = {i: 0 for i in cohort_range}
-
-    for cohort in cohort_range:
-        users_in_cohort = User.objects.filter(cohort=cohort)
-        profiles_in_cohort = CoffeeChat.objects.filter(receiver__in=users_in_cohort, is_public=True)
-        profile_counts[cohort] = profiles_in_cohort.count()
-        
-    context = {
-        'cohort_range': cohort_range,
-        'profile_counts': profile_counts,
-    }
-    return render(request, 'coffeechat/home.html', context)
-
-@login_required
-def list(req):
-    query = req.GET.get('search')
+    
+    query = request.GET.get('search')
     if query:
         profiles = CoffeeChat.objects.filter(
             (Q(hashtags__name__icontains=query) | Q(receiver__username__icontains=query) | Q(job__icontains=query)),
@@ -47,12 +32,11 @@ def list(req):
         ).distinct()
     else:
         profiles = CoffeeChat.objects.filter(is_public=True)  # 공개된 프로필만 표시
-    
-    ctx = {
+        
+    context = {
         "profiles": profiles
     }
-    return render(req, 'coffeechat/list.html', ctx)
-
+    return render(request, 'coffeechat/home.html', context)
 
 @login_required
 def create(req):
@@ -326,7 +310,7 @@ def delete(req, pk):
     profile = CoffeeChat.objects.get(pk=pk)
     if req.method == "POST":
         profile.delete()
-        return redirect('coffeechat:coffeechat_list')
+        return redirect('coffeechat:coffeechat_home')
     ctx = {
         'profile': profile
     }
