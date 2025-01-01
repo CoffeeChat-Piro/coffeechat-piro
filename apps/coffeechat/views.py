@@ -31,8 +31,7 @@ def home(request):
     if query:
         profiles = profiles.filter(
             Q(hashtags__name__icontains=query) |
-            Q(receiver__username__icontains=query) |
-            Q(job__icontains=query)
+            Q(receiver__username__icontains=query)
         ).distinct()
 
     if profile_status_filter:
