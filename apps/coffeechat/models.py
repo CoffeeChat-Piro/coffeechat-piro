@@ -31,7 +31,7 @@ class CoffeeChat(models.Model):
 class CoffeeChatRequest(models.Model):
     STATUS_CHOICES = [
         ('WAITING','수락대기중'),
-        ('ONGOING', '진행중')
+        ('ONGOING', '진행중'),
         ('ACCEPTED','수락'),
         ('LIMITED','최대요청횟수초과'),
         ('PRIVATE','비공개'),
