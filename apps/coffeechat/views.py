@@ -23,16 +23,21 @@ from .forms import CoffeeChatForm, ReviewForm, CoffeechatRequestForm
 User = get_user_model()
 @login_required
 def home(request):
-    
     query = request.GET.get('search')
+    profile_status_filter = request.GET.get('status')  # 프로필 상태값 필터 추가
+
+    profiles = CoffeeChat.objects.all()
+
     if query:
-        profiles = CoffeeChat.objects.filter(
-            (Q(hashtags__name__icontains=query) | Q(receiver__username__icontains=query) | Q(job__icontains=query)),
-            is_public=True  # 공개된 프로필만 필터링
+        profiles = profiles.filter(
+            Q(hashtags__name__icontains=query) |
+            Q(receiver__username__icontains=query) |
+            Q(job__icontains=query)
         ).distinct()
-    else:
-        profiles = CoffeeChat.objects.filter(is_public=True)  # 공개된 프로필만 표시
-        
+
+    if profile_status_filter:
+        profiles = profiles.filter(profile_status=profile_status_filter)  # 프로필 상태값 필터 적용
+
     context = {
         "profiles": profiles
     }
@@ -52,6 +57,7 @@ def create(req):
             coffeechat.receiver = req.user
             coffeechat.count = 0  # count 기본값 설정
             coffeechat.content = form.cleaned_data['content']
+            coffeechat.profile_status = form.cleaned_data['profile_status']
             coffeechat.save()
             
             # 해시태그 저장
@@ -170,6 +176,7 @@ def detail(request, pk):
     is_limited = waiting_requests >= 2 and not is_waiting
     hashtags = profile.hashtags.all()
     requests = CoffeeChatRequest.objects.filter(coffeechat=profile)
+    profile_status = profile.profile_status      #프로필 상태값 추가
 
     # 요청마다 리뷰가 있는지 확인하여 request 객체에 속성 추가
     for req in requests:
@@ -184,6 +191,7 @@ def detail(request, pk):
         'requests': requests,
         'requestContent': CoffeechatRequestForm,
         'reviews': reviews,  # 해당 사용자의 리뷰 추가
+        'profile_status': profile_status,
     }
     return render(request, 'coffeechat/detail.html', ctx)
 
