@@ -23,38 +23,24 @@ from .forms import CoffeeChatForm, ReviewForm, CoffeechatRequestForm
 User = get_user_model()
 @login_required
 def home(request):
-    cohort_range = range(1, 22)  # 1기부터 21기까지의 범위
-    reviews = Review.objects.all().order_by('-created_at')[:27]  # 최신 27개 리뷰 가져오기
-    profile_counts = {i: 0 for i in cohort_range}
+    query = request.GET.get('search')
+    profile_status_filter = request.GET.get('status')  # 프로필 상태값 필터 추가
 
-    for cohort in cohort_range:
-        users_in_cohort = User.objects.filter(cohort=cohort)
-        profiles_in_cohort = CoffeeChat.objects.filter(receiver__in=users_in_cohort, is_public=True)
-        profile_counts[cohort] = profiles_in_cohort.count()
-        
-    context = {
-        'reviews': reviews,
-        'cohort_range': cohort_range,
-        'profile_counts': profile_counts,
-    }
-    return render(request, 'coffeechat/home.html', context)
+    profiles = CoffeeChat.objects.all()
 
-@login_required
-def list(req):
-    query = req.GET.get('search')
     if query:
-        profiles = CoffeeChat.objects.filter(
-            (Q(hashtags__name__icontains=query) | Q(receiver__username__icontains=query) | Q(job__icontains=query)),
-            is_public=True  # 공개된 프로필만 필터링
+        profiles = profiles.filter(
+            Q(hashtags__name__icontains=query) |
+            Q(receiver__username__icontains=query)
         ).distinct()
-    else:
-        profiles = CoffeeChat.objects.filter(is_public=True)  # 공개된 프로필만 표시
-    
-    ctx = {
+
+    if profile_status_filter:
+        profiles = profiles.filter(profile_status=profile_status_filter)  # 프로필 상태값 필터 적용
+
+    context = {
         "profiles": profiles
     }
-    return render(req, 'coffeechat/list.html', ctx)
-
+    return render(request, 'coffeechat/home.html', context)
 
 @login_required
 def create(req):
@@ -70,6 +56,7 @@ def create(req):
             coffeechat.receiver = req.user
             coffeechat.count = 0  # count 기본값 설정
             coffeechat.content = form.cleaned_data['content']
+            coffeechat.profile_status = form.cleaned_data['profile_status']
             coffeechat.save()
             
             # 해시태그 저장
@@ -188,6 +175,7 @@ def detail(request, pk):
     is_limited = waiting_requests >= 2 and not is_waiting
     hashtags = profile.hashtags.all()
     requests = CoffeeChatRequest.objects.filter(coffeechat=profile)
+    profile_status = profile.profile_status      #프로필 상태값 추가
 
     # 요청마다 리뷰가 있는지 확인하여 request 객체에 속성 추가
     for req in requests:
@@ -202,6 +190,7 @@ def detail(request, pk):
         'requests': requests,
         'requestContent': CoffeechatRequestForm,
         'reviews': reviews,  # 해당 사용자의 리뷰 추가
+        'profile_status': profile_status,
     }
     return render(request, 'coffeechat/detail.html', ctx)
 
@@ -297,6 +286,7 @@ def update(req, pk):
             coffeechat.receiver = req.user
             coffeechat.count = 0  # count 필드에 기본값 설정
             coffeechat.content = form.cleaned_data['content']
+            coffeechat.profile_status = form.cleaned_data['profile_status']  # profile_status 수정
             coffeechat.save()
             
             # 해시태그 저장
@@ -316,6 +306,7 @@ def update(req, pk):
         initial_hashtags = json.dumps([{'value': hashtag.name} for hashtag in profile.hashtags.all()])
         form.fields['hashtags'].initial = initial_hashtags
         form.fields['content'].initial = profile.content
+        form.fields['profile_status'].initial = profile.profile_status  # profile_status 초기값 설정
 
     ctx = {
         'form': form,
@@ -328,7 +319,7 @@ def delete(req, pk):
     profile = CoffeeChat.objects.get(pk=pk)
     if req.method == "POST":
         profile.delete()
-        return redirect('coffeechat:coffeechat_list')
+        return redirect('coffeechat:coffeechat_home')
     ctx = {
         'profile': profile
     }

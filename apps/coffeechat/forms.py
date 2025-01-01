@@ -8,7 +8,7 @@ class CoffeeChatForm(forms.ModelForm):
 
     class Meta:
         model = CoffeeChat
-        fields = ['job', 'hashtags', 'content']
+        fields = ['job', 'hashtags', 'content', 'profile_status']
         
 
 class ReviewForm(forms.ModelForm):
