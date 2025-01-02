@@ -406,6 +406,7 @@ def how_received(request):
 
     return render(request, 'coffeechat/how_received.html')
 
+#기수별 검색
 def cohort_profiles(request, cohort):
     profiles = CustomUser.objects.filter(cohort=cohort)
     return render(request, 'coffeechat/cohort_profiles.html', {'profiles': profiles, 'cohort': cohort})

@@ -42,6 +42,8 @@ class CoffeeChat(models.Model):
     def total_bookmark(self):
         return self.bookmarks.count()
 
+
+
 class CoffeeChatRequest(models.Model):
     STATUS_CHOICES = [
         ('WAITING','수락대기중'),
@@ -73,6 +75,7 @@ class Review(models.Model):
         return f'Review by {self.reviewer.username} for request {self.coffeechat_request.id}'
 
 
+#현재는 사용하지 않는 동의?
 class informationAgree(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE) # 동의한 사람
     date = models.DateTimeField(default=timezone.now) #동의 시간
