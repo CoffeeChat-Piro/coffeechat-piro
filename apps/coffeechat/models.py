@@ -11,6 +11,16 @@ class Hashtag(models.Model):
         return self.name  # 해시태그의 이름을 반환
 
 class CoffeeChat(models.Model):
+    FACE_TO_FACE = 'F2F'
+    ONLINE = 'ONLINE'
+    OFF = 'OFF'
+
+    PROFILE_STATUS_CHOICES = [
+        (FACE_TO_FACE, '대면'),
+        (ONLINE, '비대면'),
+        (OFF, '오프'),
+    ]
+    
     sender = models.ForeignKey(CustomUser, related_name='sent_coffeechats', on_delete=models.SET_NULL, null=True, blank=True)  # 커피챗 요청을 보낸 사람
     receiver = models.ForeignKey(CustomUser, related_name='received_coffeechats', on_delete=models.SET_NULL, null=True, blank=True) # 커피챗 요청을 받은 사람
     job = models.CharField(max_length=10, null=False) #직업
@@ -19,7 +29,11 @@ class CoffeeChat(models.Model):
     content = models.TextField(null=True, blank=True) #자기소개
     count = models.IntegerField(default=0) #요청 수
     bookmarks = models.ManyToManyField(CustomUser, related_name='coffeechat_bookmarks', blank=True) #북마크
-    is_public = models.BooleanField(default=True)  # 기본적으로 공개
+    profile_status = models.CharField(
+        max_length=10,
+        choices=PROFILE_STATUS_CHOICES,
+        default=FACE_TO_FACE  # 기본값 설정
+    )
 
     # def date(self):
     #     return self.created_at
@@ -31,10 +45,12 @@ class CoffeeChat(models.Model):
 class CoffeeChatRequest(models.Model):
     STATUS_CHOICES = [
         ('WAITING','수락대기중'),
+        ('ONGOING', '진행중'),
         ('ACCEPTED','수락'),
         ('LIMITED','최대요청횟수초과'),
         ('PRIVATE','비공개'),
         ('REJECTED', '거절'),
+        ('COMPLETED', '완료')
     ]
     
     coffeechat = models.ForeignKey(CoffeeChat, related_name='requests', on_delete=models.CASCADE) # 커피챗 프로필 정보
