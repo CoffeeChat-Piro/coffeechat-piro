@@ -131,15 +131,12 @@ def detail(request, pk):
     if request.method == "POST" and request.user != profile.receiver:
         existing_request = False
         if not existing_request:
-            start_of_day = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-            end_of_day = start_of_day + timedelta(days=1)
-            daily_requests = CoffeeChatRequest.objects.filter(
+            waiting_requests = CoffeeChatRequest.objects.filter(
                 coffeechat__receiver=profile.receiver,
-                created_at__range=(start_of_day, end_of_day),
-                status='WAITING'
+                status__in=['WAITING', 'ONGOING', 'ACCEPTED', 'COMPLETED']
             ).count()
 
-            if daily_requests < 2:
+            if waiting_requests < 2:
                 form = CoffeechatRequestForm(request.POST)
                 if form.is_valid():
                     message = form.cleaned_data['requestContent']
