@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/coffeechat/profile_detail.css' %}">
+
+<div class="profile-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            <img src="{{ profile.receiver.profile_image.url|default:'static/images/profile-placeholder.png' }}" 
+                 alt="{{ profile.receiver.username }}" 
+                 class="profile-image">
+            <div class="profile-info">
+                <h2>{{ profile.receiver.username }}</h2>
+                <div class="status-badges">
+                    <span class="status-badge {{ profile.profile_status|lower }}">
+                        {{ profile.get_profile_status_display }}
+                    </span>
+                </div>
+                <p class="generation">피로그래밍 {{ profile.receiver.cohort }}기</p>
+            </div>
+        </div>
+
+        <div class="tag-list">
+            {% for tag in profile.hashtags.all %}
+            <span class="tag">#{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="profile-content">{{ profile.content|safe }}</div>
+
+        <div class="action-buttons">
+            {% if user.is_authenticated and user != profile.receiver %}
+                {% if is_limited %}
+                    <p class="status-message warning">오늘 최대 커피챗 요청 수를 초과했습니다</p>
+                {% elif is_waiting %}
+                    <p class="status-message info">커피챗 요청 수락 대기중</p>
+                {% elif has_pending_request %}
+                    <p class="status-message info">커피챗 요청이 진행중입니다</p>
+                {% else %}
+                    <button id="requestBtn" class="primary-button">커피챗 신청하기</button>
+                {% endif %}
+
+                <button class="bookmark-button {% if user in profile.bookmarks.all %}active{% endif %}" 
+                        data-profile-id="{{ profile.pk }}">
+                    <svg class="bookmark-icon" viewBox="0 0 24 24">
+                        <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                    </svg>
+                </button>
+            {% endif %}
+
+            {% if user == profile.receiver %}
+                <div class="owner-actions">
+                    <a href="{% url 'coffeechat:coffeechat_update' profile.pk %}" class="secondary-button">수정</a>
+                    <button class="danger-button" onclick="confirmDelete()">삭제</button>
+                    <form id="deleteForm" action="{% url 'coffeechat:coffeechat_delete' profile.pk %}" method="post" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if reviews %}
+    <div class="reviews-section">
+        <h3>커피챗 후기</h3>
+        <div class="review-list">
+            {% for review in reviews %}
+            <div class="review-card">
+                <div class="review-header">
+                    <img src="{{ review.reviewer.profile_image.url|default:'static/images/profile-placeholder.png' }}" 
+                         alt="{{ review.reviewer.username }}" 
+                         class="reviewer-image">
+                    <div class="review-info">
+                        <span class="reviewer-name">{{ review.reviewer.username }}</span>
+                        <span class="review-date">{{ review.created_at|date:"Y.m.d" }}</span>
+                    </div>
+                </div>
+                <p class="review-content">{{ review.content }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- 커피챗 신청 모달 -->
+<div id="requestModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>커피챗 신청하기</h3>
+            <button class="close-button">&times;</button>
+        </div>
+        <form method="post" class="request-form">
+            {% csrf_token %}
+            <textarea name="requestContent" 
+                      placeholder="선배님께 궁금한 점이나 자기소개를 작성해주세요..."
+                      required></textarea>
+            <button type="submit" class="primary-button">신청하기</button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('requestModal');
+    const btn = document.getElementById('requestBtn');
+    const closeBtn = document.querySelector('.close-button');
+
+    if(btn) btn.onclick = () => modal.classList.add('show');
+    if(closeBtn) closeBtn.onclick = () => modal.classList.remove('show');
+    
+    window.onclick = (e) => {
+        if (e.target == modal) modal.classList.remove('show');
+    }
+
+    // 북마크 기능
+    document.querySelector('.bookmark-button')?.addEventListener('click', function() {
+        fetch(`/coffeechat/${this.dataset.profileId}/bookmark/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.bookmarked) {
+                this.classList.add('active');
+            } else {
+                this.classList.remove('active');
+            }
+        });
+    });
+});
+
+function confirmDelete() {
+    if(confirm('프로필을 삭제하시겠습니까?')) {
+        document.getElementById('deleteForm').submit();
+    }
+}
+</script>
+{% endblock %}

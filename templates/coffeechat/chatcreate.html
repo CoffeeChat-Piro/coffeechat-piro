@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/coffeechat/chatcreate.css' %}">
+
+<div class="profile-container">
+    <h1 class="profile-title">프로필 생성하기</h1>
+    
+    <form method="post" class="profile-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="job">직업(전공)</label>
+            <input type="text" 
+                   id="job" 
+                   name="job" 
+                   class="form-input" 
+                   placeholder="전공을 입력해주세요"
+                   value="{{ form.job.value|default:'' }}"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label for="hashtags">해시태그</label>
+            <input type="text" 
+                   id="hashtags" 
+                   name="hashtags" 
+                   class="form-input" 
+                   placeholder="#을 사용해 태그를 입력해주세요"
+                   value="{{ form.hashtags.value|default:'' }}">
+        </div>
+
+        <div class="form-group">
+            <label>커피챗 유형</label>
+            <div class="type-selector">
+                <button type="button" class="type-button{% if form.profile_status.value == 'F2F' or not form.profile_status.value %} active{% endif %}" data-value="F2F">대면</button>
+                <button type="button" class="type-button{% if form.profile_status.value == 'ONLINE' %} active{% endif %}" data-value="ONLINE">비대면</button>
+                <button type="button" class="type-button{% if form.profile_status.value == 'OFF' %} active{% endif %}" data-value="OFF">OFF</button>
+            </div>
+            <input type="hidden" name="profile_status" id="selected_type" value="{{ form.profile_status.value|default:'F2F' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="content">자기소개</label>
+            <div class="editor-container">
+                <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" data-cmd="bold">B</button>
+                    <button type="button" class="editor-btn" data-cmd="italic">I</button>
+                    <button type="button" class="editor-btn" data-cmd="underline">U</button>
+                    <button type="button" class="editor-btn" data-cmd="createLink">링크</button>
+                </div>
+                <div class="editor-content" 
+                     contenteditable="true" 
+                     id="content">{{ form.content.value|default:''|safe }}</div>
+            </div>
+            <input type="hidden" name="content" id="content_input">
+        </div>
+
+        <button type="submit" class="submit-button">등록하기</button>
+    </form>
+</div>
+
+<script>
+    // 커피챗 유형 선택
+    document.querySelectorAll('.type-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.type-button').forEach(btn => 
+                btn.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById('selected_type').value = this.dataset.value;
+        });
+    });
+
+    // 해시태그 처리
+    const hashtagInput = document.getElementById('hashtags');
+    const hashtagsArray = [];
+
+    hashtagInput.addEventListener('keydown', function(e) {
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            const value = this.value.trim();
+            if (value && !value.includes(' ')) {
+                if (!value.startsWith('#')) {
+                    this.value = '#' + value;
+                }
+                hashtagsArray.push(this.value);
+                this.value = '';
+                renderTags();
+            }
+        }
+    });
+
+    function renderTags() {
+        const container = document.createElement('div');
+        container.className = 'hashtag-container';
+        hashtagsArray.forEach(tag => {
+            const span = document.createElement('span');
+            span.className = 'tag';
+            span.textContent = tag;
+            container.appendChild(span);
+        });
+        const existing = document.querySelector('.hashtag-container');
+        if (existing) {
+            existing.replaceWith(container);
+        } else {
+            hashtagInput.parentNode.insertBefore(container, hashtagInput.nextSibling);
+        }
+    }
+
+    // 폼 제출 시 에디터 내용 hidden input에 저장
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('content_input').value = 
+            document.getElementById('content').innerHTML;
+        
+        const hashtagsJson = JSON.stringify(hashtagsArray.map(tag => 
+            tag.replace('#', '')));
+        document.getElementById('hashtags').value = hashtagsJson;
+        
+        this.submit();
+    });
+
+    // 에디터 툴바 기능
+    document.querySelectorAll('.editor-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const command = this.dataset.cmd;
+            if (command === 'createLink') {
+                const url = prompt('링크를 입력해주세요');
+                if (url) document.execCommand(command, false, url);
+            } else {
+                document.execCommand(command, false, null);
+            }
+        });
+    });
+</script>
+{% endblock %}

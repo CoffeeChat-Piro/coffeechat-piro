@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/coffeechat/main.css' %}">
+
+<div class="mentors-container">
+    <div class="search-bar">
+        <form method="get" class="search-form">
+            <input type="text" 
+                   name="search"
+                   placeholder="원하는 피로그래밍 선배님 검색" 
+                   class="search-input"
+                   value="{{ request.GET.search|default:'' }}">
+            <button type="submit" class="search-button">검색</button>
+        </form>
+    </div>
+
+    <div class="mentors-grid">
+        {% for mentor in profiles %}
+        <a href="{% url 'coffeechat:coffeechat_detail' mentor.pk %}" class="mentor-card">
+            <div class="mentor-info">
+                <img src="{% if mentor.receiver.profile_image %}{{ mentor.receiver.profile_image.url }}{% else %}{% static 'images/profile-placeholder.png' %}{% endif %}" 
+                     alt="{{ mentor.receiver.username }}" 
+                     class="mentor-image">
+                <div class="mentor-details">
+                    <div class="mentor-header">
+                        <h3 class="mentor-name">{{ mentor.receiver.username }}</h3>
+                        <span class="mentor-status {{ mentor.profile_status|lower }}">
+                            {{ mentor.get_profile_status_display }}
+                        </span>
+                    </div>
+                    <p class="mentor-generation">피로 {{ mentor.receiver.cohort|default:"-" }}기</p>
+                </div>
+            </div>
+            <div class="mentor-tags">
+                {% for tag in mentor.hashtags.all %}
+                <span class="tag">#{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    {% if not user_has_profile %}
+    <a href="{% url 'coffeechat:coffeechat_create' %}" class="create-profile-button">
+        <img src="{% static 'images/pencil-icon.svg' %}" alt="프로필 생성" class="create-icon">
+    </a>
+    {% endif %}
+</div>
+{% endblock %}

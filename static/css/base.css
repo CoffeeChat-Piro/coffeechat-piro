@@ -34,12 +34,28 @@
 }
 
 .logout-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 14px;
     color: var(--text-secondary);
     background: none;
     border: none;
     cursor: pointer;
     padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+.logout-button svg {
+    transition: transform var(--transition-fast);
+}
+
+.logout-button:hover svg {
+    transform: translateX(2px);
+}
+
+.logout-button a {
+    color: inherit;
+    text-decoration: none;
 }
 
 .content {
@@ -65,15 +81,14 @@
     padding: var(--spacing-sm);
 }
 
-.footer-icon {
-    width: 24px;
-    height: 24px;
-    opacity: 0.6;
-    transition: opacity var(--transition-fast);
+.footer-item svg {
+    stroke: var(--text-secondary);
+    transition: all var(--transition-fast);
 }
 
-.footer-item:hover .footer-icon {
-    opacity: 1;
+.footer-item:hover svg {
+    stroke: var(--button-first-color);
+    transform: scale(1.1);
 }
 
 @media (max-width: 768px) {
