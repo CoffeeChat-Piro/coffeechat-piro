@@ -204,7 +204,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                 return JsonResponse({'bookmarked_coffeechats': data})
             
             elif category == 'history':
-                accepted_requests = CoffeeChatRequest.objects.filter(user=target_user, status='ACCEPTED')
+                accepted_requests = CoffeeChatRequest.objects.filter(user=target_user, status='ONGOING')
                 data = [{
                     'sender': request.user.username,
                     'receiver': request.coffeechat.receiver.username,

@@ -232,7 +232,7 @@ def accept_request(request, request_id):
 
     print('accept 2+++++++++++++++')
 
-    coffeechat_request.status = 'ACCEPTED'
+    coffeechat_request.status = 'ONGOING'
     coffeechat_request.save()
 
     coffeechat = coffeechat_request.coffeechat
