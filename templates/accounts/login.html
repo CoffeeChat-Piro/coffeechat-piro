@@ -1,43 +1,56 @@
 <!DOCTYPE html>
-<html lang="ko, en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PiroTime</title>
-    <link rel="stylesheet" type="text/css" href="file:///C:/Users/USER/Desktop/PiroTIme/PiroTime/static/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Hubballi&display=swap" rel="stylesheet">
+    <title>PiroTime 로그인</title>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/account/account.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accounts/login.css' %}">
 </head>
 <body>
-    <div class="form-container">
-        <div class="logo">
-            <img src="{% static 'images/logo.svg' %}" alt="PiroTime Logo" width="170" height="170">
-            <h1>PiroTime</h1>
-        </div>
-        <form method="post">
-            {% csrf_token %}
-            <div class="login-form">
-                {{ form.non_field_errors }}
-                <input type="text" name="username" placeholder="이름" class="form-input" value="{{ form.username.value|default_if_none:'' }}">
-                {% if form.username.errors %}
-                    <div class="error">{{ form.username.errors }}</div>
-                {% endif %}
-                <input type="password" name="password" placeholder="비밀번호" class="form-input">
-                {% if form.password.errors %}
-                    <div class="error">{{ form.password.errors }}</div>
-                {% endif %}
-                <button type="submit" class="form-button">로그인</button>
+    <div class="container">
+        <div class="form-container">
+            <div class="login-container">
+                <div class="logo">
+                    <img src="{% static 'images/logo.png' %}" alt="PiroTime Logo">
+                    <h1>PiroTime</h1>
+                </div>
+
+                <form method="post" class="login-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" 
+                               class="form-input" 
+                               name="username" 
+                               placeholder="이름" 
+                               value="{{ form.username.value|default_if_none:'' }}" 
+                               required>
+                        {% if form.username.errors %}
+                            <div class="error">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" 
+                               class="form-input" 
+                               name="password" 
+                               placeholder="비밀번호" 
+                               required>
+                        {% if form.password.errors %}
+                            <div class="error">{{ form.password.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="button login-button">로그인</button>
+                </form>
+
+                <div class="signup-link">
+                    <p>계정이 없으신가요? <a href="{% url 'accounts:signup' %}" class="link">회원가입하기</a></p>
+                </div>
             </div>
-        </form>
-        <!-- <div class="links">
-            <label><input type="checkbox"> 로그인 유지</label>
-            <a href="#">아이디/비밀번호 찾기</a>
-        </div> -->
-        <div class="signup">
-            <a href="{% url 'accounts:signup' %}">계정이 없으신가요? 회원가입하기</a>
         </div>
     </div>
+
     {% if messages %}
         <ul>
             {% for message in messages %}

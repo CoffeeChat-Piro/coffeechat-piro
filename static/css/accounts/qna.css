@@ -1,0 +1,94 @@
+@import url('../variables.css');
+@import url('./common.css');
+
+.qna-container {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    animation: scaleIn var(--transition-normal);
+}
+
+.qna-card {
+    background-color: var(--card-color);
+    border-radius: var(--card-radius);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    text-align: center;
+}
+
+.logo-box {
+    width: 36px;
+    height: 36px;
+    background-color: white;
+    border-radius: var(--input-radius);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto var(--spacing-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+.logo-box img {
+    width: 18px;
+    height: 18px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin: var(--spacing-md) 0 var(--spacing-xl);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.button-box {
+    background-color: white;
+    border-radius: var(--button-radius);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 13px;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-fast);
+}
+
+.button-box .main-text {
+    transition: all var(--transition-fast);
+}
+
+.button-box .hover-text {
+    position: absolute;
+    right: 40px;
+    color: var(--text-tertiary);
+    font-size: 12px;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: all var(--transition-fast);
+}
+
+.button-box:hover .hover-text {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.button-box .arrow {
+    margin-left: auto;
+    opacity: 0.5;
+    transition: opacity var(--transition-fast);
+}
+
+.button-box:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding-right: 20px;
+}
+
+.button-box:hover .arrow {
+    opacity: 1;
+}

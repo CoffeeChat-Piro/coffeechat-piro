@@ -36,11 +36,11 @@ def home(request):
 
     if profile_status_filter:
         profiles = profiles.filter(profile_status=profile_status_filter)  # 프로필 상태값 필터 적용
-
+    
     context = {
         "profiles": profiles
     }
-    return render(request, 'coffeechat/home.html', context)
+    return render(request, 'coffeechat/main.html', context)
 
 @login_required
 def create(req):
@@ -75,7 +75,7 @@ def create(req):
     ctx = {
         'form': form
     }
-    return render(req, 'coffeechat/create.html', ctx)
+    return render(req, 'coffeechat/chatcreate.html', ctx)
 
 @csrf_protect
 @login_required
@@ -312,7 +312,7 @@ def update(req, pk):
         'form': form,
         'profile': profile
     }
-    return render(req, 'coffeechat/update.html', ctx)
+    return render(req, 'coffeechat/chatedit.html', ctx)
 
 @login_required
 def delete(req, pk):
