@@ -1,151 +1,148 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/coffeechat/detail.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/coffeechat/detail.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
-<div class="detail-container">
+  <div class="detail-container">
     <!-- 프로필 섹션 -->
     <div class="profile-section">
+      <div class="profile-section-inner">
         <div class="profile-header">
-            <div class="profile-left">
-                <div class="profile-image">
-                    <img src="{% static 'images/logo.png' %}" alt="{{ profile.receiver.username }}">
-                </div>
-                <div class="profile-info">
-                    <div class="profile-name">{{ profile.receiver.username }}</div>
-                    <p class="cohort">피로그래밍 {{ profile.receiver.cohort }}기</p>
-                </div>
-                <div class="status-badges">
-                    {% if profile.profile_status == 'F2F' %}
-                        <span class="status-badge f2f">대면</span>
-                    {% endif %}
-                    {% if profile.profile_status == 'ONLINE' %}
-                        <span class="status-badge online">비대면</span>
-                    {% endif %}
-                </div>
-                <div class="action-buttons">
-                    <button class="bookmark-btn {% if user in profile.bookmarks.all %}active{% endif %}" 
-                            data-profile-id="{{ profile.pk }}">
-                        <i class="fas fa-bookmark"></i>
-                    </button>
-                    {% if user == profile.receiver %}
-                        <a href="{% url 'coffeechat:coffeechat_update' profile.pk %}" class="edit-btn">
-                            프로필 수정하기
-                        </a>
-                    {% else %}
-                        {% if user.is_authenticated %}
-                            {% if is_limited %}
-                                <button class="action-btn limited">커피챗 불가</button>
-                            {% elif is_waiting %}
-                                <button class="action-btn waiting">수락대기중</button>
-                            {% elif has_pending_request %}
-                                <button class="action-btn ongoing">진행중</button>
-                            {% else %}
-                                <button id="requestBtn" class="action-btn">커피챗 제안하기</button>
-                            {% endif %}
-                        {% endif %}
-                    {% endif %}
-                </div>
+          <div class="profile-left">
+            <div class="profile-image">
+                <i class="fa-solid fa-user" style="color: #CCCCCC; font-size: 24px;"></i>
             </div>
+            <div class="profile-info">
+              <div class="profile-main">
+                <div class="profile-name">{{ profile.receiver.username }}</div>
+                <div class="status-badges">
+                  {% if profile.profile_status == 'F2F' %}
+                    <span class="status-badge">대면</span>
+                  {% endif %}
+                  {% if profile.profile_status == 'ONLINE' %}
+                    <span class="status-badge">비대면</span>
+                  {% endif %}
+                </div>
+              </div>
+              <p class="cohort">피로그래밍 {{ profile.receiver.cohort }}기</p>
+              <div class="hashtags">
+                {% for tag in profile.hashtags.all %}
+                  <span class="hashtag">#{{ tag.name }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <div class="bookmark-container">
+              <button class="bookmark-btn {% if user in profile.bookmarks.all %}active{% endif %}" data-profile-id="{{ profile.pk }}"><i class="fas fa-bookmark"></i></button>
+            </div>
+            {% if user == profile.receiver %}
+              <a href="{% url 'coffeechat:coffeechat_update' profile.pk %}" class="edit-btn">프로필 수정하기</a>
+            {% else %}
+              {% if user.is_authenticated %}
+                {% if is_limited %}
+                  <button class="action-btn limited">커피챗 불가</button>
+                {% elif is_waiting %}
+                  <button class="action-btn waiting">수락대기중</button>
+                {% elif has_pending_request %}
+                  <button class="action-btn ongoing">진행중</button>
+                {% else %}
+                  <button id="requestBtn" class="action-btn">커피챗 제안하기</button>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          </div>
         </div>
-        <div class="hashtags">
-            {% for tag in profile.hashtags.all %}
-                <span class="hashtag">#{{ tag.name }}</span>
-            {% endfor %}
-        </div>
+      </div>
     </div>
 
     <!-- 탭 메뉴 -->
     <div class="tab-menu">
-        <button class="tab-btn active" data-tab="intro">파트너 소개</button>
-        <button class="tab-btn" data-tab="reviews">리뷰</button>
+      <button class="tab-btn active" data-tab="intro">피로그래머 소개</button>
+      <button class="tab-btn" data-tab="reviews">리뷰</button>
     </div>
 
     <!-- 탭 컨텐츠 -->
     <div id="intro" class="tab-content active">
-        <div class="content-box">
-            {{ profile.content|safe }}
-        </div>
+      <div class="content-box">{{ profile.content|safe }}</div>
     </div>
 
     <div id="reviews" class="tab-content">
-        <div class="content-box">
-            {% if reviews %}
-                <div class="review-list">
-                    {% for review in reviews %}
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="reviewer-name">{{ review.reviewer.username }}</span>
-                            <span class="review-date">{{ review.created_at|date:"Y.m.d" }}</span>
-                        </div>
-                        <p class="review-content">{{ review.content }}</p>
-                    </div>
-                    {% endfor %}
+      <div class="content-box">
+        {% if reviews %}
+          <div class="review-list">
+            {% for review in reviews %}
+              <div class="review-card">
+                <div class="review-header">
+                  <span class="reviewer-name">{{ review.reviewer.username }}</span>
+                  <span class="review-date">{{ review.created_at|date:'Y.m.d' }}</span>
                 </div>
-            {% else %}
-                <p class="no-reviews">아직 작성된 리뷰가 없습니다</p>
-            {% endif %}
-        </div>
+                <p class="review-content">{{ review.content }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="no-reviews">아직 작성된 리뷰가 없습니다</p>
+        {% endif %}
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- 커피챗 신청 모달 -->
-<div id="requestModal" class="modal">
+  <!-- 커피챗 신청 모달 -->
+  <div id="requestModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h3>커피챗 제안하기</h3>
-            <button class="close-btn">&times;</button>
-        </div>
-        <form method="post" class="request-form">
-            {% csrf_token %}
-            <textarea name="requestContent" 
-                      placeholder="선배님께 궁금한 점이나 자기소개를 작성해주세요..."
-                      required></textarea>
-            <button type="submit" class="submit-btn">제안하기</button>
-        </form>
+      <div class="modal-header">
+        <h3>커피챗 제안하기</h3>
+        <button class="close-btn">&times;</button>
+      </div>
+      <form method="post" class="request-form">
+        {% csrf_token %}
+        <textarea name="requestContent" placeholder="선배님께 궁금한 점이나 자기소개를 작성해주세요..." required></textarea>
+        <button type="submit" class="submit-btn">제안하기</button>
+      </form>
     </div>
-</div>
+  </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 탭 전환
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabBtns.forEach(btn => {
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 탭 전환
+      const tabBtns = document.querySelectorAll('.tab-btn')
+      const tabContents = document.querySelectorAll('.tab-content')
+    
+      tabBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
-            const tabId = btn.dataset.tab;
-            
-            tabBtns.forEach(b => b.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
-            
-            btn.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        });
-    });
-
-    // 북마크 기능
-    const bookmarkBtn = document.querySelector('.bookmark-btn');
-    if(bookmarkBtn) {
-        bookmarkBtn.addEventListener('click', function() {
-            fetch(`/coffeechat/${this.dataset.profileId}/bookmark/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                }
+          const tabId = btn.dataset.tab
+    
+          tabBtns.forEach((b) => b.classList.remove('active'))
+          tabContents.forEach((c) => c.classList.remove('active'))
+    
+          btn.classList.add('active')
+          document.getElementById(tabId).classList.add('active')
+        })
+      })
+    
+      // 북마크 기능
+      const bookmarkBtn = document.querySelector('.bookmark-btn')
+      if (bookmarkBtn) {
+        bookmarkBtn.addEventListener('click', function () {
+          fetch(`/coffeechat/${this.dataset.profileId}/bookmark/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}'
+            }
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.bookmarked) {
+                this.classList.add('active')
+              } else {
+                this.classList.remove('active')
+              }
             })
-            .then(res => res.json())
-            .then(data => {
-                if(data.bookmarked) {
-                    this.classList.add('active');
-                } else {
-                    this.classList.remove('active');
-                }
-            });
-        });
-    }
-});
-</script>
+        })
+      }
+    })
+  </script>
 {% endblock %}

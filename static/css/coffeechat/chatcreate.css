@@ -130,6 +130,16 @@
     border-radius: var(--button-radius);
 }
 
+.tag > button {
+    background: none;
+    border: none;
+    margin-top: 5px;
+}
+
+/* .tag > button:hover {
+
+} */
+
 .submit-button {
     margin-top: var(--spacing-md);
     padding: 14px;
