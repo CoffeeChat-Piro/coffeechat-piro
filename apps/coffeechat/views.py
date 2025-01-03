@@ -37,8 +37,12 @@ def home(request):
     if profile_status_filter:
         profiles = profiles.filter(profile_status=profile_status_filter)  # 프로필 상태값 필터 적용
     
+    user_profile = CoffeeChat.objects.filter(receiver=request.user).first()
+   
     context = {
-        "profiles": profiles
+        "profiles": profiles,
+        "user_has_profile": bool(user_profile),
+        "user_profile_id": user_profile.id if user_profile else None
     }
     return render(request, 'coffeechat/main.html', context)
 
@@ -181,18 +185,21 @@ def detail(request, pk):
         req.existing_review = hasattr(req, 'review')
 
     ctx = {
-        'profile': profile,
-        'is_waiting': is_waiting,
-        'is_limited': is_limited,
-        'is_ongoing': is_ongoing,
-        'is_completed': is_completed,
-        'has_pending_request': has_pending_request,  # 새로 추가된 컨텍스트 변수
-        'hashtags': hashtags,
-        'requests': requests,
-        'requestContent': CoffeechatRequestForm,
-        'reviews': reviews,  # 해당 사용자의 리뷰 추가
-        'profile_status': profile_status,
-    }
+       'profile': profile,
+       'is_waiting': is_waiting,
+       'is_limited': is_limited,
+       'has_pending_request': has_pending_request,
+       'hashtags': hashtags,
+       'requests': requests,
+       'requestContent': CoffeechatRequestForm,
+       'reviews': reviews,
+       'profile_status': profile_status,
+       'user_has_profile': CoffeeChat.objects.filter(receiver=request.user).exists(),
+       'existing_review': Review.objects.filter(
+           reviewer=request.user, 
+           coffeechat_request__coffeechat=profile
+       ).exists(),
+   }
     return render(request, 'coffeechat/detail.html', ctx)
 
 @login_required
@@ -277,43 +284,34 @@ def reject_request(request, request_id):
 
     return JsonResponse({"status": "rejected"})
 
-@login_required
+@login_required 
 def update(req, pk):
-    profile = Profile.objects.get(pk=pk)
-    if req.method == "POST": # 수정 후
-        form = CoffeeChatForm(req.POST, instance=profile)
-        if form.is_valid():
-            coffeechat = form.save(commit=False)
-            coffeechat.user = req.user
-            coffeechat.count = 0  # count 필드에 기본값 설정
-            coffeechat.content = form.cleaned_data['content']
-            coffeechat.profile_status = form.cleaned_data['profile_status']  # profile_status 수정
-            coffeechat.save()
-            
-            # 해시태그 저장
-            hashtags = form.cleaned_data['hashtags']
-            hashtag_list = json.loads(hashtags)
-            hashtag_objects = []
-            for tag in hashtag_list:
-                hashtag, created = Hashtag.objects.get_or_create(name=tag)
-                hashtag_objects.append(hashtag)
-            coffeechat.hashtags.set(hashtag_objects)
-            
-            coffeechat.save()
-            return redirect('coffeechat:coffeechat_detail', pk=profile.pk)
-    else: # 수정 전(위한 load, GET)
-        form = CoffeeChatForm(instance=profile)
-        # 수정을 위해서 기존 콘텐츠와 해시태그 로드(JSON)
-        initial_hashtags = json.dumps([{'value': hashtag.name} for hashtag in profile.hashtags.all()])
-        form.fields['hashtags'].initial = initial_hashtags
-        form.fields['content'].initial = profile.content
-        form.fields['profile_status'].initial = profile.profile_status  # profile_status 초기값 설정
+   profile = CoffeeChat.objects.get(pk=pk)
+   if req.method == "POST":
+       form = CoffeeChatForm(req.POST, instance=profile)
+       if form.is_valid():
+           coffeechat = form.save(commit=False)
+           coffeechat.receiver = req.user
+           coffeechat.content = form.cleaned_data['content']
+           coffeechat.profile_status = form.cleaned_data['profile_status']
+           coffeechat.save()
+           
+           hashtags = json.loads(form.cleaned_data['hashtags'])
+           hashtag_objects = []
+           for tag in hashtags:
+               hashtag, created = Hashtag.objects.get_or_create(name=tag)
+               hashtag_objects.append(hashtag)
+           coffeechat.hashtags.set(hashtag_objects)
+           
+           return redirect('coffeechat:coffeechat_detail', pk=profile.pk)
+   else:
+       form = CoffeeChatForm(instance=profile)
+       initial_hashtags = json.dumps([tag.name for tag in profile.hashtags.all()])
+       form.fields['hashtags'].initial = initial_hashtags
+       form.fields['content'].initial = profile.content
+       form.fields['profile_status'].initial = profile.profile_status
 
-    ctx = {
-        'form': form,
-        'profile': profile
-    }
-    return render(req, 'coffeechat/chatedit.html', ctx)
+   return render(req, 'coffeechat/chatedit.html', {'form': form, 'profile': profile})
 
 @login_required
 def delete(req, pk):

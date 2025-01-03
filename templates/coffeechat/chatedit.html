@@ -21,15 +21,13 @@
 
         <div class="form-group">
             <label for="hashtags">해시태그</label>
-            <input type="text" 
-                   id="hashtags" 
-                   name="hashtags" 
-                   class="form-input" 
-                   placeholder="#을 사용해 태그를 입력해주세요">
-            <div class="hashtag-container">
-                {% for tag in profile.hashtags.all %}
-                <span class="tag">#{{ tag.name }}</span>
-                {% endfor %}
+            <div class="hashtag-input-container">
+                <input type="text" 
+                       id="hashtag_input" 
+                       class="form-input" 
+                       placeholder="#을 사용해 입력해주세요">
+                <div class="hashtags-container"></div>
+                <input type="hidden" name="hashtags" id="hashtags">
             </div>
         </div>
 
@@ -64,11 +62,9 @@
 </div>
 
 <script>
-    // DOM 로드 시 기존 해시태그 설정
-    const initialTags = [{% for tag in profile.hashtags.all %}'#{{ tag.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
-    const hashtagsArray = [...initialTags];
+    const initialTags = [{% for tag in profile.hashtags.all %}'{{ tag.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+    const hashtagsArray = initialTags.map(tag => '#' + tag);
 
-    // 나머지 스크립트는 chatcreate.html과 동일
     document.querySelectorAll('.type-button').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
@@ -79,51 +75,47 @@
         });
     });
 
-    const hashtagInput = document.getElementById('hashtags');
+    const hashtagInput = document.getElementById('hashtag_input');
+    const hashtagsContainer = document.querySelector('.hashtags-container');
+    const hashtagsHidden = document.getElementById('hashtags');
+
+    renderTags();
 
     hashtagInput.addEventListener('keydown', function(e) {
-        if (e.key === ' ' || e.key === 'Enter') {
+        if (e.key === 'Enter') {
             e.preventDefault();
             const value = this.value.trim();
-            if (value && !value.includes(' ')) {
-                if (!value.startsWith('#')) {
-                    this.value = '#' + value;
+            if (value) {
+                const tag = value.startsWith('#') ? value : '#' + value;
+                if (!hashtagsArray.includes(tag)) {
+                    hashtagsArray.push(tag);
+                    renderTags();
+                    updateHiddenInput();
                 }
-                hashtagsArray.push(this.value);
                 this.value = '';
-                renderTags();
             }
         }
     });
 
     function renderTags() {
-        const container = document.createElement('div');
-        container.className = 'hashtag-container';
-        hashtagsArray.forEach(tag => {
-            const span = document.createElement('span');
-            span.className = 'tag';
-            span.textContent = tag;
-            container.appendChild(span);
+        hashtagsContainer.innerHTML = '';
+        hashtagsArray.forEach((tag, index) => {
+            const tagElement = document.createElement('span');
+            tagElement.className = 'tag';
+            tagElement.innerHTML = `${tag} <button type="button" data-index="${index}">&times;</button>`;
+            hashtagsContainer.appendChild(tagElement);
+            
+            tagElement.querySelector('button').addEventListener('click', function() {
+                hashtagsArray.splice(this.dataset.index, 1);
+                renderTags();
+                updateHiddenInput();
+            });
         });
-        const existing = document.querySelector('.hashtag-container');
-        if (existing) {
-            existing.replaceWith(container);
-        } else {
-            hashtagInput.parentNode.insertBefore(container, hashtagInput.nextSibling);
-        }
     }
 
-    document.querySelector('form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        document.getElementById('content_input').value = 
-            document.getElementById('content').innerHTML;
-        
-        const hashtagsJson = JSON.stringify(hashtagsArray.map(tag => 
-            tag.replace('#', '')));
-        document.getElementById('hashtags').value = hashtagsJson;
-        
-        this.submit();
-    });
+    function updateHiddenInput() {
+        hashtagsHidden.value = JSON.stringify(hashtagsArray.map(tag => tag.replace('#', '')));
+    }
 
     document.querySelectorAll('.editor-btn').forEach(button => {
         button.addEventListener('click', function(e) {
@@ -136,6 +128,14 @@
                 document.execCommand(command, false, null);
             }
         });
+    });
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('content_input').value = 
+            document.getElementById('content').innerHTML;
+        updateHiddenInput();
+        this.submit();
     });
 </script>
 {% endblock %}

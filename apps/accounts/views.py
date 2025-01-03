@@ -39,7 +39,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('accounts:login')
+            return redirect('coffeechat:main')
     else:
         form = CustomAuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
@@ -48,6 +48,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('accounts:login')
+
 @login_required
 def start(req):
     now = timezone.now()
@@ -75,7 +76,7 @@ def start(req):
     #     'trend_most': trend_most,
     }
 
-    return render(req, 'accounts/login.html', ctx)
+    return render(req, 'coffeechat/main.html', ctx)
 
 #===========================
 #main page 기능 구성
