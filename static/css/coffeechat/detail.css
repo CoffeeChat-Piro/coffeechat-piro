@@ -1,219 +1,243 @@
-.profile-container {
-    max-width: var(--max-width);
+.detail-container {
+    max-width: 600px;
     margin: 0 auto;
-    padding: var(--spacing-lg);
+    padding: 20px;
 }
 
-.profile-card {
-    background-color: var(--card-color);
-    border-radius: var(--card-radius);
-    padding: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
-    box-shadow: var(--shadow-sm);
+/* 프로필 섹션 */
+.profile-section {
+    background-color: rgba(222, 238, 231, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    height: 150px;
 }
 
 .profile-header {
     display: flex;
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.profile-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
 }
 
 .profile-image {
-    width: 80px;
-    height: 80px;
+    width: 48px;
+    height: 48px;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.profile-info h2 {
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.cohort {
     margin: 0;
-    font-size: 20px;
-    color: var(--text-primary);
+    font-size: 14px;
+    color: #666;
 }
 
 .status-badges {
-    margin: var(--spacing-sm) 0;
+    display: flex;
+    gap: 8px;
 }
 
 .status-badge {
-    display: inline-block;
     padding: 4px 12px;
-    border-radius: var(--button-radius);
-    font-size: 12px;
+    border-radius: 20px;
+    font-size: 13px;
     color: white;
 }
 
-.status-badge.f2f { background-color: var(--button-first-color); }
-.status-badge.online { background-color: var(--button-second-color); }
-.status-badge.off { background-color: var(--text-tertiary); }
-
-.generation {
-    color: var(--text-secondary);
-    font-size: 14px;
-    margin: var(--spacing-sm) 0;
+.status-badge.f2f {
+    background-color: #6CA36E;
 }
 
-.tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: var(--spacing-lg);
-}
-
-.tag {
-    padding: 4px 12px;
-    background-color: var(--button-second-color);
-    color: white;
-    border-radius: var(--button-radius);
-    font-size: 12px;
-}
-
-.profile-content {
-    color: var(--text-primary);
-    line-height: 1.6;
-    margin-bottom: var(--spacing-xl);
-    font-size: 14px;
+.status-badge.online {
+    background-color: #97A36C;
 }
 
 .action-buttons {
     display: flex;
-    justify-content: flex-end;
-    gap: var(--spacing-md);
+    gap: 12px;
     align-items: center;
+    margin-left: auto;
 }
 
-.primary-button {
-    padding: 10px var(--spacing-xl);
-    background-color: var(--button-first-color);
-    color: white;
+.bookmark-btn {
+    background: none;
     border: none;
-    border-radius: var(--button-radius);
+    padding: 4px;
+    font-size: 20px;
+    color: #999;
     cursor: pointer;
-    transition: all var(--transition-normal);
 }
 
-.secondary-button {
-    padding: 10px var(--spacing-xl);
-    background-color: var(--button-second-color);
-    color: white;
+.bookmark-btn.active {
+    color: #FFC107;
+}
+
+.action-btn, .edit-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
     border: none;
-    border-radius: var(--button-radius);
+    background-color: #6CA36E;
+    color: white;
     cursor: pointer;
     text-decoration: none;
 }
 
-.danger-button {
-    padding: 10px var(--spacing-xl);
-    background-color: #ef4444;
-    color: white;
-    border: none;
-    border-radius: var(--button-radius);
-    cursor: pointer;
+.action-btn.limited {
+    background-color: #f8d7da;
+    color: #721c24;
 }
 
-.bookmark-button {
-    width: 40px;
-    height: 40px;
-    padding: 8px;
-    border: none;
+.action-btn.waiting {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.action-btn.ongoing {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.hashtags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.hashtag {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+}
+
+
+/* 탭 메뉴 */
+.tab-menu {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab-btn {
+    width: 50%;
+    padding: 12px;
     background: none;
+    border: none;
+    font-size: 16px;
+    color: #666;
     cursor: pointer;
-    transition: transform 0.2s;
+    position: relative;
 }
 
-.bookmark-button:hover {
-    transform: scale(1.1);
+.tab-btn.active {
+    color: #6CA36E;
+    font-weight: 500;
 }
 
-.bookmark-icon {
-    width: 24px;
-    height: 24px;
-    fill: none;
-    stroke: var(--text-secondary);
-    stroke-width: 2;
-    transition: all var(--transition-normal);
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #6CA36E;
 }
 
-.bookmark-button.active .bookmark-icon {
-    fill: var(--button-first-color);
-    stroke: var(--button-first-color);
+/* 탭 컨텐츠 */
+.tab-content {
+    display: none;
 }
 
-.status-message {
-    padding: 8px 16px;
-    border-radius: var(--button-radius);
-    font-size: 14px;
+.tab-content.active {
+    display: block;
 }
 
-.status-message.warning {
-    background-color: #ef4444;
-    color: white;
+.content-box {
+    background-color: white;
+    border-radius: 20px;
+    padding: 24px;
+    line-height: 1.6;
+    color: #333;
 }
 
-.status-message.info {
-    background-color: var(--button-second-color);
-    color: white;
+/* 자기소개 섹션 */
+.intro-section {
+    background-color: white;
+    border-radius: 20px;
+    padding: 24px;
+    line-height: 1.6;
+    color: #333;
 }
 
-/* Reviews Section */
-.reviews-section {
-    margin-top: var(--spacing-xl);
-}
-
-.reviews-section h3 {
-    color: var(--text-primary);
-    font-size: 18px;
-    margin-bottom: var(--spacing-lg);
-}
-
+/* 리뷰 섹션 */
 .review-list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 16px;
 }
 
 .review-card {
-    background-color: white;
-    border-radius: var(--card-radius);
-    padding: var(--spacing-lg);
-    box-shadow: var(--shadow-sm);
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #f8f9fa;
 }
 
 .review-header {
     display: flex;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-md);
-}
-
-.reviewer-image {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.review-info {
-    display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 12px;
 }
 
 .reviewer-name {
-    font-weight: 500;
-    color: var(--text-primary);
+    font-weight: 600;
+    color: #333;
 }
 
 .review-date {
-    font-size: 12px;
-    color: var(--text-tertiary);
+    color: #999;
+    font-size: 13px;
 }
 
 .review-content {
-    color: var(--text-secondary);
+    margin: 0;
     line-height: 1.6;
-    font-size: 14px;
+    color: #666;
 }
 
-/* Modal */
+.no-reviews {
+    text-align: center;
+    color: #666;
+    padding: 40px 0;
+}
+
+/* 모달 스타일 유지 */
 .modal {
     display: none;
     position: fixed;
@@ -221,88 +245,77 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
-
-.modal.show {
-    display: flex;
+    background-color: rgba(0,0,0,0.5);
     align-items: center;
     justify-content: center;
 }
 
 .modal-content {
-    background: white;
-    border-radius: var(--card-radius);
+    background-color: white;
+    border-radius: 20px;
+    padding: 24px;
     width: 90%;
     max-width: 500px;
-    box-shadow: var(--shadow-md);
 }
 
 .modal-header {
-    padding: var(--spacing-lg);
-    border-bottom: 1px solid var(--text-tertiary);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 20px;
 }
 
-.close-button {
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.close-btn {
     background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: var(--text-tertiary);
-}
-
-.request-form {
-    padding: var(--spacing-lg);
+    color: #999;
 }
 
 .request-form textarea {
     width: 100%;
-    min-height: 150px;
-    padding: var(--spacing-md);
-    border: 1px solid var(--text-tertiary);
-    border-radius: var(--input-radius);
-    margin-bottom: var(--spacing-lg);
-    resize: vertical;
+    height: 150px;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    resize: none;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    background-color: #6CA36E;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #49BF4D;
 }
 
 @media (max-width: 768px) {
-    .profile-container {
-        padding: var(--spacing-md);
-    }
-    
-    .profile-card {
-        padding: var(--spacing-lg);
-    }
-    
     .profile-header {
         flex-direction: column;
-        align-items: center;
-        text-align: center;
+        gap: 16px;
     }
-    
-    .tag-list {
+
+    .profile-right {
+        width: 100%;
         justify-content: center;
     }
-    
-    .action-buttons {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-    
-    .owner-actions {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-sm);
+
+    .request-btn {
         width: 100%;
-    }
-    
-    .owner-actions button,
-    .owner-actions a {
-        width: 100%;
-        text-align: center;
     }
 }

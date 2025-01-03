@@ -15,7 +15,6 @@
 .profile-form {
     background: white;
     padding: var(--spacing-xl);
-    border-radius: var(--card-radius);
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;

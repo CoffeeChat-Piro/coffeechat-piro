@@ -10,24 +10,50 @@
     display: flex;
     gap: var(--spacing-md);
     width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs) var(--spacing-md);
+    border-radius: 100px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--text-tertiary);
 }
 
 .search-input {
     flex: 1;
-    padding: 10px var(--spacing-md);
-    border: 1px solid var(--text-tertiary);
-    border-radius: var(--input-radius);
+    padding: 8px var(--spacing-md);
+    border: none;
+    background: transparent;
     font-size: 14px;
+    color: var(--text-primary);
+}
+
+.search-input::placeholder {
+    color: var(--text-tertiary);
+}
+
+.search-input:focus {
+    outline: none;
 }
 
 .search-button {
-    padding: 10px var(--spacing-xl);
+    padding: 6px var(--spacing-lg);
     background-color: var(--button-first-color);
     color: white;
     border: none;
-    border-radius: var(--button-radius);
+    border-radius: 100px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-right: 2px;
+    transition: all var(--transition-normal);
+}
+
+.search-button:hover {
+    background-color: var(--button-third-color);
+    transform: translateY(-1px);
 }
 
 .mentors-grid {
@@ -64,6 +90,7 @@
     height: 48px;
     border-radius: 50%;
     object-fit: cover;
+    background-color: white;
 }
 
 .mentor-details {
@@ -113,6 +140,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
+    margin-top: var(--spacing-md);
 }
 
 .tag {
@@ -123,14 +151,13 @@
     border-radius: var(--button-radius);
 }
 
-.create-profile-button {
-    position: fixed;
-    bottom: 80px;
+.floating-button {
+    position: absolute;
+    bottom: 20px;
     right: 20px;
-    width: 56px;
-    height: 56px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background-color: var(--button-first-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,14 +167,23 @@
     z-index: 100;
 }
 
-.create-profile-button:hover {
-    transform: translateY(-2px);
+.create-button {
+    background-color: var(--button-first-color);
 }
 
-.create-icon {
-    width: 24px;
-    height: 24px;
-    filter: brightness(0) invert(1);
+.profile-button {
+    background-color: var(--button-second-color);
+}
+
+.floating-button:hover {
+    transform: translateY(-2px);
+    background-color: var(--button-third-color);
+}
+
+.button-icon {
+    width: 20px;
+    height: 20px;
+    color: white;
 }
 
 @media (max-width: 768px) {
@@ -160,15 +196,15 @@
     }
     
     .search-form {
-        flex-direction: column;
+        flex-direction: row;
     }
     
     .search-button {
-        width: 100%;
+        width: auto;
     }
 
-    .create-profile-button {
-        bottom: 70px;
+    .floating-button {
+        bottom: 20px;
         right: 16px;
     }
 }

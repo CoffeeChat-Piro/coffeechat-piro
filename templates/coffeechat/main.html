@@ -12,7 +12,13 @@
                    placeholder="원하는 피로그래밍 선배님 검색" 
                    class="search-input"
                    value="{{ request.GET.search|default:'' }}">
-            <button type="submit" class="search-button">검색</button>
+            <button type="submit" class="search-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                검색
+            </button>
         </form>
     </div>
 
@@ -20,7 +26,7 @@
         {% for mentor in profiles %}
         <a href="{% url 'coffeechat:coffeechat_detail' mentor.pk %}" class="mentor-card">
             <div class="mentor-info">
-                <img src="{% if mentor.receiver.profile_image %}{{ mentor.receiver.profile_image.url }}{% else %}{% static 'images/profile-placeholder.png' %}{% endif %}" 
+                <img src="{% static 'images/logo.png' %}"
                      alt="{{ mentor.receiver.username }}" 
                      class="mentor-image">
                 <div class="mentor-details">
@@ -42,10 +48,22 @@
         {% endfor %}
     </div>
 
-    {% if not user_has_profile %}
-    <a href="{% url 'coffeechat:coffeechat_create' %}" class="create-profile-button">
-        <img src="{% static 'images/pencil-icon.svg' %}" alt="프로필 생성" class="create-icon">
-    </a>
+    {% if user.is_authenticated %}
+        {% if not user_has_profile %}
+        <a href="{% url 'coffeechat:coffeechat_create' %}" class="floating-button create-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+                <path d="M12 2v20"></path>
+                <path d="M2 12h20"></path>
+            </svg>
+        </a>
+        {% else %}
+        <a href="{% url 'coffeechat:coffeechat_detail' user_profile_id %}" class="floating-button profile-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        </a>
+        {% endif %}
     {% endif %}
 </div>
 {% endblock %}

@@ -15,43 +15,51 @@
                    id="job" 
                    name="job" 
                    class="form-input" 
-                   placeholder="전공을 입력해주세요"
-                   value="{{ form.job.value|default:'' }}"
+                   placeholder="직업 혹은 전공을 입력해주세요"
+                   maxlength="10"
                    required>
         </div>
 
         <div class="form-group">
             <label for="hashtags">해시태그</label>
-            <input type="text" 
-                   id="hashtags" 
-                   name="hashtags" 
-                   class="form-input" 
-                   placeholder="#을 사용해 태그를 입력해주세요"
-                   value="{{ form.hashtags.value|default:'' }}">
+            <div class="hashtag-input-container">
+                <input type="text" 
+                       id="hashtag_input" 
+                       class="form-input" 
+                       placeholder="#을 사용해 입력해주세요">
+                <div class="hashtags-container"></div>
+                <input type="hidden" name="hashtags" id="hashtags">
+            </div>
         </div>
 
         <div class="form-group">
             <label>커피챗 유형</label>
             <div class="type-selector">
-                <button type="button" class="type-button{% if form.profile_status.value == 'F2F' or not form.profile_status.value %} active{% endif %}" data-value="F2F">대면</button>
-                <button type="button" class="type-button{% if form.profile_status.value == 'ONLINE' %} active{% endif %}" data-value="ONLINE">비대면</button>
-                <button type="button" class="type-button{% if form.profile_status.value == 'OFF' %} active{% endif %}" data-value="OFF">OFF</button>
+                <button type="button" class="type-button active" data-value="F2F">대면</button>
+                <button type="button" class="type-button" data-value="ONLINE">비대면</button>
+                <button type="button" class="type-button" data-value="OFF">OFF</button>
             </div>
-            <input type="hidden" name="profile_status" id="selected_type" value="{{ form.profile_status.value|default:'F2F' }}">
+            <input type="hidden" name="profile_status" id="selected_type" value="F2F">
         </div>
 
         <div class="form-group">
             <label for="content">자기소개</label>
             <div class="editor-container">
                 <div class="editor-toolbar">
-                    <button type="button" class="editor-btn" data-cmd="bold">B</button>
-                    <button type="button" class="editor-btn" data-cmd="italic">I</button>
-                    <button type="button" class="editor-btn" data-cmd="underline">U</button>
-                    <button type="button" class="editor-btn" data-cmd="createLink">링크</button>
+                    <button type="button" class="editor-btn" data-cmd="bold" title="굵게">
+                        <strong>B</strong>
+                    </button>
+                    <button type="button" class="editor-btn" data-cmd="italic" title="기울임">
+                        <em>I</em>
+                    </button>
+                    <button type="button" class="editor-btn" data-cmd="underline" title="밑줄">
+                        <u>U</u>
+                    </button>
                 </div>
                 <div class="editor-content" 
                      contenteditable="true" 
-                     id="content">{{ form.content.value|default:''|safe }}</div>
+                     id="content" 
+                     placeholder="자기소개를 작성해주세요"></div>
             </div>
             <input type="hidden" name="content" id="content_input">
         </div>
@@ -73,66 +81,82 @@
     });
 
     // 해시태그 처리
-    const hashtagInput = document.getElementById('hashtags');
+    const hashtagInput = document.getElementById('hashtag_input');
+    const hashtagsContainer = document.querySelector('.hashtags-container');
+    const hashtagsHidden = document.getElementById('hashtags');
     const hashtagsArray = [];
 
-    hashtagInput.addEventListener('keydown', function(e) {
-        if (e.key === ' ' || e.key === 'Enter') {
+    hashtagInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
             e.preventDefault();
             const value = this.value.trim();
-            if (value && !value.includes(' ')) {
-                if (!value.startsWith('#')) {
-                    this.value = '#' + value;
+            if (value) {
+                const tag = value.startsWith('#') ? value.substring(1) : value;
+                if (!hashtagsArray.includes(tag)) {
+                    hashtagsArray.push(tag);
+                    renderTags();
+                    updateHiddenInput();
                 }
-                hashtagsArray.push(this.value);
                 this.value = '';
-                renderTags();
             }
         }
     });
 
     function renderTags() {
-        const container = document.createElement('div');
-        container.className = 'hashtag-container';
-        hashtagsArray.forEach(tag => {
-            const span = document.createElement('span');
-            span.className = 'tag';
-            span.textContent = tag;
-            container.appendChild(span);
+        hashtagsContainer.innerHTML = '';
+        hashtagsArray.forEach((tag, index) => {
+            const tagElement = document.createElement('span');
+            tagElement.className = 'tag';
+            tagElement.innerHTML = `#${tag} <button type="button" data-index="${index}">&times;</button>`;
+            hashtagsContainer.appendChild(tagElement);
+            
+            tagElement.querySelector('button').addEventListener('click', function() {
+                hashtagsArray.splice(this.dataset.index, 1);
+                renderTags();
+                updateHiddenInput();
+            });
         });
-        const existing = document.querySelector('.hashtag-container');
-        if (existing) {
-            existing.replaceWith(container);
-        } else {
-            hashtagInput.parentNode.insertBefore(container, hashtagInput.nextSibling);
-        }
     }
 
-    // 폼 제출 시 에디터 내용 hidden input에 저장
-    document.querySelector('form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        document.getElementById('content_input').value = 
-            document.getElementById('content').innerHTML;
-        
-        const hashtagsJson = JSON.stringify(hashtagsArray.map(tag => 
-            tag.replace('#', '')));
-        document.getElementById('hashtags').value = hashtagsJson;
-        
-        this.submit();
-    });
+    function updateHiddenInput() {
+        hashtagsHidden.value = JSON.stringify(hashtagsArray);
+    }
 
-    // 에디터 툴바 기능
+    // 에디터 기능
     document.querySelectorAll('.editor-btn').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
-            const command = this.dataset.cmd;
-            if (command === 'createLink') {
-                const url = prompt('링크를 입력해주세요');
-                if (url) document.execCommand(command, false, url);
-            } else {
-                document.execCommand(command, false, null);
-            }
+            document.execCommand(this.dataset.cmd, false, null);
         });
+    });
+
+    // 에디터 내용 처리
+    const editor = document.getElementById('content');
+    const contentInput = document.getElementById('content_input');
+
+    editor.addEventListener('input', function() {
+        contentInput.value = this.innerHTML;
+    });
+
+    // 폼 제출 처리
+    document.querySelector('.profile-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // 필수 필드 검증
+        const job = document.getElementById('job').value.trim();
+        if (!job) {
+            alert('직업(전공)을 입력해주세요.');
+            return;
+        }
+
+        // 해시태그가 없어도 제출 가능
+        updateHiddenInput();
+        
+        // 자기소개 내용 저장
+        contentInput.value = editor.innerHTML;
+
+        // 폼 제출
+        this.submit();
     });
 </script>
 {% endblock %}

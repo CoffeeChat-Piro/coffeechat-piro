@@ -36,7 +36,7 @@ def home(request):
 
     if profile_status_filter:
         profiles = profiles.filter(profile_status=profile_status_filter)  # 프로필 상태값 필터 적용
-
+    
     context = {
         "profiles": profiles
     }
