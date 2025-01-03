@@ -32,19 +32,17 @@
  }
  
  .back-button {
-    position: absolute;
-    left: var(--spacing-lg);
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
- }
- 
- .back-button i {
-    font-size: var(--font-l);
-    color: #333;
- }
+   background: none;
+   border: none;
+   cursor: pointer;
+   padding: var(--spacing-sm);
+   color: var(--text-primary);
+}
+
+.back-button i {
+   font-size: var(--font-xl);
+   color: #333;
+}
  
  h2 {
     text-align: center;
