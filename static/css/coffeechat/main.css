@@ -151,7 +151,7 @@
     margin: 0;
 }
 
-.mentor-tags {
+/* .mentor-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
@@ -164,7 +164,22 @@
     background-color: var(--button-second-color);
     color: white;
     border-radius: var(--button-radius);
-}
+} */
+
+.mentor-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+ }
+ 
+ .tag {
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: white;
+ }
 
 .floating-button {
     position: absolute;

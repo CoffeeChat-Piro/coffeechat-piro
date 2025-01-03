@@ -125,10 +125,12 @@
 .tag {
     font-size: 12px;
     padding: 4px 12px;
-    background-color: var(--button-second-color);
-    color: white;
+    margin-right: 5px;
+    background-color: var(--card-color);
+    color: black;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: var(--button-radius);
-}
+ }
 
 .tag > button {
     background: none;
@@ -174,3 +176,33 @@
         flex-wrap: wrap;
     }
 }
+
+/* 수정하기 버튼 */
+.profile-form[action*="update"] .submit-button {
+    background-color: var(--button-second-color);
+}
+
+.profile-form[action*="update"] .submit-button:hover {
+    background-color: var(--button-second-hover);
+}
+
+/* 비대면 버튼 */
+.type-button[data-value="ONLINE"] {
+    border-color: var(--button-second-color);
+}
+
+.type-button[data-value="ONLINE"].active {
+    background-color: var(--button-second-color);
+}
+
+/* OFF 버튼 */
+.type-button[data-value="OFF"] {
+    border-color: #9CA3AF;
+    color: #6B7280;
+}
+
+.type-button[data-value="OFF"].active {
+    background-color: #9CA3AF;
+    color: white;
+}
+
