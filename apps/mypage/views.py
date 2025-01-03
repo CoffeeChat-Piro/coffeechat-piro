@@ -149,11 +149,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                 return JsonResponse({'bookmarked_coffeechats': data})
             
             elif category == 'history':
-<<<<<<< HEAD
                 accepted_requests = CoffeeChat.objects.filter(user=target_user, status='ACCEPTED')
-=======
-                accepted_requests = CoffeeChatRequest.objects.filter(user=target_user, status='ONGOING')
->>>>>>> origin/develop
                 data = [{
                     'sender': request.user.username,
                     'receiver': request.profile.user.username,
@@ -212,31 +208,6 @@ def profile_read(request, user_id):
         'profile_user': user_profile,
         'random_image': random_image,
     })
-
-# @csrf_exempt
-# def toggle_bookmark(request, post_type, post_id):
-#     if request.method == 'POST':
-#         try:
-#             if post_type == 'review':
-#                 post = Review.objects.get(id=post_id)
-#             elif post_type == 'trend':
-#                 post = Trend.objects.get(id=post_id)
-#             elif post_type == 'corboard':
-#                 post = Corboard.objects.get(id=post_id)
-#             else:
-#                 return JsonResponse({'error': 'Invalid post type'}, status=400)
-
-#             if request.user in post.bookmarks.all():
-#                 post.bookmarks.remove(request.user)
-#                 return JsonResponse({'bookmarked': False})
-#             else:
-#                 post.bookmarks.add(request.user)
-#                 return JsonResponse({'bookmarked': True})
-
-#         except Exception as e:
-#             return JsonResponse({'error': str(e)}, status=500)
-
-#     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
 def coffeechat_bookmark_profile(request, pk):
