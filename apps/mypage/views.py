@@ -11,12 +11,12 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 # 프로젝트 내 모듈
-from apps.accounts.models import CustomUser
+from apps.accounts.models import User
 from apps.accounts.forms import CustomUserChangeForm
 # from apps.review.models import Review, Comment as ReviewComment
 # from apps.corboard.models import Corboard, Comment as CorboardComment
 # from apps.trend.models import Trend, Comment as TrendComment
-from apps.coffeechat.models import CoffeeChat, CoffeeChatRequest
+from apps.coffeechat.models import Profile, CoffeeChat
 from apps.coffeechat.forms import WayToContect
 
 # 프로필 보기 뷰
@@ -30,7 +30,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 # 프로필 수정 뷰
 class ProfileEditView(LoginRequiredMixin, UpdateView):
-    model = CustomUser
+    model = User
     form_class = CustomUserChangeForm
     template_name = 'mypage/profile_edit.html'
     
@@ -60,7 +60,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
 
         # 특정 사용자 글 필터링하기 위해 user_id 사용
         if user_id:
-            target_user = get_object_or_404(CustomUser, id=user_id)
+            target_user = get_object_or_404(User, id=user_id)
         else:
             target_user = request.user
 
@@ -125,7 +125,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
         # 커피챗 필터링
         if filter_type == 'coffeechat':
             if category == 'requests_sent':
-                requests_sent = CoffeeChatRequest.objects.filter(user=target_user, status='WAITING')
+                requests_sent = CoffeeChat.objects.filter(user=target_user, status='WAITING')
                 data = [{
                     'sender': request.user.username,
                     'receiver': request.coffeechat.receiver.username,
@@ -139,7 +139,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                 return JsonResponse({'requests_sent': data})
 
             elif category == 'requests_received':
-                requests_received = CoffeeChatRequest.objects.filter(coffeechat__receiver=target_user, status='WAITING')
+                requests_received = CoffeeChat.objects.filter(coffeechat__receiver=target_user, status='WAITING')
                 data = []
                 debug_data = []
 
@@ -189,7 +189,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                 return JsonResponse({'requests_received': data})
 
             elif category == 'bookmarked':
-                bookmarked_coffeechats = CoffeeChat.objects.filter(bookmarks=target_user)
+                bookmarked_coffeechats = Profile.objects.filter(bookmarks=target_user)
                 data = [{
                     'receiver': coffeechat.receiver.username,
                     'job': coffeechat.job,
@@ -204,7 +204,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                 return JsonResponse({'bookmarked_coffeechats': data})
             
             elif category == 'history':
-                accepted_requests = CoffeeChatRequest.objects.filter(user=target_user, status='ACCEPTED')
+                accepted_requests = CoffeeChat.objects.filter(user=target_user, status='ACCEPTED')
                 data = [{
                     'sender': request.user.username,
                     'receiver': request.coffeechat.receiver.username,
@@ -309,7 +309,7 @@ def profile_read(request, user_id):
 
 @login_required
 def coffeechat_bookmark_profile(request, pk):
-    profile = get_object_or_404(CoffeeChat, pk=pk)
+    profile = get_object_or_404(Profile, pk=pk)
     if request.user in profile.bookmarks.all():
         profile.bookmarks.remove(request.user)
         bookmarked = False
@@ -322,7 +322,7 @@ def coffeechat_bookmark_profile(request, pk):
 @login_required
 def profile_modal_view(request):
     user_id = request.GET.get('user_id')
-    profile_user = get_object_or_404(CustomUser, id=user_id)
+    profile_user = get_object_or_404(User, id=user_id)
 
     image_files = ['back.png', 'back1.png', 'back2.png']
     random_image = random.choice(image_files)

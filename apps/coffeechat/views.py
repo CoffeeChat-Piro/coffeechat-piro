@@ -17,7 +17,7 @@ from apps.coffeechat.forms import WayToContect
 
 
 # 프로젝트 내 모듈
-from .models import CoffeeChat, Hashtag, CoffeeChatRequest, Review, CustomUser, informationAgree
+from .models import Profile, Hashtag, CoffeeChat, Review, User, informationAgree
 from .forms import CoffeeChatForm, ReviewForm, CoffeechatRequestForm
 
 User = get_user_model()
@@ -26,7 +26,7 @@ def home(request):
     query = request.GET.get('search')
     profile_status_filter = request.GET.get('status')  # 프로필 상태값 필터 추가
 
-    profiles = CoffeeChat.objects.all()
+    profiles = Profile.objects.all()
 
     if query:
         profiles = profiles.filter(
@@ -45,7 +45,7 @@ def home(request):
 @login_required
 def create(req):
     # 현재 사용자가 이미 프로필을 가지고 있는지 확인
-    existing_profile = CoffeeChat.objects.filter(receiver=req.user).first()
+    existing_profile = Profile.objects.filter(receiver=req.user).first()
     if existing_profile:
         return redirect('coffeechat:coffeechat_detail', pk=existing_profile.pk)  # 이미 존재하면 자신의 detail 페이지로 리디렉션
 
@@ -80,7 +80,7 @@ def create(req):
 @csrf_protect
 @login_required
 def create_review(request, coffeechat_request_id):
-    coffeechat_request = get_object_or_404(CoffeeChatRequest, id=coffeechat_request_id)
+    coffeechat_request = get_object_or_404(CoffeeChat, id=coffeechat_request_id)
 
     # 요청을 보낸 사용자가 요청을 받은 사용자인 경우 접근 금지
     if request.user != coffeechat_request.user:
@@ -117,12 +117,12 @@ def create_review(request, coffeechat_request_id):
 
 
 def detail(request, pk):
-    profile = CoffeeChat.objects.get(pk=pk)
-    coffeechat_requests = CoffeeChatRequest.objects.filter(coffeechat=profile)
+    profile = Profile.objects.get(pk=pk)
+    coffeechat_requests = CoffeeChat.objects.filter(coffeechat=profile)
     reviews = Review.objects.filter(coffeechat_request__coffeechat=profile)
 
     # 현재 사용자가 프로필 소유자로부터 커피챗 요청을 받았는지 확인
-    has_pending_request = CoffeeChatRequest.objects.filter(
+    has_pending_request = CoffeeChat.objects.filter(
         user=profile.receiver,  # 프로필 소유자가 요청을 보낸 사람
         coffeechat__receiver=request.user,  # 현재 로그인한 사용자가 이 요청을 받은 사람
         status='WAITING'
@@ -133,7 +133,7 @@ def detail(request, pk):
         if not existing_request:
             start_of_day = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
             end_of_day = start_of_day + timedelta(days=1)
-            daily_requests = CoffeeChatRequest.objects.filter(
+            daily_requests = CoffeeChat.objects.filter(
                 coffeechat__receiver=profile.receiver,
                 created_at__range=(start_of_day, end_of_day),
                 status='WAITING'
@@ -152,7 +152,7 @@ def detail(request, pk):
                     #리쿼스트 생성
 
 
-                    CoffeeChatRequest.objects.create(
+                    CoffeeChat.objects.create(
                         user=request.user,
                         coffeechat=profile,
                         status='WAITING',
@@ -170,11 +170,11 @@ def detail(request, pk):
                 profile.save()
 
     
-    is_waiting = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='WAITING').exists()
-    waiting_requests = CoffeeChatRequest.objects.filter(coffeechat__receiver=profile.receiver, status='WAITING').count()
+    is_waiting = CoffeeChat.objects.filter(user=request.user, coffeechat=profile, status='WAITING').exists()
+    waiting_requests = CoffeeChat.objects.filter(coffeechat__receiver=profile.receiver, status='WAITING').count()
     is_limited = waiting_requests >= 2 and not is_waiting
     hashtags = profile.hashtags.all()
-    requests = CoffeeChatRequest.objects.filter(coffeechat=profile)
+    requests = CoffeeChat.objects.filter(coffeechat=profile)
     profile_status = profile.profile_status      #프로필 상태값 추가
 
     # 요청마다 리뷰가 있는지 확인하여 request 객체에 속성 추가
@@ -196,9 +196,9 @@ def detail(request, pk):
 
 @login_required
 def coffeechat_request(request, post_id):
-    coffeechat = CoffeeChat.objects.get(post_id)
+    coffeechat = Profile.objects.get(post_id)
     receiver = coffeechat.receiver
-    chat_request = CoffeeChatRequest()
+    chat_request = CoffeeChat()
 
     chat_request.coffeechat = coffeechat
     chat_request.user = request.user
@@ -212,7 +212,7 @@ def accept_request(request, request_id):
     if request.headers.get('x-requested-with') != 'XMLHttpRequest':
         return JsonResponse({"error": "AJAX request required"}, status=400)
 
-    coffeechat_request = get_object_or_404(CoffeeChatRequest, id=request_id)
+    coffeechat_request = get_object_or_404(CoffeeChat, id=request_id)
     if request.user != coffeechat_request.coffeechat.receiver:
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
@@ -257,7 +257,7 @@ def reject_request(request, request_id):
     if request.headers.get('x-requested-with') != 'XMLHttpRequest':
         return JsonResponse({"error": "AJAX request required"}, status=400)
 
-    coffeechat_request = get_object_or_404(CoffeeChatRequest, id=request_id)
+    coffeechat_request = get_object_or_404(CoffeeChat, id=request_id)
     if request.user != coffeechat_request.coffeechat.receiver:
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
@@ -278,7 +278,7 @@ def reject_request(request, request_id):
 
 @login_required
 def update(req, pk):
-    profile = CoffeeChat.objects.get(pk=pk)
+    profile = Profile.objects.get(pk=pk)
     if req.method == "POST": # 수정 후
         form = CoffeeChatForm(req.POST, instance=profile)
         if form.is_valid():
@@ -316,7 +316,7 @@ def update(req, pk):
 
 @login_required
 def delete(req, pk):
-    profile = CoffeeChat.objects.get(pk=pk)
+    profile = Profile.objects.get(pk=pk)
     if req.method == "POST":
         profile.delete()
         return redirect('coffeechat:coffeechat_home')
@@ -408,12 +408,12 @@ def how_received(request):
 
 #기수별 검색
 def cohort_profiles(request, cohort):
-    profiles = CustomUser.objects.filter(cohort=cohort)
+    profiles = User.objects.filter(cohort=cohort)
     return render(request, 'coffeechat/cohort_profiles.html', {'profiles': profiles, 'cohort': cohort})
 
 @login_required
 def bookmark_profile(request, pk):
-    profile = get_object_or_404(CoffeeChat, pk=pk)
+    profile = get_object_or_404(Profile, pk=pk)
     if request.user in profile.bookmarks.all():
         profile.bookmarks.remove(request.user)
         bookmarked = False
@@ -425,7 +425,7 @@ def bookmark_profile(request, pk):
 
 @login_required
 def toggle_visibility(request, profile_id):
-    profile = get_object_or_404(CoffeeChat, pk=profile_id, receiver=request.user)
+    profile = get_object_or_404(Profile, pk=profile_id, receiver=request.user)
     profile.is_public = not profile.is_public  # 현재 상태를 반전시킴
     profile.save()
     return redirect('coffeechat:coffeechat_detail', pk=profile_id)

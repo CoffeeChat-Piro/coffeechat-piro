@@ -1,5 +1,5 @@
 from django import forms
-from .models import CoffeeChat
+from .models import Profile
 from .models import Review
 
 class CoffeeChatForm(forms.ModelForm):
@@ -7,7 +7,7 @@ class CoffeeChatForm(forms.ModelForm):
     content = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
-        model = CoffeeChat
+        model = Profile
         fields = ['job', 'hashtags', 'content', 'profile_status']
         
 

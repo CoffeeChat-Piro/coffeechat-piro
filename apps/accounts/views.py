@@ -10,7 +10,7 @@ from django.utils import timezone
 
 # 프로젝트 내 모듈
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
-from ..coffeechat.models import CoffeeChat
+from ..coffeechat.models import Profile
 # from ..corboard.models import Corboard
 # from ..review.models import Review
 # from ..trend.models import Trend
@@ -62,7 +62,7 @@ def start(req):
     # corboards = Corboard.objects.filter(date__gte=three_months_ago)
     # coboard_most = find_most_popular(corboards)
 
-    coffeechats = CoffeeChat.objects.filter(created_at__gte=three_months_ago)
+    coffeechats = Profile.objects.filter(created_at__gte=three_months_ago)
     coffeechat_most = find_most_popular_coffeeChat(coffeechats)
 
     # trends = Trend.objects.filter(date__gte=three_months_ago)
