@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -401,8 +401,15 @@ def coffeechat_completed(request):
 
 @login_required
 def memo(request, pk):
-    # Memo 객체 가져오기
+
     saved_memo = get_object_or_404(Memo, pk=pk, user=request.user)
+
+    data = [
+        {
+            "content": saved_memo.content,
+            "created_at": saved_memo.updated_at,
+        }
+    ]
 
     if request.method == "POST":
         # 폼 데이터에서 내용 가져오기
@@ -420,7 +427,7 @@ def memo(request, pk):
 @login_required
 def scraped(request, pk):
     # Scrap 객체 가져오기
-    scraped_data = get_object_or_404(Scrap, pk=pk, user=request.user)
+    scraped_data = get_list_or_404(Scrap, pk=pk, user=request.user)
 
     # 관련된 Profile 가져오기
     profile = scraped_data.profile
