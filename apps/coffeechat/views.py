@@ -96,16 +96,16 @@ def create_review(request, coffeechat_request_id):
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
-            review.reviewer = request.user
+            review.user = request.user
             review.coffeechat_request = coffeechat_request
             review.save()
             
             # 리뷰 작성 시 profile.count 증가
-            coffeechat = coffeechat_request.coffeechat
+            coffeechat = coffeechat_request.profile
             coffeechat.count += 1
             coffeechat.save()
 
-            return redirect('coffeechat:coffeechat_detail', pk=coffeechat_request.coffeechat.pk)
+            return redirect('coffeechat:coffeechat_detail', pk=coffeechat_request.profile.pk)
         else:
             return render(request, 'coffeechat/review_form.html', {
                 'form': form,
@@ -131,6 +131,8 @@ def detail(request, pk):
     if request.method == "POST" and request.user != profile.receiver:
         existing_request = False
         if not existing_request:
+
+            #해당 사람 하루에 request을 몇개 받았는가
             start_of_day = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
             end_of_day = start_of_day + timedelta(days=1)
             daily_requests = CoffeeChat.objects.filter(
@@ -139,6 +141,7 @@ def detail(request, pk):
                 status='WAITING'
             ).count()
 
+            #5개 이하인 경우만 추가 요청 받는다.
             if daily_requests < 5:
                 form = CoffeechatRequestForm(request.POST)
                 if form.is_valid():
@@ -200,7 +203,7 @@ def coffeechat_request(request, post_id):
     receiver = coffeechat.receiver
     chat_request = CoffeeChat()
 
-    chat_request.coffeechat = coffeechat
+    chat_request.profile = coffeechat
     chat_request.user = request.user
 
 from django.views.decorators.http import require_POST
@@ -213,14 +216,14 @@ def accept_request(request, request_id):
         return JsonResponse({"error": "AJAX request required"}, status=400)
 
     coffeechat_request = get_object_or_404(CoffeeChat, id=request_id)
-    if request.user != coffeechat_request.coffeechat.receiver:
+    if request.user != coffeechat_request.profile.receiver:
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     print('accept 1+++++++++++++++')
     agree = informationAgree()
     agree.coffeechat_request = coffeechat_request
     agree.date = timezone.now()
-    agree.user = coffeechat_request.coffeechat.receiver
+    agree.user = coffeechat_request.profile.receiver
     agree.is_agree = True
 
     inp = WayToContect(request.POST)
@@ -233,7 +236,7 @@ def accept_request(request, request_id):
     coffeechat_request.status = 'ACCEPTED'
     coffeechat_request.save()
 
-    coffeechat = coffeechat_request.coffeechat
+    coffeechat = coffeechat_request.profile
     coffeechat.count += 1
     coffeechat.save()
 
@@ -258,13 +261,13 @@ def reject_request(request, request_id):
         return JsonResponse({"error": "AJAX request required"}, status=400)
 
     coffeechat_request = get_object_or_404(CoffeeChat, id=request_id)
-    if request.user != coffeechat_request.coffeechat.receiver:
+    if request.user != coffeechat_request.profile.receiver:
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     coffeechat_request.status = "REJECTED"
     coffeechat_request.save()
 
-    coffeechat = coffeechat_request.coffeechat
+    coffeechat = coffeechat_request.profile
     subject = f"PiroTime: {request.user}님이 커피챗 요청을 거절하셨습니다!"
     message = f"{coffeechat_request.user}님! 선배님의 개인 사정으로 인해 커피챗 요청이 거절되었습니다. 다른 선배님과의 커피챗은 어떠하신가요?"
     content = ""

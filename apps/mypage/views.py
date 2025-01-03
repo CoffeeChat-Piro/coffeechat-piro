@@ -128,12 +128,12 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                 requests_sent = CoffeeChat.objects.filter(user=target_user, status='WAITING')
                 data = [{
                     'sender': request.user.username,
-                    'receiver': request.coffeechat.receiver.username,
-                    'job': request.coffeechat.job,
+                    'receiver': request.profile.receiver.username,
+                    'job': request.profile.job,
                     'created_at': request.created_at.isoformat(),
                     'status': request.get_status_display(),
-                    'detail_url': reverse_lazy('coffeechat:coffeechat_detail', args=[request.coffeechat.id]),
-                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.coffeechat.receiver.id]),
+                    'detail_url': reverse_lazy('coffeechat:coffeechat_detail', args=[request.profile.id]),
+                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.profile.receiver.id]),
                 } for request in requests_sent]
                 print("Debug Data for requests_sent:", data)
                 return JsonResponse({'requests_sent': data})
@@ -146,22 +146,22 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                 for request in requests_received:
                     sender_username = request.user.username
                     sender_id = request.user.id
-                    receiver_username = request.coffeechat.receiver.username if request.coffeechat.receiver else 'Unknown'
-                    job = request.coffeechat.job
-                    detail_url = reverse_lazy('coffeechat:coffeechat_detail', args=[request.coffeechat.id])
+                    receiver_username = request.profile.receiver.username if request.profile.receiver else 'Unknown'
+                    job = request.profile.job
+                    detail_url = reverse_lazy('coffeechat:coffeechat_detail', args=[request.profile.id])
                     cohort = request.user.cohort  # 신청한 사람의 기수
 
                     # 디버깅 정보 리스트
                     debug_data.append({
                         'request_id': request.id,
-                        'coffeechat_id': request.coffeechat.id,
+                        'coffeechat_id': request.profile.id,
                         'sender_username': sender_username,
                         'receiver_username': receiver_username,
                         'job': job,
                         'cohort': cohort,  # 추가된 부분
                         'detail_url': detail_url,
                         'status': request.status,
-                        'receiver_id': request.coffeechat.receiver.id if request.coffeechat.receiver else 'None',
+                        'receiver_id': request.profile.receiver.id if request.profile.receiver else 'None',
                         'sender_id': request.user.id,
                         'letter_to_senior': request.letterToSenior,  # 추가된 부분
                         
@@ -177,7 +177,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                         'created_at': request.created_at.isoformat(),
                         'status': request.get_status_display(),
                         'detail_url': detail_url,
-                        'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.coffeechat.receiver.id if request.coffeechat.receiver else '']),
+                        'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.profile.receiver.id if request.profile.receiver else '']),
                         'accept_url': reverse_lazy('coffeechat:accept_request', args=[request.id]),
                         'reject_url': reverse_lazy('coffeechat:reject_request', args=[request.id]),
                         'letter_to_senior': request.letterToSenior,  # 추가된 부분
@@ -207,18 +207,18 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                 accepted_requests = CoffeeChat.objects.filter(user=target_user, status='ACCEPTED')
                 data = [{
                     'sender': request.user.username,
-                    'receiver': request.coffeechat.receiver.username,
-                    'job': request.coffeechat.job,
+                    'receiver': request.profile.receiver.username,
+                    'job': request.profile.job,
                     'created_at': request.created_at.isoformat(),
                     'status': request.get_status_display(),
-                    'hashtags': [hashtag.name for hashtag in request.coffeechat.hashtags.all()],
+                    'hashtags': [hashtag.name for hashtag in request.profile.hashtags.all()],
                     'review': {
                         'rating': request.review.rating if hasattr(request, 'review') else None,
                         'content': request.review.content if hasattr(request, 'review') else None,
                         'created_at': request.review.created_at.isoformat() if hasattr(request, 'review') else None,
                     } if hasattr(request, 'review') else None,
-                    'detail_url': reverse_lazy('coffeechat:coffeechat_detail', args=[request.coffeechat.id]),
-                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.coffeechat.receiver.id]),
+                    'detail_url': reverse_lazy('coffeechat:coffeechat_detail', args=[request.profile.id]),
+                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.profile.receiver.id]),
                     'review_exists': True if hasattr(request, 'review') else False,
                 } for request in accepted_requests]
                 return JsonResponse({'accepted_requests': data})
