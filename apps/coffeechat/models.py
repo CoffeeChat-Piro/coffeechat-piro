@@ -22,7 +22,7 @@ class Profile(models.Model):
     ]
     
     sender = models.ForeignKey(User, related_name='sent_coffeechats', on_delete=models.SET_NULL, null=True, blank=True)  # 커피챗 요청을 보낸 사람
-    receiver = models.ForeignKey(User, related_name='received_coffeechats', on_delete=models.SET_NULL, null=True, blank=True) # 커피챗 요청을 받은 사람
+    user = models.OneToOneField(User, related_name='received_coffeechats', on_delete=models.SET_NULL, null=True, blank=True) # 커피챗 요청을 받은 사람
     job = models.CharField(max_length=10, null=False) #직업
     created_at = models.DateTimeField(auto_now_add=True) #요청시간
     hashtags = models.ManyToManyField(Hashtag, related_name='coffeechats') #해시태그

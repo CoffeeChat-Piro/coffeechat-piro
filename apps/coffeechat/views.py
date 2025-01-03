@@ -53,7 +53,7 @@ def create(req):
         form = CoffeeChatForm(req.POST)
         if form.is_valid():
             coffeechat = form.save(commit=False)
-            coffeechat.receiver = req.user
+            coffeechat.user = req.user
             coffeechat.count = 0  # count 기본값 설정
             coffeechat.content = form.cleaned_data['content']
             coffeechat.profile_status = form.cleaned_data['profile_status']
@@ -123,12 +123,12 @@ def detail(request, pk):
 
     # 현재 사용자가 프로필 소유자로부터 커피챗 요청을 받았는지 확인
     has_pending_request = CoffeeChat.objects.filter(
-        user=profile.receiver,  # 프로필 소유자가 요청을 보낸 사람
+        user=profile.user,  # 프로필 소유자가 요청을 보낸 사람
         coffeechat__receiver=request.user,  # 현재 로그인한 사용자가 이 요청을 받은 사람
         status='WAITING'
     ).exists()
 
-    if request.method == "POST" and request.user != profile.receiver:
+    if request.method == "POST" and request.user != profile.user:
         existing_request = False
         if not existing_request:
 
@@ -136,7 +136,7 @@ def detail(request, pk):
             start_of_day = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
             end_of_day = start_of_day + timedelta(days=1)
             daily_requests = CoffeeChat.objects.filter(
-                coffeechat__receiver=profile.receiver,
+                coffeechat__receiver=profile.user,
                 created_at__range=(start_of_day, end_of_day),
                 status='WAITING'
             ).count()
@@ -149,8 +149,8 @@ def detail(request, pk):
 
                     #메일 전송
                     subject = "PiroTime: 커피챗 신청이 왔습니다!"
-                    content = f"{profile.receiver}님! 작성하신 커피챗 프로필에 요청한 사람이 있습니다! 아래 링크로 들어와 확인해 보세요."
-                    sending_mail(profile.receiver, request.user, subject, content, message)
+                    content = f"{profile.user}님! 작성하신 커피챗 프로필에 요청한 사람이 있습니다! 아래 링크로 들어와 확인해 보세요."
+                    sending_mail(profile.user, request.user, subject, content, message)
 
                     #리쿼스트 생성
 
@@ -164,8 +164,8 @@ def detail(request, pk):
 
 
                     subject = "PiroTime: 커피챗 신청이 왔습니다!"
-                    content = f"{profile.receiver}님! 작성하신 커피챗 프로필에 요청한 사람이 있습니다! 아래 링크로 들어와 확인해 보세요."
-                    sending_mail(profile.receiver, request.user, subject, content, message)
+                    content = f"{profile.user}님! 작성하신 커피챗 프로필에 요청한 사람이 있습니다! 아래 링크로 들어와 확인해 보세요."
+                    sending_mail(profile.user, request.user, subject, content, message)
 
 
             else:
@@ -174,7 +174,7 @@ def detail(request, pk):
 
     
     is_waiting = CoffeeChat.objects.filter(user=request.user, coffeechat=profile, status='WAITING').exists()
-    waiting_requests = CoffeeChat.objects.filter(coffeechat__receiver=profile.receiver, status='WAITING').count()
+    waiting_requests = CoffeeChat.objects.filter(coffeechat__receiver=profile.user, status='WAITING').count()
     is_limited = waiting_requests >= 2 and not is_waiting
     hashtags = profile.hashtags.all()
     requests = CoffeeChat.objects.filter(coffeechat=profile)
@@ -200,7 +200,7 @@ def detail(request, pk):
 @login_required
 def coffeechat_request(request, post_id):
     coffeechat = Profile.objects.get(post_id)
-    receiver = coffeechat.receiver
+    receiver = coffeechat.user
     chat_request = CoffeeChat()
 
     chat_request.profile = coffeechat
@@ -216,14 +216,14 @@ def accept_request(request, request_id):
         return JsonResponse({"error": "AJAX request required"}, status=400)
 
     coffeechat_request = get_object_or_404(CoffeeChat, id=request_id)
-    if request.user != coffeechat_request.profile.receiver:
+    if request.user != coffeechat_request.profile.user:
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     print('accept 1+++++++++++++++')
     agree = informationAgree()
     agree.coffeechat_request = coffeechat_request
     agree.date = timezone.now()
-    agree.user = coffeechat_request.profile.receiver
+    agree.user = coffeechat_request.profile.user
     agree.is_agree = True
 
     inp = WayToContect(request.POST)
@@ -245,7 +245,7 @@ def accept_request(request, request_id):
     message = ""
 
     try:
-        sending_mail_info(coffeechat.receiver, coffeechat_request.user, subject, content, message)
+        sending_mail_info(coffeechat.user, coffeechat_request.user, subject, content, message)
     except Exception as e:
         return JsonResponse({"error": "메일을 보내는 중 문제가 발생했습니다."}, status=503)
 
@@ -261,7 +261,7 @@ def reject_request(request, request_id):
         return JsonResponse({"error": "AJAX request required"}, status=400)
 
     coffeechat_request = get_object_or_404(CoffeeChat, id=request_id)
-    if request.user != coffeechat_request.profile.receiver:
+    if request.user != coffeechat_request.profile.user:
         return JsonResponse({"error": "Unauthorized"}, status=403)
 
     coffeechat_request.status = "REJECTED"
@@ -273,7 +273,7 @@ def reject_request(request, request_id):
     content = ""
 
     try:
-        sending_mail(coffeechat.receiver, coffeechat_request.user, subject, content, message)
+        sending_mail(coffeechat.user, coffeechat_request.user, subject, content, message)
     except Exception as e:
         return JsonResponse({"error": "메일을 보내는 중 문제가 발생했습니다."}, status=503)
 
@@ -286,7 +286,7 @@ def update(req, pk):
         form = CoffeeChatForm(req.POST, instance=profile)
         if form.is_valid():
             coffeechat = form.save(commit=False)
-            coffeechat.receiver = req.user
+            coffeechat.user = req.user
             coffeechat.count = 0  # count 필드에 기본값 설정
             coffeechat.content = form.cleaned_data['content']
             coffeechat.profile_status = form.cleaned_data['profile_status']  # profile_status 수정

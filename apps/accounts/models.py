@@ -17,7 +17,6 @@ class User(AbstractUser):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
-    img = models.ImageField(upload_to='profile_images/', blank=True, null=True, validators=[validate_img_size])
 
     def __str__(self):
         return self.username
@@ -26,6 +25,6 @@ class User(AbstractUser):
 
 class Memo(models.Model):
     user = models.ForeignKey(User, related_name='coffeechat_reviews', on_delete=models.CASCADE)  # memo를 작성한 사용자
-    coffeeChatRequest = models.OneToOneField(CoffeeChat, related_name='review', on_delete=models.CASCADE)
+    coffeeChatRequest = models.OneToOneField(CoffeeChat, related_name='memo', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now_add=True)  # memo 최후 편집 시간
     content = models.CharField(max_length=5000, blank=True)     #memo 내용
