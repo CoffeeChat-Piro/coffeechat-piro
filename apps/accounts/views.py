@@ -17,7 +17,7 @@ from ..coffeechat.models import Profile
 
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'accounts/login.html')
 
 def signup(request):
     if request.method == 'POST':
@@ -28,7 +28,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('accounts:start')
+            return redirect('accounts:login')
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/signup.html', {'form': form})
@@ -39,7 +39,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('accounts:start')
+            return redirect('accounts:login')
     else:
         form = CustomAuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
@@ -47,7 +47,7 @@ def login_view(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('accounts:index')
+    return redirect('accounts:login')
 @login_required
 def start(req):
     now = timezone.now()
@@ -75,7 +75,7 @@ def start(req):
     #     'trend_most': trend_most,
     }
 
-    return render(req, 'accounts/start.html', ctx)
+    return render(req, 'accounts/login.html', ctx)
 
 #===========================
 #main page 기능 구성

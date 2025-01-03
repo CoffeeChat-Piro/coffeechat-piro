@@ -36,11 +36,11 @@ def home(request):
 
     if profile_status_filter:
         profiles = profiles.filter(profile_status=profile_status_filter)  # 프로필 상태값 필터 적용
-
+    
     context = {
         "profiles": profiles
     }
-    return render(request, 'coffeechat/home.html', context)
+    return render(request, 'coffeechat/main.html', context)
 
 @login_required
 def create(req):
@@ -75,7 +75,7 @@ def create(req):
     ctx = {
         'form': form
     }
-    return render(req, 'coffeechat/create.html', ctx)
+    return render(req, 'coffeechat/chatcreate.html', ctx)
 
 @csrf_protect
 @login_required
@@ -131,6 +131,7 @@ def detail(request, pk):
     if request.method == "POST" and request.user != profile.user:
         existing_request = False
         if not existing_request:
+<<<<<<< HEAD
 
             #해당 사람 하루에 request을 몇개 받았는가
             start_of_day = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -143,6 +144,14 @@ def detail(request, pk):
 
             #5개 이하인 경우만 추가 요청 받는다.
             if daily_requests < 5:
+=======
+            waiting_requests = CoffeeChatRequest.objects.filter(
+                coffeechat__receiver=profile.receiver,
+                status__in=['WAITING', 'ONGOING', 'ACCEPTED', 'COMPLETED']
+            ).count()
+
+            if waiting_requests < 2:
+>>>>>>> origin/develop
                 form = CoffeechatRequestForm(request.POST)
                 if form.is_valid():
                     message = form.cleaned_data['requestContent']
@@ -153,9 +162,13 @@ def detail(request, pk):
                     sending_mail(profile.user, request.user, subject, content, message)
 
                     #리쿼스트 생성
+<<<<<<< HEAD
 
 
                     CoffeeChat.objects.create(
+=======
+                    CoffeeChatRequest.objects.create(
+>>>>>>> origin/develop
                         user=request.user,
                         coffeechat=profile,
                         status='WAITING',
@@ -173,9 +186,16 @@ def detail(request, pk):
                 profile.save()
 
     
+<<<<<<< HEAD
     is_waiting = CoffeeChat.objects.filter(user=request.user, coffeechat=profile, status='WAITING').exists()
     waiting_requests = CoffeeChat.objects.filter(coffeechat__receiver=profile.user, status='WAITING').count()
+=======
+    is_waiting = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='WAITING').exists()
+>>>>>>> origin/develop
     is_limited = waiting_requests >= 2 and not is_waiting
+    is_ongoing = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='ONGOING').exists()
+    is_completed = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='COMPLETED').exists()
+    waiting_requests = CoffeeChatRequest.objects.filter(coffeechat__receiver=profile.receiver, status='WAITING').count()
     hashtags = profile.hashtags.all()
     requests = CoffeeChat.objects.filter(coffeechat=profile)
     profile_status = profile.profile_status      #프로필 상태값 추가
@@ -188,6 +208,8 @@ def detail(request, pk):
         'profile': profile,
         'is_waiting': is_waiting,
         'is_limited': is_limited,
+        'is_ongoing': is_ongoing,
+        'is_completed': is_completed,
         'has_pending_request': has_pending_request,  # 새로 추가된 컨텍스트 변수
         'hashtags': hashtags,
         'requests': requests,
@@ -233,7 +255,7 @@ def accept_request(request, request_id):
 
     print('accept 2+++++++++++++++')
 
-    coffeechat_request.status = 'ACCEPTED'
+    coffeechat_request.status = 'ONGOING'
     coffeechat_request.save()
 
     coffeechat = coffeechat_request.profile
@@ -315,7 +337,7 @@ def update(req, pk):
         'form': form,
         'profile': profile
     }
-    return render(req, 'coffeechat/update.html', ctx)
+    return render(req, 'coffeechat/chatedit.html', ctx)
 
 @login_required
 def delete(req, pk):
@@ -347,10 +369,12 @@ def sending_mail(receiver, sender, subject, content, message):
 
     html_message = render_to_string(
         "corboard/message.html",
-        {"sender": sender.username,
-         "receiver": receiver.username,
-         "content": content,
-         "message": message},
+        {
+            "sender": sender.username,
+            "receiver": receiver.username,
+            "content": content,
+            "message": message
+        },
 
     )
     plain_message = strip_tags(html_message)
@@ -363,13 +387,6 @@ def sending_mail(receiver, sender, subject, content, message):
     )
     return True
 
-def format_phone_number(phone_number):
-    # 만약 전화번호가 '+82'로 시작하면
-    if phone_number.startswith('+82'):
-        # '+82'를 제거하고 앞에 '0'을 붙임
-        return '0' + phone_number[3:]
-    return phone_number  # 다른 경우는 그대로 반환
-
 def sending_mail_info(receiver, sender, subject, content, message):
 
     subject = subject
@@ -378,17 +395,16 @@ def sending_mail_info(receiver, sender, subject, content, message):
     from_email = 'pirotimeofficial@gmail.com'
     recipient_list = [sender.email]
     mail = receiver.email
-    phoneNumber = format_phone_number(receiver.phone_number)
 
     html_message = render_to_string(
         "corboard/message_accept_coffeechat.html",
-        {"sender": sender.username,
-         "receiver": receiver.username,
-         "content": content,
-         "message": message,
-         "mail": mail,
-         "phoneNumber": phoneNumber,
-         },
+        {
+            "sender": sender.username,
+            "receiver": receiver.username,
+            "content": content,
+            "message": message,
+            "mail": mail,
+        },
 
     )
     plain_message = strip_tags(html_message)

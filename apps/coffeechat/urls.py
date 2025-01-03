@@ -4,7 +4,7 @@ from . import views
 app_name = 'coffeechat'
 
 urlpatterns = [
-    path('home/', views.home, name='coffeechat_home'), 
+    path('main/', views.home, name='main'), 
     path('create/', views.create, name='coffeechat_create'),
     path('detail/<int:pk>/', views.detail, name='coffeechat_detail'),
     path('update/<int:pk>/', views.update, name='coffeechat_update'),
