@@ -131,27 +131,13 @@ def detail(request, pk):
     if request.method == "POST" and request.user != profile.user:
         existing_request = False
         if not existing_request:
-<<<<<<< HEAD
 
-            #해당 사람 하루에 request을 몇개 받았는가
-            start_of_day = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-            end_of_day = start_of_day + timedelta(days=1)
-            daily_requests = CoffeeChat.objects.filter(
-                coffeechat__receiver=profile.user,
-                created_at__range=(start_of_day, end_of_day),
-                status='WAITING'
-            ).count()
-
-            #5개 이하인 경우만 추가 요청 받는다.
-            if daily_requests < 5:
-=======
             waiting_requests = CoffeeChatRequest.objects.filter(
                 coffeechat__receiver=profile.receiver,
                 status__in=['WAITING', 'ONGOING', 'ACCEPTED', 'COMPLETED']
             ).count()
 
             if waiting_requests < 2:
->>>>>>> origin/develop
                 form = CoffeechatRequestForm(request.POST)
                 if form.is_valid():
                     message = form.cleaned_data['requestContent']
@@ -162,13 +148,7 @@ def detail(request, pk):
                     sending_mail(profile.user, request.user, subject, content, message)
 
                     #리쿼스트 생성
-<<<<<<< HEAD
-
-
-                    CoffeeChat.objects.create(
-=======
                     CoffeeChatRequest.objects.create(
->>>>>>> origin/develop
                         user=request.user,
                         coffeechat=profile,
                         status='WAITING',
@@ -186,12 +166,8 @@ def detail(request, pk):
                 profile.save()
 
     
-<<<<<<< HEAD
     is_waiting = CoffeeChat.objects.filter(user=request.user, coffeechat=profile, status='WAITING').exists()
     waiting_requests = CoffeeChat.objects.filter(coffeechat__receiver=profile.user, status='WAITING').count()
-=======
-    is_waiting = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='WAITING').exists()
->>>>>>> origin/develop
     is_limited = waiting_requests >= 2 and not is_waiting
     is_ongoing = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='ONGOING').exists()
     is_completed = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='COMPLETED').exists()
