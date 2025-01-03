@@ -1,6 +1,8 @@
 :root {
     --base-radius: 10px;
 
+    --spacing-xxl: 32px;
+
     --font-l: 24px;
     --font-m: 18px;
     --font-s: 14px;
@@ -92,8 +94,8 @@ img.profile-img {
 
 .tab-menu {
     display: flex;
-    padding: 0 var(--spacing-lg);
-    border-bottom: 1px solid var(--background-color);
+    padding: 0 var(--spacing-md);
+    border-top: 2px solid var(--background-color);
 }
 
 .tab {
@@ -198,6 +200,7 @@ img.profile-img {
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-lg);
+    color: #919191;
     border-bottom: 1px solid #CCCCCC;
     font-weight: bold;
     font-size: var(--font-s);
@@ -225,6 +228,7 @@ img.profile-img {
     align-items: center;
     padding: var(--spacing-lg);
     font-size: var(--font-m);
+    padding: var(--spacing-xxl);
 }
 
 .scrap-info {
