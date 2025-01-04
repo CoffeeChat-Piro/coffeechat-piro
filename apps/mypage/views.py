@@ -25,7 +25,7 @@ from django.contrib.auth.hashers import check_password
 
 # 마이페이지 보기 뷰
 class mypageView(LoginRequiredMixin, TemplateView):
-    template_name = 'mypage/profile.html'
+    template_name = 'mypage/mypage.html'
 
     def get_context_data(self, **kwargs):
 
@@ -44,7 +44,7 @@ class mypageView(LoginRequiredMixin, TemplateView):
 class mypageEditView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = CustomUserChangeForm
-    template_name = 'mypage/profile_edit.html'
+    template_name = 'mypage/modifyinfo.html'
     
     def get_success_url(self):
         return reverse_lazy('mypage:profile') + '?success=True'
