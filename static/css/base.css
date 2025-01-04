@@ -30,7 +30,6 @@
     font-size: 24px;
     font-weight: 500;
     color: var(--text-primary);
-    font-family: 'Hubballi', cursive;
 }
 
 .logout-button {
@@ -71,6 +70,9 @@
     align-items: center;
     background-color: white;
     border-top: 1px solid #eee;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .footer-item {
