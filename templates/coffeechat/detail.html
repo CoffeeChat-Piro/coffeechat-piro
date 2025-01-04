@@ -12,11 +12,11 @@
         <div class="profile-header">
           <div class="profile-left">
             <div class="profile-image">
-                <i class="fa-solid fa-user" style="color: #CCCCCC; font-size: 24px;"></i>
+              <i class="fa-solid fa-user" style="color: #CCCCCC; font-size: 24px;"></i>
             </div>
             <div class="profile-info">
               <div class="profile-main">
-                <div class="profile-name">{{ profile.receiver.username }}</div>
+                <div class="profile-name">{{ profile.user.username }}</div>
                 <div class="status-badges">
                   {% if profile.profile_status == 'F2F' %}
                     <span class="status-badge">대면</span>
@@ -26,7 +26,7 @@
                   {% endif %}
                 </div>
               </div>
-              <p class="cohort">피로그래밍 {{ profile.receiver.cohort }}기</p>
+              <p class="cohort">피로그래밍 {{ profile.user.cohort }}기</p>
               <div class="hashtags">
                 {% for tag in profile.hashtags.all %}
                   <span class="hashtag">#{{ tag.name }}</span>
@@ -38,7 +38,7 @@
             <div class="bookmark-container">
               <button class="bookmark-btn {% if user in profile.bookmarks.all %}active{% endif %}" data-profile-id="{{ profile.pk }}"><i class="fas fa-bookmark"></i></button>
             </div>
-            {% if user == profile.receiver %}
+            {% if user == profile.user %}
               <a href="{% url 'coffeechat:coffeechat_update' profile.pk %}" class="edit-btn">프로필 수정하기</a>
             {% else %}
               {% if user.is_authenticated %}
