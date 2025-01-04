@@ -157,6 +157,8 @@ def detail(request, pk):
         'profile': profile,
         'is_waiting': is_waiting,
         'is_limited': is_limited,
+        'is_ongoing': is_ongoing,
+        'is_completed': is_completed,
         'has_pending_request': has_pending_request,
         'hashtags': hashtags,
         'requests': requests,
@@ -292,7 +294,7 @@ def sending_mail(receiver, sender, subject, content, message):
     recipient_list = [receiver.email]
 
     html_message = render_to_string(
-        "corboard/message.html",
+        "coffeechat/message.html",
         {
             "sender": sender.username,
             "receiver": receiver.username,
@@ -316,7 +318,7 @@ def sending_mail_info(receiver, sender, subject, content, message):
     mail = receiver.email
 
     html_message = render_to_string(
-        "corboard/message_accept_coffeechat.html",
+        "coffeechat/message_accept_coffeechat.html",
         {
             "sender": sender.username,
             "receiver": receiver.username,
