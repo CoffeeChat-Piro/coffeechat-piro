@@ -35,12 +35,12 @@
             </div>
           </div>
           <div class="action-buttons">
-            <div class="bookmark-container">
-              <button class="bookmark-btn {% if user in profile.bookmarks.all %}active{% endif %}" data-profile-id="{{ profile.pk }}"><i class="fas fa-bookmark"></i></button>
-            </div>
             {% if user == profile.user %}
               <a href="{% url 'coffeechat:coffeechat_update' profile.pk %}" class="edit-btn">프로필 수정하기</a>
             {% else %}
+              <div class="bookmark-container">
+                <button class="bookmark-btn {% if user in profile.bookmarks.all %}active{% endif %}" data-profile-id="{{ profile.pk }}"><i class="fas fa-bookmark"></i></button>
+              </div>
               {% if user.is_authenticated %}
                 {% if is_limited %}
                   <button class="action-btn limited">커피챗 불가</button>

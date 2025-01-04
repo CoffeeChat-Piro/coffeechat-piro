@@ -2,11 +2,12 @@
     max-width: var(--max-width);
     margin: 0 auto;
     padding: var(--spacing-lg);
+    padding-top: 0;
     position: relative;
     min-height: calc(100vh - 120px);
 }
 
-.search-form {
+/* .search-form {
     display: flex;
     gap: var(--spacing-md);
     width: 100%;
@@ -54,6 +55,62 @@
 .search-button:hover {
     background-color: var(--button-third-color);
     transform: translateY(-1px);
+} */
+
+.search-form {
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    background: #EEEEEE;
+    border-radius: 5px;
+    box-shadow: none;  
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px var(--spacing-md); 
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.search-input::placeholder {
+    color: #ADB5BD;  
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+.search-button {
+    padding: 12px 20px;  
+    background: transparent;  
+    color: #ADB5BD;  
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    transition: all var(--transition-normal);
+}
+
+.search-button svg {
+    width: 18px;  
+    height: 18px;
+}
+
+.search-button span {
+    display: none;
+}
+
+.search-button:hover {
+    background-color: transparent; 
+    transform: none;  
+    color: #868E96; 
 }
 
 .mentors-grid {
@@ -65,7 +122,7 @@
 
 .mentor-card {
     padding: var(--spacing-lg);
-    border-radius: var(--card-radius);
+    border-radius: 5px;
     background-color: var(--card-color);
     box-shadow: var(--shadow-sm);
     transition: transform var(--transition-normal);
@@ -89,7 +146,7 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: 2px solid #CCCCCC;
+    border: 1px solid #EFEFEF;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -202,7 +259,7 @@
 }
 
 .profile-button {
-    background-color: var(--button-second-color);
+    background-color: var(--button-first-color);
 }
 
 .floating-button:hover {

@@ -122,20 +122,38 @@
         hashtagsHidden.value = JSON.stringify(hashtagsArray);
     }
 
-    // 에디터 기능
-    document.querySelectorAll('.editor-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.execCommand(this.dataset.cmd, false, null);
-        });
-    });
+    // 에디터 기능     
+    document.querySelectorAll('.editor-btn').forEach(button => {         
+        button.addEventListener('click', function(e) {             
+            e.preventDefault();             
+            const command = this.dataset.cmd;
+            document.execCommand(command, false, null);
+            
+            // 버튼 활성화 상태 토글
+            this.classList.toggle('active', document.queryCommandState(command));
+        });     
+    });      
 
-    // 에디터 내용 처리
-    const editor = document.getElementById('content');
-    const contentInput = document.getElementById('content_input');
+    // 에디터 내용 처리     
+    const editor = document.getElementById('content');     
+    const contentInput = document.getElementById('content_input');      
 
-    editor.addEventListener('input', function() {
+    editor.addEventListener('input', function() {         
         contentInput.value = this.innerHTML;
+        
+        // 버튼 상태 업데이트
+        document.querySelectorAll('.editor-btn').forEach(button => {
+            const command = button.dataset.cmd;
+            button.classList.toggle('active', document.queryCommandState(command));
+        });
+    }); 
+
+    // 텍스트 선택 시에도 버튼 상태 업데이트
+    editor.addEventListener('selectionchange', function() {
+        document.querySelectorAll('.editor-btn').forEach(button => {
+            const command = button.dataset.cmd;
+            button.classList.toggle('active', document.queryCommandState(command));
+        });
     });
 
     // 폼 제출 처리
