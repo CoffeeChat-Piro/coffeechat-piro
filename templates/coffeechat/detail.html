@@ -46,7 +46,7 @@
                   <button class="action-btn limited">커피챗 불가</button>
                 {% elif is_waiting %}
                   <button class="action-btn waiting">수락대기중</button>
-                {% elif has_pending_request %}
+                {% elif is_ongoing %}
                   <button class="action-btn ongoing">진행중</button>
                 {% else %}
                   <button id="requestBtn" class="action-btn">커피챗 제안하기</button>
