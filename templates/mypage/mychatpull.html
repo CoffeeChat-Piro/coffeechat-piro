@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신청받은 커피챗</title>
+    <link rel="stylesheet" href="/static/css/variables.css">
+    <link rel="stylesheet" href="/static/css/mypage/mychatlist.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <button class="back-button" onclick="history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
+        <h1 class="title">신청받은 커피챗</h1>
+        <div id="chatList" class="chat-list">
+            <!-- 임시 데이터 -->
+            <div class="chat-item pull">
+                <div class="chat-info">
+                    <span class="user-name">신동엽</span>
+                    <span class="user-th">피로그래밍 22기</span>
+                    <div class="chat-date">커피챗 신청일: 2024-12-22</div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-accept">수락</button>
+                    <button class="btn btn-reject">거절</button>
+                </div>
+            </div>
+            <div class="chat-item pull">
+                <div class="chat-info">
+                    <span class="user-name">신동엽</span>
+                    <span class="user-th">피로그래밍 22기</span>
+                    <div class="chat-date">커피챗 신청일: 2024-12-22</div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-accept">수락</button>
+                    <button class="btn btn-reject">거절</button>
+                </div>
+            </div>
+
+            <!-- 백엔드 연결 후 사용할 빈 상태 -->
+            <!-- <div class="empty-state">
+                아직 신청받은 커피챗이 없습니다.
+            </div> -->
+        </div>
+    </div>
+</body>
+</html>

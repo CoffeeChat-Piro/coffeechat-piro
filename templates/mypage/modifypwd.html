@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비밀번호 수정</title>
+    <link rel="stylesheet" href="/static/css/variables.css">
+    <link rel="stylesheet" href="/static/css/mypage/mymodifyinfo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <button class="back-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        </div>
+        <h2>비밀번호 수정</h2>
+        <div class="form-container">
+            <div class="input-group">
+                <label class="label">새비밀번호</label>
+                <input type="password" class="input-field" placeholder="변경할 비밀번호를 입력해주세요.">
+            </div>
+            
+            <div class="input-group">
+                <label class="label">새비밀번호 확인</label>
+                <input type="password" class="input-field" placeholder="변경할 비밀번호를 다시한번 입력해주세요.">
+            </div>
+
+            <div class="input-group">
+                <label class="label">기존 비밀번호 입력</label>
+                <input type="password" class="input-field" placeholder="기존의 비밀번호를 입력해주세요.">
+            </div>
+
+            <div class="button-container">
+                <button onclick="location.href='./mypage.html'" class="btn-submit">변경하기</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
