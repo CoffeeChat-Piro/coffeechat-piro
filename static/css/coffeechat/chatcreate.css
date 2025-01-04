@@ -104,8 +104,19 @@
     transition: all var(--transition-normal);
 }
 
+.editor-btn.active {
+    background-color: var(--button-first-color);
+    border-color: var(--button-first-color);
+    color: white;
+}
+
 .editor-btn:hover {
     background-color: var(--background-color);
+}
+
+.editor-btn.active:hover {
+    background-color: var(--button-first-hover-color);
+    border-color: var(--button-first-hover-color);
 }
 
 .editor-content {
