@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>완료된 커피챗</title>
+    <link rel="stylesheet" href="/static/css/variables.css">
+    <link rel="stylesheet" href="/static/css/mypage/mychatlist.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <button class="back-button" onclick="history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
+        <h1 class="title">완료된 커피챗</h1>
+        <div id="chatList" class="chat-list">
+            <!-- 임시 데이터 -->
+            <div class="chat-item end">
+                <div class="chat-info">
+                    <span class="user-name">강호동</span>
+                    <span class="user-th">피로그래밍 20기</span>
+                    <div class="chat-date">커피챗 수락일: 2024-12-30</div>
+                </div>
+                <span class="status-badge" onclick="location.href='mychatreview.html'">리뷰 작성하기</span>
+                <i class="fa-solid fa-chevron-right arrow-right" onclick="location.href='mychatenddetail.html'"></i>
+            </div>
+            <div class="chat-item end">
+                <div class="chat-info">
+                    <span class="user-name">강호동</span>
+                    <span class="user-th">피로그래밍 20기</span>
+                    <div class="chat-date">커피챗 수락일: 2024-12-30</div>
+                </div>
+                <span class="status-badge" onclick="location.href='mychatreview.html'">리뷰 작성하기</span>
+                <i class="fa-solid fa-chevron-right arrow-right" onclick="location.href='mychatenddetail.html'"></i>
+            </div>
+
+            <!-- 백엔드 연결 후 사용할 빈 상태 -->
+            <!-- <div class="empty-state">
+                아직 완료된 커피챗이 없습니다.
+            </div> -->
+        </div>
+    </div>
+</body>
+</html>

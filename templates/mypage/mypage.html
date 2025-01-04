@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <link rel="stylesheet" href="/static/css/variables.css">
+    <link rel="stylesheet" href="/static/css/mypage/mypage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <main class="content">
+        <section class="profile-section">
+            <div class="profile-header">
+                <h1>마이페이지</h1>
+            </div>
+            <div class="profile-image-container">
+                <!-- <div class="profile-image-container"> 추후 장고 템플릿되면
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image.url }}" alt="프로필 이미지" class="profile-img">
+                    {% else %}
+                        <i class="fa-solid fa-user profile-img"></i>
+                    {% endif %}
+                </div> -->
+                <i class="fa-solid fa-user profile-img"></i>
+            </div>
+            <div class="profile-content">
+                <p class="user-name">유재석</p>
+                <p class="user-group">피로그래밍 21기</p>
+            </div>
+        </section>
+
+        <nav class="tab-menu">
+            <button class="tab active" data-tab="info">내 정보</button>
+            <button class="tab" data-tab="chat">커피챗 현황</button>
+            <button class="tab" data-tab="scrap">스크랩한 프로필</button>
+        </nav>
+
+        <div class="tab-content">
+            <!-- 내 정보 탭 -->
+            <div id="info" class="content-panel active">
+                <div class="info-container">
+                    <div class="info-row">
+                        <label class="info-label">이름</label>
+                        <p class="info-value">유재석</p>
+                    </div>
+                    <div class="info-row">
+                        <label class="info-label">피로그래밍 기수</label>
+                        <p class="info-value">21</p>
+                    </div>
+                    <div class="info-row">
+                        <label class="info-label">이메일</label>
+                        <p class="info-value email">pirotime@gmail.com</p>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="location.href='./modifyinfo.html'" class="btn-primary">정보 수정</button>
+                    <button onclick="location.href='./modifypwd.html'" class="btn-secondary">비밀번호 변경</button>
+                </div>
+            </div>
+
+            <!-- 커피챗 현황 탭 -->
+            <div id="chat" class="content-panel">
+                <div class="chat-list">
+                    <div class="chat-item" onclick="sessionStorage.setItem('activeTab', 'chat'); location.href='./mychatpull.html'">
+                        <span>신청받은 커피챗</span>
+                        <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                    </div>
+                    <div class="chat-item" onclick="sessionStorage.setItem('activeTab', 'chat'); location.href='./mychatpush.html'">
+                        <span>신청한 커피챗</span>
+                        <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                    </div>
+                    <div class="chat-item" onclick="sessionStorage.setItem('activeTab', 'chat'); location.href='./mychating.html'">
+                        <span>진행중인 커피챗</span>
+                        <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                    </div>
+                    <div class="chat-item" onclick="sessionStorage.setItem('activeTab', 'chat'); location.href='./mychatend.html'">
+                        <span>완료한 커피챗</span>
+                        <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 스크랩한 프로필 탭 -->
+            <div id="scrap" class="content-panel">
+                <div class="scrap-list">
+                    <div class="scrap-item">
+                        <div class="scrap-info">
+                            <span class="scrap-name">강호동</span>
+                            <span class="scrap-th">피로그래밍 20기</span>
+                        </div>
+                        <i class="fa-solid fa-bookmark bookmark"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.content-panel');
+            // 저장된 탭 상태 확인
+            const savedTab = sessionStorage.getItem('activeTab');
+            if (savedTab) {
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                const targetTab = document.querySelector(`.tab[data-tab="${savedTab}"]`);
+                if (targetTab) {
+                    targetTab.classList.add('active');
+                    document.getElementById(savedTab).classList.add('active');
+                }
+            }
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    sessionStorage.setItem('activeTab', tabId);
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

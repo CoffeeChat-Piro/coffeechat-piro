@@ -1,7 +1,7 @@
 .detail-container {
     max-width: 600px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 0 16px 16px 16px;
  }
  
  .profile-section {
@@ -39,7 +39,7 @@
     margin-top: 6px;
     background-color: white;
     border-radius: 50%;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #EFEFEF;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -73,7 +73,7 @@
  
  .status-badge {
     padding: 2px 10px;
-    border-radius: 15px;
+    border-radius: 5px;
     font-size: 12px;
     font-weight: 500;
     background-color: var(--button-first-color);
@@ -122,23 +122,23 @@
     border: none;
     padding: 2px;
     font-size: 18px;
-    color: #cccccc;
+    color: var(--card-color);
     cursor: pointer;
     display: flex;
     align-items: center;
  }
  
  .bookmark-btn.active {
-    color: #FFB800;
+    color: #FFD900;
  }
  
  .edit-btn, .action-btn {
     padding: 6px 12px;
-    border-radius: var(--button-radius);
+    border-radius: 5px;
     font-size: 13px;
     border: none;
-    background-color: var(--button-first-color);
-    color: white;
+    background-color: white;
+    color: black;
     cursor: pointer;
     text-decoration: none;
     white-space: nowrap;

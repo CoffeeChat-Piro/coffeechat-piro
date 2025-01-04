@@ -135,7 +135,7 @@ def detail(request, pk):
                 CoffeeChat.objects.create(
                     user=request.user,
                     profile=profile,
-                    status='WAITING',
+                    status='ONGOING',
                     letterToSenior=message
                 )
         else:
@@ -157,6 +157,8 @@ def detail(request, pk):
         'profile': profile,
         'is_waiting': is_waiting,
         'is_limited': is_limited,
+        'is_ongoing': is_ongoing,
+        'is_completed': is_completed,
         'has_pending_request': has_pending_request,
         'hashtags': hashtags,
         'requests': requests,
@@ -292,7 +294,7 @@ def sending_mail(receiver, sender, subject, content, message):
     recipient_list = [receiver.email]
 
     html_message = render_to_string(
-        "corboard/message.html",
+        "coffeechat/message_send.html",
         {
             "sender": sender.username,
             "receiver": receiver.username,

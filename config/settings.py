@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     "apps.coffeechat",
     # "apps.trend",
     "apps.mypage",
-    'phonenumber_field',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

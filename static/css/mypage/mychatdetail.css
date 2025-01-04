@@ -1,0 +1,150 @@
+:root {
+    --base-radius: 10px;
+    --spacing-xxl: 32px;
+    --font-xl: 24px;
+    --font-l: 20px;
+    --font-m: 18px;
+    --font-s: 14px;
+    --font-xs: 10px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.content {
+    width: 100%;
+    max-width: var(--max-width);
+    background-color: white;
+    min-height: 100vh;
+}
+
+/* 변경: padding 값 변경 및 xxl 변수 사용 */
+.header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: calc(40px + var(--spacing-lg)) var(--spacing-xxl) var(--spacing-md);
+}
+
+.close-button {
+    position: absolute;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.close-button i {
+    font-size: var(--font-xl);
+    color: #333;
+}
+
+/* 변경: 폰트 크기 xl로 변경 */
+.header h1 {
+    font-size: var(--font-xl);
+    margin: 0;
+}
+
+/* 변경: 배경색, 폰트 굵기 추가 */
+.complete-button {
+    background-color: #D9D9D9;
+    font-weight: bold;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: var(--font-s);
+    cursor: pointer;
+}
+
+/* 변경: xxl 변수 사용 */
+.review-date {
+    padding: 0 var(--spacing-xxl);
+    color: var(--text-tertiary);
+    font-size: var(--font-s);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* 변경: 배경색, padding, border-radius 값 변경 */
+.main-content {
+    background-color: #F9F9F9;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-xxl);
+    min-height: calc(100vh - 180px);
+    border-top-left-radius: var(--font-xl);
+    border-top-right-radius: var(--font-xl);
+}
+
+/* 변경: 새로운 클래스 추가 */
+.main-name {
+    font-size: var(--font-m);
+    font-weight: bold;
+    padding: 0 0 var(--font-l) 0;
+}
+
+.question-input {
+    flex: 1;
+    width: 100%;
+    background: white;
+    border: none;
+    border-radius: var(--base-radius);
+    padding: var(--spacing-md);
+    font-size: var(--font-s);
+    resize: none;
+    line-height: 1.5;
+    outline: none;
+    margin-bottom: var(--spacing-lg);
+}
+
+/* 변경: 폰트 굵기, padding, border-radius 값 변경 */
+.submit-button {
+    width: 100%;
+    padding: var(--spacing-sm);
+    background-color: var(--button-first-color);
+    color: white;
+    font-weight: bold;
+    border: none;
+    font-size: var(--font-m);
+    cursor: pointer;
+    border-radius: var(--font-l);
+}
+
+/* 반응형 추가 */
+@media screen and (max-width: 400px) {
+    .header {
+        padding: calc(30px + var(--spacing-lg)) var(--spacing-lg) var(--spacing-md);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .header h1 {
+        font-size: var(--font-xl);
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .complete-button {
+        padding: 6px 12px;
+        margin-left: 0;
+    }
+
+    .review-date {
+        padding: 0 var(--spacing-lg);
+    }
+
+    .main-content {
+        padding: var(--spacing-lg);
+    }
+
+    .main-name {
+        padding: 0 0 var(--font-m) 0;
+    }
+}
