@@ -43,6 +43,7 @@
     border: none;
     cursor: pointer;
     padding: var(--spacing-xs) var(--spacing-sm);
+    text-decoration: none;  
 }
 
 .logout-button svg {
@@ -51,11 +52,6 @@
 
 .logout-button:hover svg {
     transform: translateX(2px);
-}
-
-.logout-button a {
-    color: inherit;
-    text-decoration: none;
 }
 
 .content {
