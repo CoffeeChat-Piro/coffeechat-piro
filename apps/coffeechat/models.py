@@ -84,3 +84,9 @@ class Scrap(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='scraps')
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='scraps')
     created_at = models.DateTimeField(auto_now_add=True)
+
+class Memo(models.Model):
+    # user = models.ForeignKey('accounts.User', related_name='coffeechat_reviews', on_delete=models.CASCADE)
+    coffeeChatRequest = models.OneToOneField(CoffeeChat, related_name='memo', on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now_add=True)  # memo 최후 편집 시간
+    content = models.CharField(max_length=5000, blank=True)     #memo 내용

@@ -31,10 +31,7 @@ ALLOWED_HOSTS = []  # In production, add your domain here
 
 INSTALLED_APPS = [
     "apps.accounts",
-    # "apps.review",
-    # "apps.corboard",
     "apps.coffeechat",
-    # "apps.trend",
     "apps.mypage",
     'phonenumber_field',
     "django.contrib.admin",

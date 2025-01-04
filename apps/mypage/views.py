@@ -13,12 +13,12 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 # 프로젝트 내 모듈
-from apps.accounts.models import User, Memo
+from apps.accounts.models import User
 from apps.accounts.forms import CustomUserChangeForm
 # from apps.review.models import Review, Comment as ReviewComment
 # from apps.corboard.models import Corboard, Comment as CorboardComment
 # from apps.trend.models import Trend, Comment as TrendComment
-from apps.coffeechat.models import Profile, CoffeeChat, Scrap
+from apps.coffeechat.models import Profile, CoffeeChat, Scrap, Memo
 from apps.coffeechat.forms import WayToContect
 from django.contrib.auth.hashers import check_password
 

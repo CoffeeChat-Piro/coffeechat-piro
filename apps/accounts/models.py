@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import timezone
 
 def validate_img_size(image):
     if image.size > 20 * 1024* 1024:
@@ -19,11 +18,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-
-
-
-class Memo(models.Model):
-    # user = models.ForeignKey('accounts.User', related_name='coffeechat_reviews', on_delete=models.CASCADE)
-    coffeeChatRequest = models.OneToOneField('coffeechat.CoffeeChat', related_name='memo', on_delete=models.CASCADE)
-    updated_at = models.DateTimeField(auto_now_add=True)  # memo 최후 편집 시간
-    content = models.CharField(max_length=5000, blank=True)     #memo 내용

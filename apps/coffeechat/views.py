@@ -139,7 +139,7 @@ def detail(request, pk):
         existing_request = False
         if not existing_request:
 
-            waiting_requests = CoffeeChatRequest.objects.filter(
+            waiting_requests = CoffeeChat.objects.filter(
                 coffeechat__receiver=profile.receiver,
                 status__in=['WAITING', 'ONGOING', 'ACCEPTED', 'COMPLETED']
             ).count()
@@ -155,7 +155,7 @@ def detail(request, pk):
                     sending_mail(profile.user, request.user, subject, content, message)
 
                     #리쿼스트 생성
-                    CoffeeChatRequest.objects.create(
+                    CoffeeChat.objects.create(
                         user=request.user,
                         coffeechat=profile,
                         status='WAITING',
@@ -176,9 +176,9 @@ def detail(request, pk):
     is_waiting = CoffeeChat.objects.filter(user=request.user, coffeechat=profile, status='WAITING').exists()
     waiting_requests = CoffeeChat.objects.filter(coffeechat__receiver=profile.user, status='WAITING').count()
     is_limited = waiting_requests >= 2 and not is_waiting
-    is_ongoing = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='ONGOING').exists()
-    is_completed = CoffeeChatRequest.objects.filter(user=request.user, coffeechat=profile, status='COMPLETED').exists()
-    waiting_requests = CoffeeChatRequest.objects.filter(coffeechat__receiver=profile.receiver, status='WAITING').count()
+    is_ongoing = CoffeeChat.objects.filter(user=request.user, coffeechat=profile, status='ONGOING').exists()
+    is_completed = CoffeeChat.objects.filter(user=request.user, coffeechat=profile, status='COMPLETED').exists()
+    waiting_requests = CoffeeChat.objects.filter(coffeechat__receiver=profile.receiver, status='WAITING').count()
     hashtags = profile.hashtags.all()
     requests = CoffeeChat.objects.filter(coffeechat=profile)
     profile_status = profile.profile_status      #프로필 상태값 추가
