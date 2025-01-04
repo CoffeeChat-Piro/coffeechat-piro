@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserChangeForm, AuthenticationForm
 from phonenumber_field.formfields import PhoneNumberField
-from .models import CustomUser
+from .models import User
 
 # 회원가입 폼
 class CustomUserCreationForm(forms.ModelForm):
@@ -18,7 +18,7 @@ class CustomUserCreationForm(forms.ModelForm):
     )
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ('username', 'email', 'profile_image', 'cohort')  # 소개 필드 제외
         
     def __init__(self, *args, **kwargs):
@@ -49,7 +49,7 @@ class CustomUserChangeForm(UserChangeForm):
     password = None
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ['username', 'email', 'profile_image', 'cohort']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-input'}),

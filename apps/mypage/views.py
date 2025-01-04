@@ -1,4 +1,6 @@
 # Django 내장 모듈
+import profile
+
 from django.views.generic import TemplateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -6,18 +8,19 @@ from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 # 프로젝트 내 모듈
-from apps.accounts.models import CustomUser
+from apps.accounts.models import User, Memo
 from apps.accounts.forms import CustomUserChangeForm
 # from apps.review.models import Review, Comment as ReviewComment
 # from apps.corboard.models import Corboard, Comment as CorboardComment
 # from apps.trend.models import Trend, Comment as TrendComment
-from apps.coffeechat.models import CoffeeChat, CoffeeChatRequest
+from apps.coffeechat.models import Profile, CoffeeChat, Scrap
 from apps.coffeechat.forms import WayToContect
+from django.contrib.auth.hashers import check_password
 
 # 프로필 보기 뷰
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -30,7 +33,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
 # 프로필 수정 뷰
 class ProfileEditView(LoginRequiredMixin, UpdateView):
-    model = CustomUser
+    model = User
     form_class = CustomUserChangeForm
     template_name = 'mypage/profile_edit.html'
     
@@ -60,108 +63,50 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
 
         # 특정 사용자 글 필터링하기 위해 user_id 사용
         if user_id:
-            target_user = get_object_or_404(CustomUser, id=user_id)
+            target_user = get_object_or_404(User, id=user_id)
         else:
             target_user = request.user
-
-        # 내가 쓴 글 필터링
-        # if filter_type == 'my_posts':
-        #     if category == 'review':
-        #         posts = Review.objects.filter(writer=target_user)
-        #     elif category == 'trend':
-        #         posts = Trend.objects.filter(writer=target_user)
-        #     elif category == 'corboard':
-        #         posts = Corboard.objects.filter(writer=target_user)
-        #     else:
-        #         posts = list(Trend.objects.filter(writer=target_user)) + \
-        #                 list(Review.objects.filter(writer=target_user)) + \
-        #                 list(Corboard.objects.filter(writer=target_user))
-
-        # 내가 북마크한 글 필터링
-        # elif filter_type == 'bookmarked':
-        #     if category == 'review':
-        #         posts = Review.objects.filter(bookmarks=target_user)
-        #     elif category == 'trend':
-        #         posts = Trend.objects.filter(bookmarks=target_user)
-        #     elif category == 'corboard':
-        #         posts = Corboard.objects.filter(bookmarks=target_user)
-        #     else:
-        #         posts = list(Trend.objects.filter(bookmarks=target_user)) + \
-        #                 list(Review.objects.filter(bookmarks=target_user)) + \
-        #                 list(Corboard.objects.filter(bookmarks=target_user))
-
-        # # 내가 좋아요한 글 필터링
-        # elif filter_type == 'liked':
-        #     if category == 'review':
-        #         posts = Review.objects.filter(likes=target_user)
-        #     elif category == 'trend':
-        #         posts = Trend.objects.filter(likes=target_user)
-        #     elif category == 'corboard':
-        #         posts = Corboard.objects.filter(likes=target_user)
-        #     else:
-        #         posts = list(Trend.objects.filter(likes=target_user)) + \
-        #                 list(Review.objects.filter(likes=target_user)) + \
-        #                 list(Corboard.objects.filter(likes=target_user))
-
-        # 내가 댓글을 단 글 필터링
-        # elif filter_type == 'commented':
-        #     if category == 'review':
-        #         post_ids = ReviewComment.objects.filter(writer=target_user).values_list('review_id', flat=True)
-        #         posts = Review.objects.filter(id__in=post_ids)
-        #     elif category == 'trend':
-        #         post_ids = TrendComment.objects.filter(writer=target_user).values_list('trend_id', flat=True)
-        #         posts = Trend.objects.filter(id__in=post_ids)
-        #     elif category == 'corboard':
-        #         post_ids = CorboardComment.objects.filter(writer=target_user).values_list('corboard_id', flat=True)
-        #         posts = Corboard.objects.filter(id__in=post_ids)
-        #     else:
-        #         trend_ids = TrendComment.objects.filter(writer=target_user).values_list('trend_id', flat=True)
-        #         review_ids = ReviewComment.objects.filter(writer=target_user).values_list('review_id', flat=True)
-        #         corboard_ids = CorboardComment.objects.filter(writer=target_user).values_list('corboard_id', flat=True)
-        #         posts = list(Trend.objects.filter(id__in=trend_ids)) + \
-        #                 list(Review.objects.filter(id__in=review_ids)) + \
-        #                 list(Corboard.objects.filter(id__in=corboard_ids))
 
         # 커피챗 필터링
         if filter_type == 'coffeechat':
             if category == 'requests_sent':
-                requests_sent = CoffeeChatRequest.objects.filter(user=target_user, status='WAITING')
+                requests_sent = CoffeeChat.objects.filter(user=target_user, status='WAITING')
                 data = [{
                     'sender': request.user.username,
-                    'receiver': request.coffeechat.receiver.username,
-                    'job': request.coffeechat.job,
+                    'receiver': request.profile.user.username,
+                    'job': request.profile.job,
                     'created_at': request.created_at.isoformat(),
                     'status': request.get_status_display(),
-                    'detail_url': reverse_lazy('coffeechat:coffeechat_detail', args=[request.coffeechat.id]),
-                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.coffeechat.receiver.id]),
+                    'detail_url': reverse_lazy('coffeechat:coffeechat_detail', args=[request.profile.id]),
+                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.profile.user.id]),
                 } for request in requests_sent]
                 print("Debug Data for requests_sent:", data)
                 return JsonResponse({'requests_sent': data})
 
             elif category == 'requests_received':
-                requests_received = CoffeeChatRequest.objects.filter(coffeechat__receiver=target_user, status='WAITING')
+                requests_received = CoffeeChat.objects.filter(coffeechat__receiver=target_user, status='WAITING')
                 data = []
                 debug_data = []
 
                 for request in requests_received:
                     sender_username = request.user.username
                     sender_id = request.user.id
-                    receiver_username = request.coffeechat.receiver.username if request.coffeechat.receiver else 'Unknown'
-                    job = request.coffeechat.job
-                    detail_url = reverse_lazy('coffeechat:coffeechat_detail', args=[request.coffeechat.id])
+                    receiver_username = request.profile.user.username if request.profile.user else 'Unknown'
+                    job = request.profile.job
+                    detail_url = reverse_lazy('coffeechat:coffeechat_detail', args=[request.profile.id])
                     cohort = request.user.cohort  # 신청한 사람의 기수
 
                     # 디버깅 정보 리스트
                     debug_data.append({
                         'request_id': request.id,
-                        'coffeechat_id': request.coffeechat.id,
+                        'coffeechat_id': request.profile.id,
                         'sender_username': sender_username,
                         'receiver_username': receiver_username,
                         'job': job,
                         'cohort': cohort,  # 추가된 부분
                         'detail_url': detail_url,
                         'status': request.status,
-                        'receiver_id': request.coffeechat.receiver.id if request.coffeechat.receiver else 'None',
+                        'receiver_id': request.profile.user.id if request.profile.user else 'None',
                         'sender_id': request.user.id,
                         'letter_to_senior': request.letterToSenior,  # 추가된 부분
                         
@@ -177,7 +122,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                         'created_at': request.created_at.isoformat(),
                         'status': request.get_status_display(),
                         'detail_url': detail_url,
-                        'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.coffeechat.receiver.id if request.coffeechat.receiver else '']),
+                        'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.profile.user.id if request.profile.user else '']),
                         'accept_url': reverse_lazy('coffeechat:accept_request', args=[request.id]),
                         'reject_url': reverse_lazy('coffeechat:reject_request', args=[request.id]),
                         'letter_to_senior': request.letterToSenior,  # 추가된 부분
@@ -189,9 +134,9 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                 return JsonResponse({'requests_received': data})
 
             elif category == 'bookmarked':
-                bookmarked_coffeechats = CoffeeChat.objects.filter(bookmarks=target_user)
+                bookmarked_coffeechats = Profile.objects.filter(bookmarks=target_user)
                 data = [{
-                    'receiver': coffeechat.receiver.username,
+                    'receiver': coffeechat.user.username,
                     'job': coffeechat.job,
                     'created_at': coffeechat.created_at.isoformat(),
                     'content': coffeechat.content,
@@ -199,26 +144,26 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
                     'bookmarked': True,
                     'coffeechat_bookmark_profile': reverse_lazy('mypage:coffeechat_bookmark_profile', args=[coffeechat.id]),
                     'detail_url': reverse_lazy('coffeechat:coffeechat_detail', args=[coffeechat.id]),
-                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[coffeechat.receiver.id if coffeechat.receiver else '']),
+                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[coffeechat.user.id if coffeechat.user else '']),
                 } for coffeechat in bookmarked_coffeechats]
                 return JsonResponse({'bookmarked_coffeechats': data})
             
             elif category == 'history':
-                accepted_requests = CoffeeChatRequest.objects.filter(user=target_user, status='ONGOING')
+                accepted_requests = CoffeeChat.objects.filter(user=target_user, status='ACCEPTED')
                 data = [{
                     'sender': request.user.username,
-                    'receiver': request.coffeechat.receiver.username,
-                    'job': request.coffeechat.job,
+                    'receiver': request.profile.user.username,
+                    'job': request.profile.job,
                     'created_at': request.created_at.isoformat(),
                     'status': request.get_status_display(),
-                    'hashtags': [hashtag.name for hashtag in request.coffeechat.hashtags.all()],
+                    'hashtags': [hashtag.name for hashtag in request.profile.hashtags.all()],
                     'review': {
                         'rating': request.review.rating if hasattr(request, 'review') else None,
                         'content': request.review.content if hasattr(request, 'review') else None,
                         'created_at': request.review.created_at.isoformat() if hasattr(request, 'review') else None,
                     } if hasattr(request, 'review') else None,
-                    'detail_url': reverse_lazy('coffeechat:coffeechat_detail', args=[request.coffeechat.id]),
-                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.coffeechat.receiver.id]),
+                    'detail_url': reverse_lazy('coffeechat:coffeechat_detail', args=[request.profile.id]),
+                    'profile_read_url': reverse_lazy('mypage:profile_read', args=[request.profile.user.id]),
                     'review_exists': True if hasattr(request, 'review') else False,
                 } for request in accepted_requests]
                 return JsonResponse({'accepted_requests': data})
@@ -235,24 +180,6 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
             }
             return JsonResponse(data)
 
-        # else:
-        #     posts = list(Trend.objects.filter(writer=target_user)) + \
-        #             list(Review.objects.filter(writer=target_user)) + \
-        #             list(Corboard.objects.filter(writer=target_user))
-
-        # posts_data = [{
-        #     'id': post.id,
-        #     'type': post.__class__.__name__.lower(),
-        #     'title': post.title, 
-        #     'content': post.content[:100],
-        #     'writer': post.writer.username,
-        #     'writer_id': post.writer.id,
-        #     'date': post.date.isoformat(),
-        #     'url': post.get_absolute_url(),
-        #     'category': getattr(post, 'category', '일반')
-        # } for post in posts]
-
-        # return JsonResponse({'posts': posts_data})
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'mypage/profile.html'
@@ -282,34 +209,9 @@ def profile_read(request, user_id):
         'random_image': random_image,
     })
 
-# @csrf_exempt
-# def toggle_bookmark(request, post_type, post_id):
-#     if request.method == 'POST':
-#         try:
-#             if post_type == 'review':
-#                 post = Review.objects.get(id=post_id)
-#             elif post_type == 'trend':
-#                 post = Trend.objects.get(id=post_id)
-#             elif post_type == 'corboard':
-#                 post = Corboard.objects.get(id=post_id)
-#             else:
-#                 return JsonResponse({'error': 'Invalid post type'}, status=400)
-
-#             if request.user in post.bookmarks.all():
-#                 post.bookmarks.remove(request.user)
-#                 return JsonResponse({'bookmarked': False})
-#             else:
-#                 post.bookmarks.add(request.user)
-#                 return JsonResponse({'bookmarked': True})
-
-#         except Exception as e:
-#             return JsonResponse({'error': str(e)}, status=500)
-
-#     return JsonResponse({'error': 'Invalid request method'}, status=405)
-
 @login_required
 def coffeechat_bookmark_profile(request, pk):
-    profile = get_object_or_404(CoffeeChat, pk=pk)
+    profile = get_object_or_404(Profile, pk=pk)
     if request.user in profile.bookmarks.all():
         profile.bookmarks.remove(request.user)
         bookmarked = False
@@ -322,7 +224,7 @@ def coffeechat_bookmark_profile(request, pk):
 @login_required
 def profile_modal_view(request):
     user_id = request.GET.get('user_id')
-    profile_user = get_object_or_404(CustomUser, id=user_id)
+    profile_user = get_object_or_404(User, id=user_id)
 
     image_files = ['back.png', 'back1.png', 'back2.png']
     random_image = random.choice(image_files)
@@ -336,3 +238,174 @@ def profile_modal_view(request):
     print(f"Random Image URL: /static/images/{random_image}")
 
     return render(request, 'mypage/profile_modal.html', context)
+
+@login_required
+def password_change(request):
+    if request.method == "POST":
+        current_password = request.POST.get("current_password")
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        # 현재 사용자
+        user = request.user
+
+        # 기존 비밀번호 확인
+        if not check_password(current_password, user.password):     #내장함수: 비밀번호 검증
+            messages.error(request, "현재 비밀번호가 일치하지 않습니다.")
+            return render(request, 'mypage/password_change.html')
+
+        # 새로운 비밀번호와 확인 비밀번호가 일치하지 않는 경우
+        if new_password != confirm_password:
+            messages.error(request, "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.")
+            return render(request, 'mypage/password_change.html')
+
+        # 비밀번호 변경
+        user.set_password(new_password)
+        user.save()
+
+        messages.success(request, "비밀번호가 성공적으로 변경되었습니다.")
+        return redirect('password')  # 성공 후 리디렉션
+
+    return render(request, 'mypage/password_change.html')
+
+@login_required
+def coffeechat_received(request):
+    if request.method == "GET":
+        # 현재 로그인된 사용자 가져오기
+        current_user = request.user
+
+        # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
+        chats = CoffeeChat.objects.filter(profile=current_user.profile, status='WAITING')
+
+        # 결과를 JSON 형태로 변환
+        data = [
+            {
+                "id": chat.id,
+                "name": chat.user.username,
+                "cohort": chat.user.cohort,
+                "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+
+            }
+            for chat in chats
+        ]
+
+        # JSON 응답 반환
+        return JsonResponse({"success": True, "data": data})
+
+    # 잘못된 요청 처리
+    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+
+@login_required
+def coffeechat_requested(request):
+    if request.method == "GET":
+        # 현재 로그인된 사용자 가져오기
+        current_user = request.user
+
+        # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
+        chats = CoffeeChat.objects.filter(user=current_user, status='WAITING')
+
+        # 결과를 JSON 형태로 변환
+        data = [
+            {
+                "id": chat.id,
+                "name": chat.profile.user.username,
+                "cohort": chat.profile.user.cohort,
+                "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            }
+            for chat in chats
+        ]
+
+        # JSON 응답 반환
+        return JsonResponse({"success": True, "data": data})
+
+    # 잘못된 요청 처리
+    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+
+@login_required
+def coffeechat_in_progress(request):
+    if request.method == "GET":
+        # 현재 로그인된 사용자 가져오기
+        current_user = request.user
+
+        # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
+        chats = CoffeeChat.objects.filter(user__in=[current_user, current_user.profile.user], status='ONGOING')
+
+        # 결과를 JSON 형태로 변환
+        data = [
+            {
+                "id": chat.id,
+                "name": chat.profile.user.username,
+                "cohort": chat.profile.user.cohort,
+                "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                "memo": chat.memo.id,
+            }
+            for chat in chats
+        ]
+
+        # JSON 응답 반환
+        return JsonResponse({"success": True, "data": data})
+
+    # 잘못된 요청 처리
+    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+
+@login_required
+def coffeechat_completed(request):
+    if request.method == "GET":
+        # 현재 로그인된 사용자 가져오기
+        current_user = request.user
+
+        # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
+        chats = CoffeeChat.objects.filter(user__in=[current_user, current_user.profile.user], status='COMPLETED')
+
+        # 결과를 JSON 형태로 변환
+        data = [
+            {
+                "id": chat.id,
+                "name": chat.profile.user.username,
+                "cohort": chat.profile.user.cohort,
+                "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            }
+            for chat in chats
+        ]
+
+        # JSON 응답 반환
+        return JsonResponse({"success": True, "data": data})
+
+    # 잘못된 요청 처리
+    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+
+@login_required
+def memo(request, pk):
+
+    saved_memo = get_object_or_404(Memo, pk=pk, user=request.user)
+
+    data = [
+        {
+            "content": saved_memo.content,
+            "created_at": saved_memo.updated_at,
+        }
+    ]
+
+    if request.method == "POST":
+        # 폼 데이터에서 내용 가져오기
+        content = request.POST.get("content", "").strip()
+
+
+        # 메모 내용 저장: 공백이어도 좋다.
+        saved_memo.content = content
+        saved_memo.save()
+        messages.success(request, "메모가 성공적으로 저장되었습니다.")
+        return redirect('coffeechat_memo', pk=saved_memo.pk)
+
+    return render(request, 'memo/memo_form.html', {'memo': saved_memo})
+
+@login_required
+def scraped(request, pk):
+    # Scrap 객체 가져오기
+    scraped_data = get_list_or_404(Scrap, pk=pk, user=request.user)
+
+    # 관련된 Profile 가져오기
+    profile = scraped_data.profile
+
+    # 템플릿에 데이터 전달
+    return render(request, 'scraps/profile_detail.html', {'profile': profile})
