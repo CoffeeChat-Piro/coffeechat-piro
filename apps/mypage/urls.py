@@ -4,9 +4,12 @@ from . import views
 app_name = 'mypage'
 
 urlpatterns = [
-    path('', views.ProfileView.as_view(), name='profile'),
-    path('edit/', views.ProfileEditView.as_view(), name='profile_edit'),
+    # path('', views.ProfileView.as_view(), name='profile'),
+    # path('edit/', views.ProfileEditView.as_view(), name='profile_edit'),
 
+
+    path('', views.mypageView.as_view(), name='profile'),
+    path('edit/', views.mypageEditView.as_view(), name='profile_edit'),
     ####
     path('password', views.password_change, name='password'),                                            #비밀번호 수정                                             #스크랩한 프로필
     path('ajax/coffeechat/received', views.coffeechat_received, name='coffeechat_received'),     #커피챗 현환-받은

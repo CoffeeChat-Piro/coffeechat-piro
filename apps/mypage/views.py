@@ -23,8 +23,8 @@ from apps.coffeechat.models import Profile, CoffeeChat, Scrap
 from apps.coffeechat.forms import WayToContect
 from django.contrib.auth.hashers import check_password
 
-# 프로필 보기 뷰
-class ProfileView(LoginRequiredMixin, TemplateView):
+# 마이페이지 보기 뷰
+class mypageView(LoginRequiredMixin, TemplateView):
     template_name = 'mypage/profile.html'
 
     def get_context_data(self, **kwargs):
@@ -40,8 +40,8 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         context['profile'] = profiles
         return context
 
-# 프로필 수정 뷰
-class ProfileEditView(LoginRequiredMixin, UpdateView):
+# 마이페이지 수정 뷰
+class mypageEditView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = CustomUserChangeForm
     template_name = 'mypage/profile_edit.html'
@@ -190,6 +190,7 @@ class ActivitiesAjaxView(LoginRequiredMixin, TemplateView):
             return JsonResponse(data)
 
 
+#프로필 보기.
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'mypage/profile.html'
 
@@ -247,6 +248,7 @@ def profile_modal_view(request):
 
     return render(request, 'mypage/profile_modal.html', context)
 
+#비밀번호 변경
 @login_required
 def password_change(request):
     if request.method == "POST":
@@ -276,6 +278,7 @@ def password_change(request):
 
     return render(request, 'mypage/modifypwd.html')
 
+#받은 커피챗 조회
 @login_required
 def coffeechat_received(request):
     if request.method == "GET":
@@ -304,6 +307,7 @@ def coffeechat_received(request):
     # 잘못된 요청 처리
     return render(request, "mypage/error.html", {"message": "Invalid request method."}, status=400)
 
+#신청한 요청 조회
 @login_required
 def coffeechat_requested(request):
     if request.method == "GET":
@@ -321,6 +325,7 @@ def coffeechat_requested(request):
                     "name": chat.profile.user.username,
                     "cohort": chat.profile.user.cohort,
                     "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    "letterToSenior": chat.letterToSenior,
                 }
                 for chat in chats
             ]
@@ -332,6 +337,7 @@ def coffeechat_requested(request):
     # 잘못된 요청 처리
     return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
 
+#진행중인 커피챗
 @login_required
 def coffeechat_in_progress(request):
     if request.method == "GET":
@@ -350,6 +356,7 @@ def coffeechat_in_progress(request):
                     "cohort": chat.profile.user.cohort,
                     "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                     "memo": chat.memo.id,
+                    "letterToSenior": chat.letterToSenior,
                 }
                 for chat in chats
             ]
@@ -361,6 +368,7 @@ def coffeechat_in_progress(request):
     # 잘못된 요청 처리
     return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
 
+#완료된 커피챗 조회
 @login_required
 def coffeechat_completed(request):
     if request.method == "GET":
@@ -388,6 +396,8 @@ def coffeechat_completed(request):
 
     # 잘못된 요청 처리
     return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
+
+#메모 조회 및 수정 가능한 상태
 @login_required
 def memo(request, pk):
 
@@ -406,6 +416,7 @@ def memo(request, pk):
 
     return render(request, 'mypage/memo_form.html', {'memo': saved_memo})
 
+#스크랩된 프로필 조
 @login_required
 def scraped(request):
     # 현재 사용자와 관련된 모든 Scrap 객체 가져오기
