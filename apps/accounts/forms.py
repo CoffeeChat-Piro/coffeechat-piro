@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, UserChangeForm, AuthenticationForm
-from phonenumber_field.formfields import PhoneNumberField
 from .models import User
 
 # 회원가입 폼
