@@ -19,6 +19,9 @@
        <div id="chatList" class="chat-list">
            <!-- 임시 데이터 -->
            <div class="chat-item push">
+                <div class="message-icon">
+                    <i class="fas fa-comment"></i>
+                </div>
                <div class="chat-info">
                    <span class="user-name">유재석</span>
                    <span class="user-th">피로그래밍 19기</span>
@@ -27,6 +30,9 @@
                <div class="status-badge">수락 대기중</div>
            </div>
            <div class="chat-item push">
+            <div class="message-icon">
+                <i class="fa-regular fa-comment-dots"></i>
+            </div>
             <div class="chat-info">
                 <span class="user-name">유재석</span>
                 <span class="user-th">피로그래밍 19기</span>
@@ -40,6 +46,41 @@
                아직 신청한 커피챗이 없습니다.
            </div> -->
        </div>
+
+       <!-- 모달 추가 -->
+        <div class="modal" id="messageModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>OOO님께서 유재석님께 보낸 메세지</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    안녕하세요. 22기 OOO입니다.
+                    커피챗 신청합니다!
+                </div>
+            </div>
+        </div>
    </div>
+   <script>
+    // 모든 메시지 아이콘에 이벤트 리스너 추가
+    document.querySelectorAll('.message-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            document.getElementById('messageModal').style.display = 'flex';  
+        });
+    });
+
+    // 모달 닫기 버튼
+    document.querySelector('.close').addEventListener('click', function() {
+        document.getElementById('messageModal').style.display = 'none';
+    });
+
+    // 모달 외부 클릭시 닫기
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('messageModal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+   </script>
 </body>
 </html>
