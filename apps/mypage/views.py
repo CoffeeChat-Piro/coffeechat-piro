@@ -405,15 +405,21 @@ def memo(request, pk):
         messages.success(request, "메모가 성공적으로 저장되었습니다.")
         return redirect('coffeechat_memo', pk=saved_memo.pk)
 
-    return render(request, 'memo/memo_form.html', {'memo': saved_memo})
+    return render(request, 'mypage/memo_form.html', {'memo': saved_memo})
 
 @login_required
-def scraped(request, pk):
-    # Scrap 객체 가져오기
-    scraped_data = get_list_or_404(Scrap, pk=pk, user=request.user)
+def scraped(request):
+    # 현재 사용자와 관련된 모든 Scrap 객체 가져오기
+    scraped_data = Scrap.objects.filter(user=request.user)
 
-    # 관련된 Profile 가져오기
-    profile = scraped_data.profile
+    # Scrap 객체에서 profile 필드를 리스트로 추출
+    profiles = [scrap.profile for scrap in scraped_data]
+
+    # 중복 제거 (동일한 Profile이 여러 Scrap에서 참조될 수 있음)
+    unique_profiles = list(set(profiles))
 
     # 템플릿에 데이터 전달
-    return render(request, 'scraps/profile_detail.html', {'profile': profile})
+    context = {
+        'profiles': unique_profiles,  # Profile 객체의 리스트
+    }
+    return render(request, 'mypage/scraps.html', context)
