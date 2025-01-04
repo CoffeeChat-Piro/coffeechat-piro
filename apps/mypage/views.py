@@ -268,6 +268,8 @@ def password_change(request):
 
     return render(request, 'mypage/password_change.html')
 
+from django.shortcuts import render
+
 @login_required
 def coffeechat_received(request):
     if request.method == "GET":
@@ -277,23 +279,24 @@ def coffeechat_received(request):
         # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
         chats = CoffeeChat.objects.filter(profile=current_user.profile, status='WAITING')
 
-        # 결과를 JSON 형태로 변환
-        data = [
-            {
-                "id": chat.id,
-                "name": chat.user.username,
-                "cohort": chat.user.cohort,
-                "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        # 결과 데이터를 템플릿에 전달
+        context = {
+            "chats": [
+                {
+                    "id": chat.id,
+                    "name": chat.user.username,
+                    "cohort": chat.user.cohort,
+                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                }
+                for chat in chats
+            ]
+        }
 
-            }
-            for chat in chats
-        ]
-
-        # JSON 응답 반환
-        return JsonResponse({"success": True, "data": data})
+        # 화면 출력
+        return render(request, "coffeechat/received.html", context)
 
     # 잘못된 요청 처리
-    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+    return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
 
 @login_required
 def coffeechat_requested(request):
@@ -304,22 +307,24 @@ def coffeechat_requested(request):
         # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
         chats = CoffeeChat.objects.filter(user=current_user, status='WAITING')
 
-        # 결과를 JSON 형태로 변환
-        data = [
-            {
-                "id": chat.id,
-                "name": chat.profile.user.username,
-                "cohort": chat.profile.user.cohort,
-                "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            }
-            for chat in chats
-        ]
+        # 결과 데이터를 템플릿에 전달
+        context = {
+            "chats": [
+                {
+                    "id": chat.id,
+                    "name": chat.profile.user.username,
+                    "cohort": chat.profile.user.cohort,
+                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                }
+                for chat in chats
+            ]
+        }
 
-        # JSON 응답 반환
-        return JsonResponse({"success": True, "data": data})
+        # 화면 출력
+        return render(request, "coffeechat/requested.html", context)
 
     # 잘못된 요청 처리
-    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+    return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
 
 @login_required
 def coffeechat_in_progress(request):
@@ -327,26 +332,28 @@ def coffeechat_in_progress(request):
         # 현재 로그인된 사용자 가져오기
         current_user = request.user
 
-        # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
+        # 요청한 사용자와 상태가 'ONGOING'인 CoffeeChat 필터링
         chats = CoffeeChat.objects.filter(user__in=[current_user, current_user.profile.user], status='ONGOING')
 
-        # 결과를 JSON 형태로 변환
-        data = [
-            {
-                "id": chat.id,
-                "name": chat.profile.user.username,
-                "cohort": chat.profile.user.cohort,
-                "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                "memo": chat.memo.id,
-            }
-            for chat in chats
-        ]
+        # 결과 데이터를 템플릿에 전달
+        context = {
+            "chats": [
+                {
+                    "id": chat.id,
+                    "name": chat.profile.user.username,
+                    "cohort": chat.profile.user.cohort,
+                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    "memo": chat.memo.id,
+                }
+                for chat in chats
+            ]
+        }
 
-        # JSON 응답 반환
-        return JsonResponse({"success": True, "data": data})
+        # 화면 출력
+        return render(request, "coffeechat/in_progress.html", context)
 
     # 잘못된 요청 처리
-    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+    return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
 
 @login_required
 def coffeechat_completed(request):
@@ -354,26 +361,27 @@ def coffeechat_completed(request):
         # 현재 로그인된 사용자 가져오기
         current_user = request.user
 
-        # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
+        # 요청한 사용자와 상태가 'COMPLETED'인 CoffeeChat 필터링
         chats = CoffeeChat.objects.filter(user__in=[current_user, current_user.profile.user], status='COMPLETED')
 
-        # 결과를 JSON 형태로 변환
-        data = [
-            {
-                "id": chat.id,
-                "name": chat.profile.user.username,
-                "cohort": chat.profile.user.cohort,
-                "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            }
-            for chat in chats
-        ]
+        # 결과 데이터를 템플릿에 전달
+        context = {
+            "chats": [
+                {
+                    "id": chat.id,
+                    "name": chat.profile.user.username,
+                    "cohort": chat.profile.user.cohort,
+                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                }
+                for chat in chats
+            ]
+        }
 
-        # JSON 응답 반환
-        return JsonResponse({"success": True, "data": data})
+        # 화면에 출력 (템플릿 경로를 변경해야 함)
+        return render(request, "coffeechat/completed.html", context)
 
     # 잘못된 요청 처리
-    return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
-
+    return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
 @login_required
 def memo(request, pk):
 
