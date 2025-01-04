@@ -28,8 +28,16 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'mypage/profile.html'
 
     def get_context_data(self, **kwargs):
+
+        # 현재 사용자와 관련된 모든 Scrap 객체 가져오기
+        scraped_data = Scrap.objects.filter(user=self.request.user)
+
+        # Scrap 객체에서 profile 필드를 리스트로 추출
+        profiles = [scrap.profile for scrap in scraped_data]
+
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
+        context['profile'] = profiles
         return context
 
 # 프로필 수정 뷰
