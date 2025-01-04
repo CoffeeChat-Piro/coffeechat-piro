@@ -310,21 +310,22 @@ def sending_mail(receiver, sender, subject, content, message):
     )
     return True
 
-def sending_mail_info(receiver, sender, subject, content, message):
+def sending_mail(receiver, sender, subject, content, message):
     from_email = 'pirotimeofficial@gmail.com'
-    recipient_list = [sender.email]
-    mail = receiver.email
+    recipient_list = [receiver.email]
 
-    html_message = render_to_string(
-        "corboard/message_accept_coffeechat.html",
-        {
-            "sender": sender.username,
-            "receiver": receiver.username,
-            "content": content,
-            "message": message,
-            "mail": mail,
-        }
-    )
+    # HTML 메시지 직접 생성
+    html_message = f"""
+    <div style="padding: 20px; background-color: #f9f9f9;">
+        <h2 style="color: #333;">PiroTime 커피챗</h2>
+        <h3 style="color: #444;">{content}</h3>
+        <p style="margin: 15px 0;">보낸 메시지: {message}</p>
+        <hr style="border: 1px solid #eee;">
+        <p style="color: #666;">From: {sender.username}</p>
+        <p style="color: #666;">To: {receiver.username}</p>
+    </div>
+    """
+    
     plain_message = strip_tags(html_message)
     send_mail(
         subject,
