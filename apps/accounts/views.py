@@ -39,7 +39,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('accounts:login')
+            return redirect('coffeechat:main')
     else:
         form = CustomAuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
@@ -48,34 +48,35 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('accounts:login')
-@login_required
-def start(req):
-    now = timezone.now()
 
-    three_months_ago = now - timedelta(days=90)
+# @login_required
+# def start(req):
+#     now = timezone.now()
 
-    #인기있는 project review
-    # reviews = Review.objects.filter(date__gte=three_months_ago)
-    # print("reviews count:", reviews.count())
-    # review_most = find_most_popular(reviews)
+#     three_months_ago = now - timedelta(days=90)
 
-    # corboards = Corboard.objects.filter(date__gte=three_months_ago)
-    # coboard_most = find_most_popular(corboards)
+#     #인기있는 project review
+#     # reviews = Review.objects.filter(date__gte=three_months_ago)
+#     # print("reviews count:", reviews.count())
+#     # review_most = find_most_popular(reviews)
 
-    coffeechats = CoffeeChat.objects.filter(created_at__gte=three_months_ago)
-    coffeechat_most = find_most_popular_coffeeChat(coffeechats)
+#     # corboards = Corboard.objects.filter(date__gte=three_months_ago)
+#     # coboard_most = find_most_popular(corboards)
 
-    # trends = Trend.objects.filter(date__gte=three_months_ago)
-    # trend_most = find_most_popular(trends)
+#     coffeechats = CoffeeChat.objects.filter(created_at__gte=three_months_ago)
+#     coffeechat_most = find_most_popular_coffeeChat(coffeechats)
 
-    ctx = {
-    #     'review_most': review_most,
-    #     'coboard_most': coboard_most,
-        'coffeechat_most': coffeechat_most,
-    #     'trend_most': trend_most,
-    }
+#     # trends = Trend.objects.filter(date__gte=three_months_ago)
+#     # trend_most = find_most_popular(trends)
 
-    return render(req, 'accounts/login.html', ctx)
+#     ctx = {
+#     #     'review_most': review_most,
+#     #     'coboard_most': coboard_most,
+#         'coffeechat_most': coffeechat_most,
+#     #     'trend_most': trend_most,
+#     }
+
+#     return render(req, 'accounts/login.html', ctx)
 
 #===========================
 #main page 기능 구성

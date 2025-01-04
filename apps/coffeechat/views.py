@@ -21,6 +21,7 @@ from .models import CoffeeChat, Hashtag, CoffeeChatRequest, Review, CustomUser, 
 from .forms import CoffeeChatForm, ReviewForm, CoffeechatRequestForm
 
 User = get_user_model()
+
 @login_required
 def home(request):
     query = request.GET.get('search')
@@ -127,6 +128,8 @@ def detail(request, pk):
         coffeechat__receiver=request.user,  # 현재 로그인한 사용자가 이 요청을 받은 사람
         status='WAITING'
     ).exists()
+    
+    waiting_requests = 0
 
     if request.method == "POST" and request.user != profile.receiver:
         existing_request = False

@@ -48,7 +48,6 @@ class CoffeeChatRequest(models.Model):
         ('ONGOING', '진행중'),
         ('ACCEPTED','수락'),
         ('LIMITED','최대요청횟수초과'),
-        ('PRIVATE','비공개'),
         ('REJECTED', '거절'),
         ('COMPLETED', '완료')
     ]
