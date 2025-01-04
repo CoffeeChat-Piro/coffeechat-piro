@@ -149,7 +149,7 @@ SESSION_COOKIE_AGE = 1209600  # 2주일
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
-AUTH_USER_MODEL = 'accounts.CustomUser'  # Custom user model
+AUTH_USER_MODEL = 'accounts.User'  # Custom user model
 
 # # Install Pillow
 # try:
