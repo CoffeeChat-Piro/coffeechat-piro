@@ -294,7 +294,7 @@ def sending_mail(receiver, sender, subject, content, message):
     recipient_list = [receiver.email]
 
     html_message = render_to_string(
-        "coffeechat/message.html",
+        "coffeechat/message_send.html",
         {
             "sender": sender.username,
             "receiver": receiver.username,
@@ -318,7 +318,7 @@ def sending_mail_info(receiver, sender, subject, content, message):
     mail = receiver.email
 
     html_message = render_to_string(
-        "coffeechat/message_accept_coffeechat.html",
+        "coffeechat/message_accept.html",
         {
             "sender": sender.username,
             "receiver": receiver.username,
