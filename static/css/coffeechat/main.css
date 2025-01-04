@@ -124,7 +124,6 @@
     padding: var(--spacing-lg);
     border-radius: 5px;
     background-color: var(--card-color);
-    box-shadow: var(--shadow-sm);
     transition: transform var(--transition-normal);
     cursor: pointer;
     text-decoration: none;
@@ -187,7 +186,7 @@
     font-size: 12px;
     padding: 4px 8px;
     color: white;
-    border-radius: var(--button-radius);
+    border-radius: 5px;
 }
 
 .mentor-status.f2f {
