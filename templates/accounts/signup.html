@@ -6,6 +6,8 @@
     <title>PiroTime 회원가입</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/accounts/signup.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Hubballi&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -78,7 +80,7 @@
                     </div>
 
                     <div class="profile-upload">
-                        <p>프로필 사진 선택(선택)</p>
+                        <p>프로필 사진(선택)</p>
                         <label class="upload-button">
                             <input type="file" 
                                    name="profile_image" 
@@ -86,7 +88,8 @@
                                    hidden 
                                    accept="image/*" 
                                    onchange="previewImage(event)">
-                            <img src="{% static 'images/favicon.ico' %}" alt="Upload" class="camera-icon">
+                            <i class="fa-solid fa-camera camera-icon"></i>
+                            <img src="" alt="" class="preview-image" style="display: none;">
                         </label>
                     </div>
 
@@ -111,11 +114,18 @@
     <script>
         function previewImage(event) {
             const reader = new FileReader();
-            reader.onload = function () {
-                const output = document.querySelector('.camera-icon');
-                output.src = reader.result;
+            const uploadButton = document.querySelector('.upload-button');
+            const previewImg = document.querySelector('.preview-image');
+            
+            reader.onload = function() {
+                previewImg.src = reader.result;
+                previewImg.style.display = 'block';
+                uploadButton.classList.add('has-image');
             };
-            reader.readAsDataURL(event.target.files[0]);
+            
+            if (event.target.files[0]) {
+                reader.readAsDataURL(event.target.files[0]);
+            }
         }
     </script>
 </body>
