@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import random
 
 # 프로젝트 내 모듈
 from apps.accounts.models import User, Memo
@@ -28,7 +29,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = self.request.user
+        context['user'] = self.request.user
         return context
 
 # 프로필 수정 뷰
@@ -194,7 +195,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
         return context
 
-import random
 
 def profile_read(request, user_id):
     User = get_user_model()
@@ -252,23 +252,21 @@ def password_change(request):
         # 기존 비밀번호 확인
         if not check_password(current_password, user.password):     #내장함수: 비밀번호 검증
             messages.error(request, "현재 비밀번호가 일치하지 않습니다.")
-            return render(request, 'mypage/password_change.html')
+            return render(request, 'mypage/modifypwd.html')
 
         # 새로운 비밀번호와 확인 비밀번호가 일치하지 않는 경우
         if new_password != confirm_password:
             messages.error(request, "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.")
-            return render(request, 'mypage/password_change.html')
+            return render(request, 'mypage/modifypwd.html')
 
         # 비밀번호 변경
         user.set_password(new_password)
         user.save()
 
         messages.success(request, "비밀번호가 성공적으로 변경되었습니다.")
-        return redirect('password')  # 성공 후 리디렉션
+        return redirect('mypage/password')  # 성공 후 리디렉션
 
-    return render(request, 'mypage/password_change.html')
-
-from django.shortcuts import render
+    return render(request, 'mypage/modifypwd.html')
 
 @login_required
 def coffeechat_received(request):
@@ -387,13 +385,6 @@ def memo(request, pk):
 
     saved_memo = get_object_or_404(Memo, pk=pk, user=request.user)
 
-    data = [
-        {
-            "content": saved_memo.content,
-            "created_at": saved_memo.updated_at,
-        }
-    ]
-
     if request.method == "POST":
         # 폼 데이터에서 내용 가져오기
         content = request.POST.get("content", "").strip()
@@ -415,11 +406,7 @@ def scraped(request):
     # Scrap 객체에서 profile 필드를 리스트로 추출
     profiles = [scrap.profile for scrap in scraped_data]
 
-    # 중복 제거 (동일한 Profile이 여러 Scrap에서 참조될 수 있음)
-    unique_profiles = list(set(profiles))
-
-    # 템플릿에 데이터 전달
     context = {
-        'profiles': unique_profiles,  # Profile 객체의 리스트
+        'profiles': profiles,  # Profile 객체의 리스트
     }
     return render(request, 'mypage/scraps.html', context)
