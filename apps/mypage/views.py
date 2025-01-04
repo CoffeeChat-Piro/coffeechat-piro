@@ -291,10 +291,10 @@ def coffeechat_received(request):
         }
 
         # 화면 출력
-        return render(request, "coffeechat/received.html", context)
+        return render(request, "coffeechat/mychatpull.html", context)
 
     # 잘못된 요청 처리
-    return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
+    return render(request, "mypage/error.html", {"message": "Invalid request method."}, status=400)
 
 @login_required
 def coffeechat_requested(request):
@@ -319,7 +319,7 @@ def coffeechat_requested(request):
         }
 
         # 화면 출력
-        return render(request, "coffeechat/requested.html", context)
+        return render(request, "mypage/mychatpush.html", context)
 
     # 잘못된 요청 처리
     return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
@@ -348,7 +348,7 @@ def coffeechat_in_progress(request):
         }
 
         # 화면 출력
-        return render(request, "coffeechat/in_progress.html", context)
+        return render(request, "mypage/mychating.html", context)
 
     # 잘못된 요청 처리
     return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
@@ -376,7 +376,7 @@ def coffeechat_completed(request):
         }
 
         # 화면에 출력 (템플릿 경로를 변경해야 함)
-        return render(request, "coffeechat/completed.html", context)
+        return render(request, "mypage/mychatend.html", context)
 
     # 잘못된 요청 처리
     return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
