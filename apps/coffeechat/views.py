@@ -135,7 +135,7 @@ def detail(request, pk):
                 CoffeeChat.objects.create(
                     user=request.user,
                     profile=profile,
-                    status='ONGOING',
+                    status='WAITING',
                     letterToSenior=message
                 )
         else:

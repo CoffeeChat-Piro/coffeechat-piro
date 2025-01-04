@@ -1,86 +1,81 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>신청한 커피챗</title>
-   <link rel="stylesheet" href="/static/css/variables.css">
-   <link rel="stylesheet" href="/static/css/mypage/mychatlist.css">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
-<body>
-   <div class="content">
-       <div class="header">
-           <button class="back-button" onclick="history.back()">
-               <i class="fa-solid fa-arrow-left"></i>
-           </button>
-       </div>
-       <h1 class="title">신청한 커피챗</h1>
-       <div id="chatList" class="chat-list">
-           <!-- 임시 데이터 -->
-           <div class="chat-item push">
-                <div class="message-icon">
+{% extends 'base.html' %}
+{% load static %}
+
+{# header 블록을 비워서 오버라이드(header없애기 위함) #}
+{% block header %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/mypage/mychatlist.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="header">
+        <button class="back-button" onclick="history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+    </div>
+    <h1 class="title">신청한 커피챗</h1>
+    <div id="chatList" class="chat-list">
+        {% if chats %}
+            {% for chat in chats %}
+            <div class="chat-item push">
+                <div class="message-icon" data-letter="{{ chat.letterToSenior }}">
                     <i class="fas fa-comment"></i>
                 </div>
-               <div class="chat-info">
-                   <span class="user-name">유재석</span>
-                   <span class="user-th">피로그래밍 19기</span>
-                   <div class="chat-date">커피챗 신청일: 2024-12-23</div>
-               </div>
-               <div class="status-badge">수락 대기중</div>
-           </div>
-           <div class="chat-item push">
-            <div class="message-icon">
-                <i class="fa-regular fa-comment-dots"></i>
-            </div>
-            <div class="chat-info">
-                <span class="user-name">유재석</span>
-                <span class="user-th">피로그래밍 19기</span>
-                <div class="chat-date">커피챗 신청일: 2024-12-23</div>
-            </div>
-            <div class="status-badge">수락 대기중</div>
-        </div>
-
-           <!-- 백엔드 연결 후 사용할 빈 상태 -->
-           <!-- <div class="empty-state">
-               아직 신청한 커피챗이 없습니다.
-           </div> -->
-       </div>
-
-       <!-- 모달 추가 -->
-        <div class="modal" id="messageModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>OOO님께서 유재석님께 보낸 메세지</h2>
-                    <span class="close">&times;</span>
+                <div class="chat-info">
+                    <span class="user-name">{{ chat.name }}</span>
+                    <span class="user-th">피로그래밍 {{ chat.cohort }}기</span>
+                    <div class="chat-date">커피챗 신청일: {{ chat.created_at }}</div>
                 </div>
-                <div class="modal-body">
-                    안녕하세요. 22기 OOO입니다.
-                    커피챗 신청합니다!
-                </div>
+                <div class="status-badge">수락 대기중</div>
             </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                아직 신청한 커피챗이 없습니다.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- 모달 -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><span id="modalSender"></span>님께 보낸 메시지</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="modalMessage"></div>
         </div>
-   </div>
-   <script>
-    // 모든 메시지 아이콘에 이벤트 리스너 추가
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
     document.querySelectorAll('.message-icon').forEach(icon => {
         icon.addEventListener('click', function() {
-            document.getElementById('messageModal').style.display = 'flex';  
+            const letter = this.dataset.letter;
+            const modal = document.getElementById('messageModal');
+            const senderName = this.closest('.chat-item').querySelector('.user-name').textContent;
+            
+            // sender 이름 설정
+            document.getElementById('modalSender').textContent = senderName;
+            // 메시지 내용 설정
+            document.getElementById('modalMessage').textContent = letter;
+            modal.style.display = 'flex';
         });
     });
 
-    // 모달 닫기 버튼
     document.querySelector('.close').addEventListener('click', function() {
         document.getElementById('messageModal').style.display = 'none';
     });
 
-    // 모달 외부 클릭시 닫기
     window.addEventListener('click', function(event) {
         const modal = document.getElementById('messageModal');
         if (event.target === modal) {
             modal.style.display = 'none';
         }
     });
-   </script>
-</body>
-</html>
+</script>
+{% endblock %}

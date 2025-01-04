@@ -22,6 +22,7 @@ from apps.accounts.forms import CustomUserChangeForm
 from apps.coffeechat.models import Profile, CoffeeChat, Scrap
 from apps.coffeechat.forms import WayToContect
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth import update_session_auth_hash 
 
 # 마이페이지 보기 뷰
 class mypageView(LoginRequiredMixin, TemplateView):
@@ -37,7 +38,7 @@ class mypageView(LoginRequiredMixin, TemplateView):
 
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
-        context['profile'] = profiles
+        context['profiles'] = profiles
         return context
 
 # 마이페이지 수정 뷰
@@ -273,8 +274,11 @@ def password_change(request):
         user.set_password(new_password)
         user.save()
 
+        #로그아웃 방지
+        update_session_auth_hash(request, user)
+
         messages.success(request, "비밀번호가 성공적으로 변경되었습니다.")
-        return redirect('mypage/password')  # 성공 후 리디렉션
+        return redirect('mypage:profile')  # 성공 후 리디렉션
 
     return render(request, 'mypage/modifypwd.html')
 
@@ -285,8 +289,11 @@ def coffeechat_received(request):
         # 현재 로그인된 사용자 가져오기
         current_user = request.user
 
+        # Profile 객체 가져오기 (get_object_or_404 사용)
+        user_profile = get_object_or_404(Profile, user=current_user)
+
         # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
-        chats = CoffeeChat.objects.filter(profile=current_user.profile, status='WAITING')
+        chats = CoffeeChat.objects.filter(profile=user_profile, status='WAITING')
 
         # 결과 데이터를 템플릿에 전달
         context = {
@@ -295,14 +302,15 @@ def coffeechat_received(request):
                     "id": chat.id,
                     "name": chat.user.username,
                     "cohort": chat.user.cohort,
-                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M'),
+                    "letterToSenior": chat.letterToSenior,
                 }
                 for chat in chats
             ]
         }
 
         # 화면 출력
-        return render(request, "coffeechat/mychatpull.html", context)
+        return render(request, "mypage/mychatpull.html", context)
 
     # 잘못된 요청 처리
     return render(request, "mypage/error.html", {"message": "Invalid request method."}, status=400)
@@ -324,7 +332,7 @@ def coffeechat_requested(request):
                     "id": chat.id,
                     "name": chat.profile.user.username,
                     "cohort": chat.profile.user.cohort,
-                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M'),
                     "letterToSenior": chat.letterToSenior,
                 }
                 for chat in chats
@@ -345,7 +353,10 @@ def coffeechat_in_progress(request):
         current_user = request.user
 
         # 요청한 사용자와 상태가 'ONGOING'인 CoffeeChat 필터링
-        chats = CoffeeChat.objects.filter(user__in=[current_user, current_user.profile.user], status='ONGOING')
+        chats = CoffeeChat.objects.filter(
+            user=current_user,  # 현재 사용자가 신청자인 경우
+            status='ONGOING'
+        )
 
         # 결과 데이터를 템플릿에 전달
         context = {
@@ -355,7 +366,7 @@ def coffeechat_in_progress(request):
                     "name": chat.profile.user.username,
                     "cohort": chat.profile.user.cohort,
                     "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                    "memo": chat.memo.id,
+                    # "memo": chat.memo.id,
                     "letterToSenior": chat.letterToSenior,
                 }
                 for chat in chats
@@ -376,7 +387,10 @@ def coffeechat_completed(request):
         current_user = request.user
 
         # 요청한 사용자와 상태가 'COMPLETED'인 CoffeeChat 필터링
-        chats = CoffeeChat.objects.filter(user__in=[current_user, current_user.profile.user], status='COMPLETED')
+        chats = CoffeeChat.objects.filter(
+            user=current_user,  # 현재 사용자가 신청자인 경우
+            status='COMPLETED'
+        )
 
         # 결과 데이터를 템플릿에 전달
         context = {
@@ -414,7 +428,7 @@ def memo(request, pk):
         messages.success(request, "메모가 성공적으로 저장되었습니다.")
         return redirect('coffeechat_memo', pk=saved_memo.pk)
 
-    return render(request, 'mypage/memo_form.html', {'memo': saved_memo})
+    return render(request, 'mypage/mychating.html', {'memo': saved_memo})
 
 #스크랩된 프로필 조
 @login_required

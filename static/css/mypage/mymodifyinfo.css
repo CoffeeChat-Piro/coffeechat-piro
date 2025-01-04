@@ -151,3 +151,30 @@
         padding: var(--spacing-md);
     }
  }
+
+ /* 비번 수정 시 error알림 */
+ .message-alert {
+   margin: 10px 0;
+   padding: 10px 15px;
+   border-radius: 5px;
+   font-size: 14px;
+   text-align: center;
+   animation: fadeIn 0.5s;
+}
+
+.alert-error {
+   background-color: #FFE6E6;
+   color: #D63031;
+   border: 1px solid #FF7675;
+}
+
+.alert-success {
+   background-color: #E6FFE6;
+   color: #27AE60;
+   border: 1px solid #00B894;
+}
+
+@keyframes fadeIn {
+   from { opacity: 0; transform: translateY(-10px); }
+   to { opacity: 1; transform: translateY(0); }
+}

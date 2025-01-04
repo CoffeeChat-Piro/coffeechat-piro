@@ -10,22 +10,6 @@
     --font-xs: 10px;
 }
 /*추후 삭제*/
-body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--background-color);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-}
-
-.content {
-    width: 100%;
-    max-width: var(--max-width);
-    background-color: white;
-    min-height: 100vh;
-}
-
 .header {
     display: flex;
     align-items: center;
@@ -176,7 +160,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 300px);
     color: var(--text-tertiary);
     font-size: var(--font-s);
 }

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -15,41 +16,37 @@
         </div>
         <h2>회원정보 수정</h2>
         <div class="form-container">
-            <div class="user-info">
-                <!-- <div class="profile-image-container"> 추후 장고 템플릿되면
-                    {% if user.profile_image %}
-                        <img src="{{ user.profile_image.url }}" alt="프로필 이미지" class="profile-img">
-                    {% else %}
-                        <i class="fa-solid fa-user profile-img"></i>
-                    {% endif %}
-                </div> -->
-                <div class="profile-circle">
-                    <i class="fas fa-user"></i>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="user-info">
+                    <div class="profile-circle">
+                        {% if user.profile_image %}
+                            <img src="{{ user.profile_image.url }}" alt="프로필 이미지" class="profile-img">
+                        {% else %}
+                            <i class="fas fa-user"></i>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
 
-            <div class="input-group">
-                <label class="label">이름</label>
-                <input type="text" value="유재석" class="input-field">
-            </div>
-            
-            <div class="input-group">
-                <label class="label">이메일</label>
-                <input type="email" value="pirotime@gmail.com" class="input-field">
-            </div>
+                <div class="input-group">
+                    <label class="label">이름</label>
+                    <input type="text" name="username" value="{{ form.username.value|default:'' }}" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">이메일</label>
+                    <input type="email" name="email" value="{{ form.email.value|default:'' }}" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">기수</label>
+                    <input type="number" name="cohort" value="{{ form.cohort.value|default:'' }}" class="input-field">
+                </div>
 
-            <div class="input-group">
-                <label class="label">기수</label>
-                <select class="input-field">
-                    <option value="21" selected>21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                </select>
-            </div>
-
-            <div class="button-container">
-                <button onclick="location.href='./mypage.html'" type="button" class="btn-submit">저장</button>
-            </div>
+                <div class="button-container">
+                    <button type="submit" class="btn-submit">저장</button>
+                </div>
+            </form>
         </div>
     </div>
 </body>
