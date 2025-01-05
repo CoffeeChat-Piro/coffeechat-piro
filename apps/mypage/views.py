@@ -539,19 +539,17 @@ def get_review(request, pk):
 
     coffeechat = get_object_or_404(CoffeeChat, pk=pk)
     profile = coffeechat.profile
-    reviews = Review.objects.filter(coffeechat_request__profile=profile)
+    review = get_object_or_404(Review, coffeechat=coffeechat)
 
     context = {
-        "review": [
+        "review":
             {
                 "id": review.id,
                 "profile_user": profile.user.username,
                 "review_content": review.content,
             }
-        ] for review in reviews
-
     }
-
+    return render(request, ".html", context)
 
 '''
     지금 사용 안하는 메서드
