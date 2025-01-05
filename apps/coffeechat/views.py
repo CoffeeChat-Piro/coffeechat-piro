@@ -159,6 +159,8 @@ def detail(request, pk):
     for req in requests:
         req.existing_review = hasattr(req, 'review')
 
+    reviews = Review.objects.filter(coffeechat_request__profile=profile)
+
     ctx = {
         'profile': profile,
         'is_waiting': is_waiting,
@@ -176,7 +178,16 @@ def detail(request, pk):
             user=request.user,
             coffeechat_request__profile=profile
         ).exists(),
-        'bookmarked': bookmarked
+        'bookmarked': bookmarked,
+        'review': [
+            {
+                'id': review.id,
+                'user': review.user.username,
+                'content': review.content,
+                'created_at': review.created_at
+            }
+            for review in reviews
+        ]
     }
     return render(request, 'coffeechat/detail.html', ctx)
 

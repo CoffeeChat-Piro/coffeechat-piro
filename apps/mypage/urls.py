@@ -18,6 +18,12 @@ urlpatterns = [
     path('ajax/coffeechat/completed', views.coffeechat_completed, name='coffeechat_completed'),           #커피챗 현황-완료
     path('memo/<int:pk>/<string:re>', views.memo, name='coffeechat_memo'),                                           #메모 조회 수정
     # path('memo/<int:pk>', views.scraped, name='scraped_profiled'),
+
+    #review 관련 메서드
+    path('review/<int:pk>/create', views.create_review, name='create_review'),
+    path('review/<int:pk>/read', views.get_review, name='get_review'),
+    path('review/<int:pk>/create', views.update_review, name='update_review'),
+    path('review/<int:pk>/create', views.delete_review, name='delete_review'),
     ####4
 
     path('ajax/activities/', views.ActivitiesAjaxView.as_view, name='ajax_activities'),
