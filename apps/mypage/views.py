@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 import random
 
 # 프로젝트 내 모듈
+from apps import coffeechat
 from apps.accounts.models import User
 from apps.accounts.forms import CustomUserChangeForm
 # from apps.review.models import Review, Comment as ReviewComment
@@ -534,13 +535,23 @@ def create_review(request, pk):
 
     return render(request, "mypage/mychatreview.html", context)
 
-# def get_review(request, pk):
-#
-#     profile = get_object_or_404(Profile, pk=pk)
-#     reviews = Review.objects.filter(coffeechat_request__profile=profile)
-#
-#
-#
+def get_review(request, pk):
+
+    coffeechat = get_object_or_404(CoffeeChat, pk=pk)
+    profile = coffeechat.profile
+    reviews = Review.objects.filter(coffeechat_request__profile=profile)
+
+    context = {
+        "review": [
+            {
+                "id": review.id,
+                "profile_user": profile.user.username,
+                "review_content": review.content,
+            }
+        ] for review in reviews
+
+    }
+
 
 '''
     지금 사용 안하는 메서드
