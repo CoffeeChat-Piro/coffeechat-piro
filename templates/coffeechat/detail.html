@@ -80,7 +80,7 @@
             {% for review in reviews %}
               <div class="review-card">
                 <div class="review-header">
-                  <span class="reviewer-name">{{ review.reviewer.username }}</span>
+                  <span class="reviewer-name">{{ review.user.username }}</span>
                   <span class="review-date">{{ review.created_at|date:'Y.m.d' }}</span>
                 </div>
                 <p class="review-content">{{ review.content }}</p>
