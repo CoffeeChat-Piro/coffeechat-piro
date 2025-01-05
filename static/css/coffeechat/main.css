@@ -272,6 +272,45 @@
     color: white;
 }
 
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: var(--spacing-xl) 0;
+    gap: var(--spacing-lg);
+}
+
+.pagination-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+.pagination-arrow:hover {
+    background-color: var(--button-first-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    background-color: white;
+    border-radius: var(--button-radius);
+    box-shadow: var(--shadow-sm);
+}
+
 @media (max-width: 768px) {
     .mentors-container {
         padding: var(--spacing-md);
@@ -292,5 +331,19 @@
     .floating-button {
         bottom: 20px;
         right: 16px;
+    }
+    
+    .pagination {
+        margin: var(--spacing-lg) 0;
+    }
+    
+    .pagination-arrow {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .pagination-info {
+        font-size: 13px;
+        padding: 6px 12px;
     }
 }

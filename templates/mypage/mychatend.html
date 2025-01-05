@@ -19,14 +19,18 @@
     <div id="chatList" class="chat-list">
         {% if chats %}
             {% for chat in chats %}
-            <div class="chat-item end">
+            <div class="chat-item end" onclick="location.href='{% url 'mypage:coffeechat_memo' pk=chat.memo_id re='end' %}'">
                 <div class="chat-info">
                     <span class="user-name">{{ chat.name }}</span>
                     <span class="user-th">피로그래밍 {{ chat.cohort }}기</span>
-                    <div class="chat-date">커피챗 수락일: {{ chat.created_at }}</div>
+                    <div class="chat-date">커피챗 수락일: {{ chat.accepted_at }}</div>
                 </div>
-                <span class="status-badge" onclick="location.href='#'">리뷰 작성하기</span>
-                <i class="fa-solid fa-chevron-right arrow-right" onclick="location.href='#'"></i>
+                {% if not chat.review_done %}
+                    <span class="status-badge" onclick="location.href='{% url 'mypage:create_review' pk=chat.id %}'">리뷰 작성하기</span>
+                {% else %}
+                    <span class="status-badge" onclick="location.href='{% url 'mypage:review_detail' pk=chat.id %}'">리뷰 작성완료</span>
+                {% endif %}
+                <i class="fa-solid fa-chevron-right arrow-right"></i>
             </div>
             {% endfor %}
         {% else %}
