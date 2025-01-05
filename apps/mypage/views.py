@@ -498,7 +498,11 @@ def create_review(request, pk):
     #         }
     # }
 
-    return render(request, "mypage/mychatreview.html")
+    context = {
+        'profile_name': coffeechat.profile.user.username
+    }
+
+    return render(request, "mypage/mychatreview.html", context)
 
 # def get_review(request, pk):
 #
