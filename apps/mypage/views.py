@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 import random
 
 # 프로젝트 내 모듈
+from apps import coffeechat
 from apps.accounts.models import User
 from apps.accounts.forms import CustomUserChangeForm
 # from apps.review.models import Review, Comment as ReviewComment
@@ -443,20 +444,28 @@ def coffeechat_completed(request):
 def coffeechat_to_complete(request, pk):
     coffeechat = get_object_or_404(CoffeeChat, pk=pk)
 
-    coffeechat.status = 'COMPLETED'
-    coffeechat.save()  # 변경 사항 저장
+    if request.user == coffeechat.user or request.user == coffeechat.profile.user:
+        coffeechat.status = 'COMPLETED'
+        coffeechat.save()  # 변경 사항 저장
 
-    # JSON 응답 반환
-    return JsonResponse({'success': True, 'message': 'CoffeeChat marked as COMPLETED.'})
+        # JSON 응답 반환
+        return JsonResponse({'success': True, 'message': 'CoffeeChat marked as COMPLETED.'})
+    else:
+        return JsonResponse({'success': False, 'message': '접근 권한이 없습니다.'})
+
+
 
 def coffeechat_to_rejected(request, pk):
     coffeechat = get_object_or_404(CoffeeChat, pk=pk)
 
-    coffeechat.status = 'REJECTED'
-    coffeechat.save()  # 변경 사항 저장
+    if request.user == coffeechat.user or request.user == coffeechat.profile.user:
+        coffeechat.status = 'REJECTED'
+        coffeechat.save()  # 변경 사항 저장
 
-    # JSON 응답 반환
-    return JsonResponse({'success': True, 'message': 'CoffeeChat marked as REJECTED.'})
+        # JSON 응답 반환
+        return JsonResponse({'success': True, 'message': 'CoffeeChat marked as REJECTED.'})
+    else:
+        return JsonResponse({'success': False, 'message': '접근 권한이 없습니다.'})
 
 
 
@@ -557,13 +566,23 @@ def create_review(request, pk):
 
     return render(request, "mypage/mychatreview.html", context)
 
-# def get_review(request, pk):
-#
-#     profile = get_object_or_404(Profile, pk=pk)
-#     reviews = Review.objects.filter(coffeechat_request__profile=profile)
-#
-#
-#
+def get_review(request, pk):
+
+    coffeechat = get_object_or_404(CoffeeChat, pk=pk)
+    profile = coffeechat.profile
+    review = get_object_or_404(Review, coffeechat=coffeechat)
+
+    context = {
+        "review":
+            {
+                "id": review.id,
+                "my_name": request.user.username,
+                "profile_user": profile.user.username,
+                "profile_user_id": profile.user.id,
+                "review_content": review.content,
+            }
+    }
+    return render(request, ".html", context)
 
 '''
     지금 사용 안하는 메서드
