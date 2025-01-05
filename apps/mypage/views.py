@@ -445,6 +445,11 @@ def coffeechat_to_complete(request, pk):
 
     coffeechat.status = 'COMPLETED'
     coffeechat.save()  # 변경 사항 저장
+    
+    coffeechat_request = get_object_or_404(CoffeeChat)
+    profile = coffeechat_request.profile
+    profile.count -= 1
+    profile.save()
 
     # JSON 응답 반환
     return JsonResponse({'success': True, 'message': 'CoffeeChat marked as COMPLETED.'})

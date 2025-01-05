@@ -109,10 +109,6 @@ def create_review(request, coffeechat_request_id):
             review.user = request.user
             review.coffeechat_request = coffeechat_request
             review.save()
-            
-            profile = coffeechat_request.profile
-            profile.count += 1
-            profile.save()
 
             return redirect('coffeechat:coffeechat_detail', pk=coffeechat_request.profile.pk)
     else:
@@ -121,7 +117,6 @@ def create_review(request, coffeechat_request_id):
 
 def detail(request, pk):
     profile = get_object_or_404(Profile, pk=pk)
-    coffeechat_requests = CoffeeChat.objects.filter(profile=profile)
     reviews = Review.objects.filter(coffeechat_request__profile=profile)
 
     has_pending_request = CoffeeChat.objects.filter(
@@ -197,10 +192,10 @@ def detail(request, pk):
 @login_required
 def coffeechat_request(request, post_id):
     coffeechat = get_object_or_404(Profile, pk=post_id)
-    receiver = coffeechat.user
     chat_request = CoffeeChat()
     chat_request.profile = coffeechat
     chat_request.user = request.user
+      
     return redirect('coffeechat:coffeechat_detail', pk=coffeechat.pk)
 
 @login_required
@@ -272,6 +267,10 @@ def reject_request(request, request_id):
 
     coffeechat_request.status = "REJECTED"
     coffeechat_request.save()
+    
+    profile = coffeechat_request.profile
+    profile.count -= 1
+    profile.save()
 
     profile = coffeechat_request.profile
     subject = f"PiroTime: {request.user}님이 커피챗 요청을 거절하셨습니다!"
