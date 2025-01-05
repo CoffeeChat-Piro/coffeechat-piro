@@ -418,10 +418,16 @@ def coffeechat_completed(request):
 
 #메모 조회 및 수정 가능한 상태
 @login_required
-def memo(request, pk):
+def memo(request, pk, re):
 
     saved_memo = get_object_or_404(Memo, pk=pk, user=request.user)
     context = memo_context(saved_memo)
+
+    #출력할 HTML 결정
+    if re == 'ing':
+        reHTML = 'mypage/mychatingdetail.html'
+    else:
+        reHTML = 'mypage/mychatenddetail.html'
 
     if request.method == "POST":
         # 폼 데이터에서 내용 가져오기
@@ -432,9 +438,12 @@ def memo(request, pk):
         saved_memo.content = content
         saved_memo.save()
         messages.success(request, "메모가 성공적으로 저장되었습니다.")
-        return render(request, 'mypage/mychating.html', context)
 
-    return render(request, 'mypage/mychating.html', context)
+        #새로운 페이지 생성
+        context = memo_context(saved_memo)
+        return render(request, reHTML, context)
+
+    return render(request, reHTML, context)
 
 
 def memo_context(saved_memo):
@@ -456,6 +465,10 @@ def memo_context(saved_memo):
 
 
 #스크랩된 프로필 조
+'''
+    지금 사용 안하는 메서드
+    스크랩 정보는 mypage 접근하면서 같이 전달
+'''
 @login_required
 def scraped(request):
     # 현재 사용자와 관련된 모든 Scrap 객체 가져오기
