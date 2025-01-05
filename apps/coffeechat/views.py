@@ -302,29 +302,6 @@ def sending_mail(receiver, sender, subject, content, message):
     from_email = 'pirotimeofficial@gmail.com'
     recipient_list = [receiver.email]
 
-    html_message = render_to_string(
-        "coffeechat/message_send.html",
-        {
-            "sender": sender.username,
-            "receiver": receiver.username,
-            "content": content,
-            "message": message
-        }
-    )
-    plain_message = strip_tags(html_message)
-    send_mail(
-        subject,
-        plain_message,
-        from_email,
-        recipient_list,
-        html_message=html_message,
-    )
-    return True
-
-def sending_mail(receiver, sender, subject, content, message):
-    from_email = 'pirotimeofficial@gmail.com'
-    recipient_list = [receiver.email]
-
     # HTML 메시지 직접 생성
     html_message = f"""
     <div style="padding: 20px; background-color: #f9f9f9;">
