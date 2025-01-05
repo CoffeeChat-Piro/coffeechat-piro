@@ -28,30 +28,32 @@
 {% endblock %}
 
 {% block content %}
-<div class="content">
-    <div class="header">
-        <button class="back-button" onclick="history.back()">
-            <i class="fa-solid fa-arrow-left"></i>
-        </button>
-    </div>
-    <h1 class="title">진행중인 커피챗</h1>
-    <div id="chatList" class="chat-list">
-        {% if chats %}
+<div class="content">     
+    <div class="header">         
+        <button class="back-button" onclick="history.back()">             
+            <i class="fa-solid fa-arrow-left"></i>         
+        </button>     
+    </div>     
+    <h1 class="title">진행중인 커피챗</h1>     
+    <div id="chatList" class="chat-list">         
+        {% if chats %}             
             {% for chat in chats %}
-            <div class="chat-item ing" onclick="location.href='{% url 'mypage:coffeechat_memo' pk=chat.memo_id re='ing' %}'">
+            <div class="chat-item ing" {% if chat.is_requester %}onclick="location.href='{% url 'mypage:coffeechat_memo' pk=chat.memo_id re='ing' %}'"{% endif %}>
                 <div class="chat-info">
                     <span class="user-name">{{ chat.name }}</span>
                     <span class="user-th">피로그래밍 {{ chat.cohort }}기</span>
                     <div class="chat-date">커피챗 수락일: {{ chat.accepted_at }}</div>
                 </div>
+                {% if chat.is_requester %}
                 <i class="fa-solid fa-chevron-right arrow-right"></i>
-            </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state">
-                아직 진행중인 커피챗이 없습니다.
-            </div>
-        {% endif %}
-    </div>
-</div>
+                {% endif %}
+            </div>             
+            {% endfor %}         
+        {% else %}             
+            <div class="empty-state">                 
+                아직 진행중인 커피챗이 없습니다.             
+            </div>         
+        {% endif %}     
+    </div> 
+</div> 
 {% endblock %}
