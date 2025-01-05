@@ -368,7 +368,8 @@ def coffeechat_in_progress(request):
                     "name": chat.profile.user.username,
                     "cohort": chat.profile.user.cohort,
                     "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                    "memo": chat.memo,
+                    "memo": chat.memot,
+                    "memo_id": chat.memo.id,
                     "letterToSenior": chat.letterToSenior,
                 }
                 for chat in chats
@@ -401,6 +402,8 @@ def coffeechat_completed(request):
                     "id": chat.id,
                     "name": chat.profile.user.username,
                     "cohort": chat.profile.user.cohort,
+                    "memo": chat.memo,
+                    "memo_id": chat.memo.id,
                     "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
                 }
                 for chat in chats
