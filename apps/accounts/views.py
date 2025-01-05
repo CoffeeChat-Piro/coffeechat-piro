@@ -28,7 +28,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('accounts:login')
+            return redirect('accounts:onboarding')
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/signup.html', {'form': form})
@@ -43,6 +43,17 @@ def login_view(request):
     else:
         form = CustomAuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
+
+@login_required
+def onboarding(request):
+    if request.method == 'POST':
+        if 'mentor' in request.POST:
+            # 멘토로 참여하기 선택 시
+            return redirect('coffeechat:coffeechat_create')
+        elif 'mentee' in request.POST:
+            # 멘티로 참여하기 선택 시
+            return redirect('coffeechat:main')
+    return render(request, 'accounts/onboarding.html')
 
 @login_required
 def logout_view(request):

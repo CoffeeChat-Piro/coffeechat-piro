@@ -34,6 +34,10 @@
     /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
+
+     /* Error Colors */
+     --error-color: #e74c3c;
+     --error-background: rgba(231, 76, 60, 0.1);
 }
 
 * {

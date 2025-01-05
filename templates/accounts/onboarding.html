@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiroTime 온보딩</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/accounts/onboarding.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="qna-container">
+                <div class="qna-card">
+                    <div class="logo">
+                        <div class="logo-box">
+                            <img src="{% static 'images/logo.png' %}" alt="PiroTime Logo">
+                        </div>
+                        <h1>Piro Time</h1>
+                    </div>
+                    
+                    <p class="subtitle">당신의 이야기를 들려주세요</p>
+                    
+                    <form method="post" class="button-container">
+                        {% csrf_token %}
+                        <button type="submit" name="mentor" class="button-box">
+                            <span class="main-text">멘토로 참여하기</span>
+                            <span class="hover-text">나누고 싶은 경험이 있어요!</span>
+                            <span class="arrow">›</span>
+                        </button>
+                        
+                        <button type="submit" name="mentee" class="button-box">
+                            <span class="main-text">멘티로 참여하기</span>
+                            <span class="hover-text">듣고 싶은 이야기가 있어요!</span>
+                            <span class="arrow">›</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
