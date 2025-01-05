@@ -23,7 +23,8 @@ urlpatterns = [
     path('review/<int:pk>/create', views.create_review, name='create_review'),
 
     #complete로 전환
-    path('/coffeechat/<int:pk/complete', views.coffeechat_to_complete, name='coffeechat_to_complete'),
+    path('/coffeechat/<int:pk>/complete', views.coffeechat_to_complete, name='coffeechat_to_complete'),
+    path('/coffeechat/<int:pk>/rejected', views.coffeechat_to_rejected, name='coffeechat_to_rejected'),
 
     ####4
 
