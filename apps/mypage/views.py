@@ -419,12 +419,23 @@ def coffeechat_completed(request):
 @login_required
 def coffeechat_to_complete(request, pk):
     coffeechat = get_object_or_404(CoffeeChat, pk=pk)
+
+    coffeechat.status = 'COMPLETED'
     coffeechat.save()  # 변경 사항 저장
 
     # JSON 응답 반환
     return JsonResponse({'success': True, 'message': 'CoffeeChat marked as COMPLETED.'})
 
-def
+def coffeechat_to_rejected(request, pk):
+    coffeechat = get_object_or_404(CoffeeChat, pk=pk)
+
+    coffeechat.status = 'REJECTED'
+    coffeechat.save()  # 변경 사항 저장
+
+    # JSON 응답 반환
+    return JsonResponse({'success': True, 'message': 'CoffeeChat marked as REJECTED.'})
+
+
 
 
 #메모 조회 및 수정 가능한 상태

@@ -22,6 +22,9 @@ urlpatterns = [
     #review 관련 메서드
     path('review/<int:pk>/create', views.create_review, name='create_review'),
 
+    #complete로 전환
+    path('/coffeechat/<int:pk/complete', views.coffeechat_to_complete, name='coffeechat_to_complete'),
+
     ####4
 
     path('ajax/activities/', views.ActivitiesAjaxView.as_view, name='ajax_activities'),
