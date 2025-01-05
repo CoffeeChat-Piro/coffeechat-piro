@@ -236,12 +236,12 @@ def accept_request(request, request_id):
         content=""
     )
 
-    # 수락자(선배)를 위한 메모 생성
-    Memo.objects.create(
-        coffeeChatRequest=coffeechat_request,  # 올바른 필드명으로 수정
-        user=coffeechat_request.profile.user,
-        content=""
-    )
+    # # 수락자(선배)를 위한 메모 생성
+    # Memo.objects.create(
+    #     coffeeChatRequest=coffeechat_request,  # 올바른 필드명으로 수정
+    #     user=coffeechat_request.profile.user,
+    #     content=""
+    # )
 
 
     subject = f"PiroTime: {request.user}님이 커피챗 요청을 수락했습니다!"
