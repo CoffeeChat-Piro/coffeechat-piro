@@ -545,7 +545,9 @@ def get_review(request, pk):
         "review":
             {
                 "id": review.id,
+                "my_name": request.user.username,
                 "profile_user": profile.user.username,
+                "profile_user_id": profile.user.id,
                 "review_content": review.content,
             }
     }
