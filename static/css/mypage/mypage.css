@@ -8,18 +8,19 @@
     --font-s: 14px;
     --font-xs: 10px;
 }
+
 .content {
     padding-bottom: 0;
 }
 
 .profile-section {
     position: relative;
-    padding-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
 }
 
 .profile-header {
     background-color: var(--card-color);
-    padding: 48px var(--spacing-lg) calc(40px + var(--spacing-lg));
+    padding: 40px var(--spacing-lg) calc(40px + var(--spacing-lg));
     text-align: center;
     min-height: 100px;
 }
@@ -216,7 +217,7 @@ img.profile-img {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-xxl);
+    padding: var(--spacing-xl);
     font-size: var(--font-m);
 }
 

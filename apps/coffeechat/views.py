@@ -218,6 +218,23 @@ def accept_request(request, request_id):
     profile.count += 1
     profile.save()
 
+    # 양쪽 사용자를 위한 메모 생성
+    from apps.coffeechat.models import Memo  # 상단에 import 추가 필요
+
+    # 신청자(후배)를 위한 메모 생성
+    Memo.objects.create(
+        coffeeChatRequest=coffeechat_request,  # 올바른 필드명으로 수정
+        user=coffeechat_request.user,
+        content=""
+    )
+
+    # 수락자(선배)를 위한 메모 생성
+    Memo.objects.create(
+        coffeeChatRequest=coffeechat_request,  # 올바른 필드명으로 수정
+        user=coffeechat_request.profile.user,
+        content=""
+    )
+
 
     subject = f"PiroTime: {request.user}님이 커피챗 요청을 수락했습니다!"
     content = f"{coffeechat_request.user}님! 요청하신 커피챗 요청이 수락되었습니다! 아래에 있는 연락처로 연락해보세요!"

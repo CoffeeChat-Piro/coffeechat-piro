@@ -302,7 +302,7 @@ def coffeechat_received(request):
                         "id": chat.id,
                         "name": chat.user.username,
                         "cohort": chat.user.cohort,
-                        "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M'),
+                        "created_at": chat.created_at,
                         "letterToSenior": chat.letterToSenior,
                     }
                     for chat in chats
@@ -334,7 +334,7 @@ def coffeechat_requested(request):
                     "id": chat.id,
                     "name": chat.profile.user.username,
                     "cohort": chat.profile.user.cohort,
-                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M'),
+                    "created_at": chat.created_at,
                     "letterToSenior": chat.letterToSenior,
                 }
                 for chat in chats
@@ -354,32 +354,44 @@ def coffeechat_in_progress(request):
         # 현재 로그인된 사용자 가져오기
         current_user = request.user
 
-        # 요청한 사용자와 상태가 'ONGOING'인 CoffeeChat 필터링
+        # 진행중인 커피챗 모두 찾기
         chats = CoffeeChat.objects.filter(
-            user=current_user,  # 현재 사용자가 신청자인 경우
             status='ONGOING'
+        ).filter(
+            user=current_user
+        ) | CoffeeChat.objects.filter(
+            status='ONGOING'
+        ).filter(
+            profile__user=current_user
         )
 
-        # 결과 데이터를 템플릿에 전달
-        context = {
-            "chats": [
-                {
-                    "id": chat.id,
-                    "name": chat.profile.user.username,
-                    "cohort": chat.profile.user.cohort,
-                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                    "memo": chat.memot,
-                    "memo_id": chat.memo.id,
-                    "letterToSenior": chat.letterToSenior,
-                }
-                for chat in chats
-            ]
-        }
+        chat_list = []
+        for chat in chats:
+            # 상대방 정보 설정
+            if chat.user == current_user:
+                other_user = chat.profile.user
+            else:
+                other_user = chat.user
 
-        # 화면 출력
+            # 현재 사용자의 메모 가져오기
+            memo = get_object_or_404(Memo, coffeeChatRequest=chat.id, user=current_user)
+            
+            chat_data = {
+                "id": chat.id,
+                "name": other_user.username,
+                "cohort": other_user.cohort,
+                "accepted_at": chat.accepted_at,
+                "memo_id": memo.id,
+                "letterToSenior": chat.letterToSenior,
+            }
+            chat_list.append(chat_data)
+
+        context = {
+            "chats": chat_list
+        }
+        
         return render(request, "mypage/mychating.html", context)
 
-    # 잘못된 요청 처리
     return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
 
 #완료된 커피챗 조회
@@ -448,18 +460,27 @@ def memo(request, pk, re):
 
 def memo_context(saved_memo):
 
-    coffeechat = saved_memo.coffeechat
+    coffeechat = saved_memo.coffeeChatRequest  
     profile_user = coffeechat.profile.user
-    context = {
-        "memo":
-            {
-                "id": saved_memo.id,
-                "accepted_date": coffeechat.accepted_at,
-                "profile_user": profile_user.name,
-                "coffeechat": coffeechat.id,
-                "memo_content": saved_memo.content,
 
-            }
+    # 현재 로그인한 사용자가 커피챗 신청자인지 확인
+    is_requester = saved_memo.user == coffeechat.user
+
+     # is_requester 여부에 따라 상대방 정보 설정
+    if is_requester:
+        other_user = coffeechat.profile.user  # 신청 받은 사람
+    else:
+        other_user = coffeechat.user  # 신청한 사람
+    
+    context = {
+        "memo": {
+            "id": saved_memo.id,
+            "accepted_date": coffeechat.accepted_at,
+            "profile_user": other_user.username,  # 상대방 이름
+            "coffeechat": coffeechat.id,
+            "memo_content": saved_memo.content,
+            "is_requester": is_requester,
+        }
     }
     return context
 

@@ -98,7 +98,7 @@ class Scrap(models.Model):
 
 class Memo(models.Model):
     user = models.ForeignKey(User, related_name='memos', on_delete=models.CASCADE)
-    coffeeChatRequest = models.OneToOneField(CoffeeChat, related_name='memo', on_delete=models.CASCADE)
+    coffeeChatRequest = models.ForeignKey(CoffeeChat, related_name='memos', on_delete=models.CASCADE)  # OneToOneField를 ForeignKey로 변경
     updated_at = models.DateTimeField(auto_now=True)
     content = models.CharField(max_length=5000, blank=True)
 
