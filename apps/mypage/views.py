@@ -240,12 +240,19 @@ def coffeechat_in_progress(request):
             profile__user=current_user
         )
 
+        chat_list = []
+        for chat in chats:
+            if chat.user == current_user:  # 내가 신청자인 경우
+                other_user = chat.profile.user
+            else:  # 내가 신청받은 사람인 경우
+                other_user = chat.user
+
         context = {
             "chats": [
                 {
                     "id": chat.id,
-                    "name": chat.user.username,
-                    "cohort": chat.user.cohort,
+                    "name": other_user.username,
+                    "cohort": other_user.cohort,
                     "accepted_at": chat.created_at,
                     "letterToSenior": chat.letterToSenior,
                     "memo_id": chat.memo.id if chat.user == current_user else False,
@@ -254,7 +261,6 @@ def coffeechat_in_progress(request):
                 for chat in chats
             ]
         }
-
         
         return render(request, "mypage/mychating.html", context)
 
@@ -276,14 +282,12 @@ def coffeechat_completed(request):
             profile__user=current_user
         )
         
-        # chat_list = []
-        # for chat in chats:
-        #     if chat.user == current_user:  # 내가 신청자인 경우
-        #         other_user = chat.profile.user
-        #         is_requester = True
-        #     else:  # 내가 신청받은 사람인 경우
-        #         other_user = chat.user
-        #         is_requester = False
+        chat_list = []
+        for chat in chats:
+            if chat.user == current_user:  # 내가 신청자인 경우
+                other_user = chat.profile.user
+            else:  # 내가 신청받은 사람인 경우
+                other_user = chat.user
         #
         #     memo = Memo.objects.filter(coffeeChatRequest=chat.id).first()
         #     review_done = Review.objects.filter(coffeechat_request=chat).exists()
@@ -307,8 +311,8 @@ def coffeechat_completed(request):
             "chats": [
                 {
                     "id": chat.id,
-                    "name": chat.user.username,
-                    "cohort": chat.user.cohort,
+                    "name": other_user.username,
+                    "cohort": other_user.cohort,
                     "accepted_at": chat.created_at,
                     "memo_id": chat.memo.id if chat.user == current_user else False,
                     "review_done": True if Review.objects.filter(coffeechat_request=chat).exists() else False,
@@ -424,7 +428,7 @@ def create_review(request, pk):
 
     if request.method == 'POST':
         user = request.user
-        content = request.content
+        content = request.POST.get('content')
         profile = coffeechat.profile
 
         try:
@@ -442,7 +446,8 @@ def create_review(request, pk):
             return {'message': '리뷰 생성에 실패하였습니다.'}
 
     context = {
-        'profile_name': coffeechat.profile.user.username
+        'profile_name': coffeechat.profile.user.username,
+        'pk': pk
     }
 
     return render(request, "mypage/mychatreview.html", context)
@@ -451,7 +456,7 @@ def get_review(request, pk):
 
     coffeechat = get_object_or_404(CoffeeChat, pk=pk)
     profile = coffeechat.profile
-    review = get_object_or_404(Review, coffeechat=coffeechat)
+    review = get_object_or_404(Review, coffeechat_request=coffeechat)
 
     context = {
         "review":
@@ -463,7 +468,7 @@ def get_review(request, pk):
                 "review_content": review.content,
             }
     }
-    return render(request, ".html", context)
+    return render(request, "mypage/mychatreview_get.html", context)
 
 '''
     지금 사용 안하는 메서드

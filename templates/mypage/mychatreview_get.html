@@ -14,14 +14,10 @@
 <div class="content">
     <div class="header">
         <button class="close-button" onclick="history.back()"><i class="fas fa-times"></i></button>
-        <h1>{{ profile_name }}님과의 커피챗에 대해서 <br/>리뷰 작성하기</h1>
+        <h1>{{ review.profile_user }}님과의 커피챗에 대해서 <br/>작성한 리뷰</h1>
     </div>
-    <form method="POST" action="{% url 'mypage:create_review' pk=pk %}">
-        {% csrf_token %}
-        <div class="main-content">
-            <textarea name="content" class="question-input"></textarea>
-            <button type="submit" class="submit-button">리뷰 작성하기</button>
-        </div>
-    </form>
+    <div class="main-content">
+        <textarea class="question-input" readonly>{{ review.review_content }}</textarea>
+    </div>
 </div>
 {% endblock %}

@@ -1,12 +1,11 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} 
+{% load static %}  
 
-{# header 블록을 비워서 오버라이드(header없애기 위함) #}
-{% block header %}{% endblock %}
+{% block header %}{% endblock %}  
 
-{% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/mypage/mychatlist.css' %}">
-{% endblock %}
+{% block extra_head %} 
+<link rel="stylesheet" href="{% static 'css/mypage/mychatlist.css' %}"> 
+{% endblock %}  
 
 {% block content %} 
 <div class="content">     
@@ -19,19 +18,22 @@
     <div id="chatList" class="chat-list">         
         {% if chats %}             
             {% for chat in chats %}
-            <div class="chat-item end" {% if chat.is_requester %}onclick="location.href='{% url 'mypage:coffeechat_memo' pk=chat.memo_id re='end' %}'"{% endif %}>                 
-                <div class="chat-info">                     
-                    <span class="user-name">{{ chat.name }}</span>                     
-                    <span class="user-th">피로그래밍 {{ chat.cohort }}기</span>                     
-                    <div class="chat-date">커피챗 수락일: {{ chat.accepted_at }}</div>                 
-                </div>                                 
+            <div class="chat-item end">
+                <!-- 메모 링크를 div.chat-info에만 적용 -->
+                <div class="chat-info" {% if chat.is_requester and chat.memo_id %}onclick="location.href='{% url 'mypage:coffeechat_memo' pk=chat.memo_id re='end' %}'"{% endif %}>
+                    <span class="user-name">{{ chat.name }}</span>
+                    <span class="user-th">피로그래밍 {{ chat.cohort }}기</span>
+                    <div class="chat-date">커피챗 수락일: {{ chat.accepted_at }}</div>
+                    {% if chat.is_requester and chat.memo_id %}
+                        <i class="fa-solid fa-chevron-right arrow-right"></i>
+                    {% endif %}
+                </div>
                 {% if chat.is_requester %}
-                {% if not chat.review_done %}                     
-                    <span class="status-badge" onclick="location.href='{% url 'mypage:create_review' pk=chat.id %}'">리뷰 작성하기</span>                 
-                {% else %}                     
-                    <span class="status-badge" onclick="location.href='{% url 'mypage:review_detail' pk=chat.id %}'">리뷰 작성완료</span>                 
-                {% endif %} 
-                <i class="fa-solid fa-chevron-right arrow-right"></i>
+                    {% if not chat.review_done %}
+                        <span class="status-badge" onclick="event.stopPropagation(); location.href='{% url 'mypage:create_review' pk=chat.id %}'">리뷰 작성하기</span>
+                    {% else %}
+                        <span class="status-badge" onclick="event.stopPropagation(); location.href='{% url 'mypage:get_review' pk=chat.id %}'">리뷰 작성완료</span>
+                    {% endif %}
                 {% endif %}
             </div>             
             {% endfor %}         
