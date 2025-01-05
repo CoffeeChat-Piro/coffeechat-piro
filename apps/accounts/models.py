@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
-from apps.coffeechat.models import CoffeeChat
+
 
 
 def validate_img_size(image):
@@ -27,11 +27,3 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-class Memo(models.Model):
-    user = models.ForeignKey(User, related_name='memos', on_delete=models.CASCADE)
-    coffeeChatRequest = models.OneToOneField(CoffeeChat, related_name='memo', on_delete=models.CASCADE)
-    updated_at = models.DateTimeField(auto_now=True)
-    content = models.CharField(max_length=5000, blank=True)
-
-    def __str__(self):
-        return f'Memo by {self.user.username} for coffee chat request {self.coffeeChatRequest.id}'

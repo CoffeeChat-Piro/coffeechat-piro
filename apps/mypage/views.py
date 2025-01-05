@@ -14,12 +14,12 @@ from django.views.decorators.csrf import csrf_exempt
 import random
 
 # 프로젝트 내 모듈
-from apps.accounts.models import User, Memo
+from apps.accounts.models import User
 from apps.accounts.forms import CustomUserChangeForm
 # from apps.review.models import Review, Comment as ReviewComment
 # from apps.corboard.models import Corboard, Comment as CorboardComment
 # from apps.trend.models import Trend, Comment as TrendComment
-from apps.coffeechat.models import Profile, CoffeeChat, Scrap
+from apps.coffeechat.models import Profile, CoffeeChat, Scrap, Memo
 from apps.coffeechat.forms import WayToContect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash 
@@ -289,25 +289,27 @@ def coffeechat_received(request):
         # 현재 로그인된 사용자 가져오기
         current_user = request.user
 
-        # Profile 객체 가져오기 (get_object_or_404 사용)
-        user_profile = get_object_or_404(Profile, user=current_user)
+        user_profile = Profile.objects.filter(user=current_user).first()
 
-        # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
-        chats = CoffeeChat.objects.filter(profile=user_profile, status='WAITING')
+        if user_profile:
+            # 요청한 사용자와 상태가 'WAITING'인 CoffeeChat 필터링
+            chats = CoffeeChat.objects.filter(profile=user_profile, status='WAITING')
 
-        # 결과 데이터를 템플릿에 전달
-        context = {
-            "chats": [
-                {
-                    "id": chat.id,
-                    "name": chat.user.username,
-                    "cohort": chat.user.cohort,
-                    "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M'),
-                    "letterToSenior": chat.letterToSenior,
-                }
-                for chat in chats
-            ]
-        }
+            # 결과 데이터를 템플릿에 전달
+            context = {
+                "chats": [
+                    {
+                        "id": chat.id,
+                        "name": chat.user.username,
+                        "cohort": chat.user.cohort,
+                        "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M'),
+                        "letterToSenior": chat.letterToSenior,
+                    }
+                    for chat in chats
+                ]
+            }
+        else:
+            context = None
 
         # 화면 출력
         return render(request, "mypage/mychatpull.html", context)

@@ -17,7 +17,7 @@ from django.views.decorators.http import require_POST
 from apps.coffeechat.forms import WayToContect
 
 # 프로젝트 내 모듈
-from .models import Profile, Hashtag, CoffeeChat, Review, User, informationAgree
+from .models import Profile, Hashtag, CoffeeChat, Review, User, informationAgree, Scrap
 from .forms import CoffeeChatForm, ReviewForm, CoffeechatRequestForm
 
 User = get_user_model()
@@ -150,6 +150,12 @@ def detail(request, pk):
     hashtags = profile.hashtags.all()
     requests = CoffeeChat.objects.filter(profile=profile)
 
+    scraps = Scrap.objects.filter(user=request.user, profile=profile)
+    if scraps:
+        bookmarked = True
+    else:
+        bookmarked = False
+
     for req in requests:
         req.existing_review = hasattr(req, 'review')
 
@@ -170,6 +176,7 @@ def detail(request, pk):
             user=request.user,
             coffeechat_request__profile=profile
         ).exists(),
+        'bookmarked': bookmarked
     }
     return render(request, 'coffeechat/detail.html', ctx)
 
@@ -354,13 +361,24 @@ def cohort_profiles(request, cohort):
 @login_required
 def bookmark_profile(request, pk):
     profile = get_object_or_404(Profile, pk=pk)
-    if request.user in profile.bookmarks.all():
-        profile.bookmarks.remove(request.user)
+    user = request.user
+
+    # Scrap 객체 필터링
+    scraps = Scrap.objects.filter(user=user, profile=profile)
+
+    if scraps.exists():  # QuerySet의 값이 존재하는지 확인
+        scraps.delete()  # 삭제
         bookmarked = False
+        print("Scrap deleted.")
     else:
-        profile.bookmarks.add(request.user)
+        # 새 Scrap 객체 생성
+        scrap = Scrap.objects.create(user=user, profile=profile)
         bookmarked = True
+        print(f"Scrap added by user: {scrap.user.username}")
+
+    # JSON 응답 반환
     return JsonResponse({'bookmarked': bookmarked})
+
 
 @login_required
 def toggle_visibility(request, profile_id):
