@@ -325,7 +325,7 @@ def coffeechat_to_complete(request, pk):
         coffeechat.status = 'COMPLETED'
         coffeechat.save()  # 변경 사항 저장
         
-        coffeechat_request = get_object_or_404(CoffeeChat)
+        coffeechat_request = get_object_or_404(CoffeeChat, id=pk)
         profile = coffeechat_request.profile
         profile.count -= 1
         profile.save()

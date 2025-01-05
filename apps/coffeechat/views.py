@@ -137,7 +137,7 @@ def detail(request, pk):
                 message = form.cleaned_data['requestContent']
 
                 subject = "PiroTime: 커피챗 신청이 왔습니다!"
-                content = f"{profile.user}님! 작성하신 커피챗 프로필에 요청한 사람이 있습니다! 아래 링크로 들어와 확인해 보세요."
+                content = f"{profile.user}님! 작성하신 커피챗 프로필에 요청한 사람이 있습니다. 아래 링크로 들어와 확인해 보세요: <a href='https://www.pirotime.com'>www.pirotime.com</a>"
                 sending_mail(profile.user, request.user, subject, content, message)
 
                 CoffeeChat.objects.create(
@@ -267,10 +267,6 @@ def reject_request(request, request_id):
 
     coffeechat_request.status = "REJECTED"
     coffeechat_request.save()
-    
-    profile = coffeechat_request.profile
-    profile.count -= 1
-    profile.save()
 
     profile = coffeechat_request.profile
     subject = f"PiroTime: {request.user}님이 커피챗 요청을 거절하셨습니다!"
@@ -337,7 +333,7 @@ def sending_mail(receiver, sender, subject, content, message):
     <div style="padding: 20px; background-color: #f9f9f9;">
         <h2 style="color: #333;">PiroTime 커피챗</h2>
         <h3 style="color: #444;">{content}</h3>
-        <p style="margin: 15px 0;">보낸 메시지: {message}</p>
+        <p style="margin: 15px 0;">{message}</p>
         <hr style="border: 1px solid #eee;">
         <p style="color: #666;">From: {sender.username}</p>
         <p style="color: #666;">To: {receiver.username}</p>
