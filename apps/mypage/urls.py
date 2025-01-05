@@ -29,7 +29,7 @@ urlpatterns = [
 
     ####4
 
-    path('ajax/activities/', views.ActivitiesAjaxView.as_view, name='ajax_activities'),
+    # path('ajax/activities/', views.ActivitiesAjaxView.as_view, name='ajax_activities'),
     path('ajax/profile-modal/', views.profile_modal_view, name='profile_modal'),
     path('profile/<int:user_id>/', views.profile_read, name='profile_read'),
     path('bookmark/<int:pk>/', views.coffeechat_bookmark_profile, name='coffeechat_bookmark_profile'),
