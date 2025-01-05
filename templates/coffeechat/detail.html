@@ -12,7 +12,11 @@
         <div class="profile-header">
           <div class="profile-left">
             <div class="profile-image">
-              <i class="fa-solid fa-user" style="color: #CCCCCC; font-size: 24px;"></i>
+              {% if profile.user.profile_image %}
+                <img src="{{ profile.user.profile_image.url }}" alt="{{ profile.user.username }}" />
+              {% else %}
+                <i class="fa-solid fa-user" style="color: #CCCCCC; font-size: 24px;"></i>
+              {% endif %}
             </div>
             <div class="profile-info">
               <div class="profile-main">
@@ -108,59 +112,59 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       // CSRF 토큰 설정
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
     
       // 탭 전환 기능
-      const tabBtns = document.querySelectorAll('.tab-btn');
-      const tabContents = document.querySelectorAll('.tab-content');
+      const tabBtns = document.querySelectorAll('.tab-btn')
+      const tabContents = document.querySelectorAll('.tab-content')
     
       tabBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
-          const tabId = btn.dataset.tab;
+          const tabId = btn.dataset.tab
     
-          tabBtns.forEach((b) => b.classList.remove('active'));
-          tabContents.forEach((c) => c.classList.remove('active'));
+          tabBtns.forEach((b) => b.classList.remove('active'))
+          tabContents.forEach((c) => c.classList.remove('active'))
     
-          btn.classList.add('active');
-          document.getElementById(tabId).classList.add('active');
-        });
-      });
+          btn.classList.add('active')
+          document.getElementById(tabId).classList.add('active')
+        })
+      })
     
       // 모달 관련 기능
-      const requestBtn = document.getElementById('requestBtn');
-      const modal = document.getElementById('requestModal');
-      const closeBtn = document.querySelector('.close-btn');
-      const submitBtn = document.querySelector('.submit-btn');
-      const requestForm = document.querySelector('.request-form');
+      const requestBtn = document.getElementById('requestBtn')
+      const modal = document.getElementById('requestModal')
+      const closeBtn = document.querySelector('.close-btn')
+      const submitBtn = document.querySelector('.submit-btn')
+      const requestForm = document.querySelector('.request-form')
     
       if (requestBtn) {
         requestBtn.addEventListener('click', () => {
-          modal.style.display = 'flex';
-        });
+          modal.style.display = 'flex'
+        })
       }
     
       if (closeBtn) {
         closeBtn.addEventListener('click', () => {
-          modal.style.display = 'none';
-        });
+          modal.style.display = 'none'
+        })
       }
     
       // 모달 외부 클릭시 닫기
       window.addEventListener('click', (e) => {
         if (e.target === modal) {
-          modal.style.display = 'none';
+          modal.style.display = 'none'
         }
-      });
+      })
     
       // 커피챗 제안 폼 제출
       if (requestForm) {
         requestForm.addEventListener('submit', function (e) {
-          e.preventDefault();
+          e.preventDefault()
     
-          submitBtn.disabled = true;
-          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 전송 중...';
+          submitBtn.disabled = true
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 전송 중...'
     
-          const formData = new FormData(this);
+          const formData = new FormData(this)
     
           fetch(window.location.href, {
             method: 'POST',
@@ -172,30 +176,30 @@
           })
             .then((response) => {
               if (response.ok) {
-                modal.style.display = 'none';
-                alert('커피챗 신청이 완료되었습니다.');
-                window.location.reload();
+                modal.style.display = 'none'
+                alert('커피챗 신청이 완료되었습니다.')
+                window.location.reload()
               } else {
-                throw new Error('Network response was not ok');
+                throw new Error('Network response was not ok')
               }
             })
             .catch((error) => {
-              console.error('Error:', error);
-              alert('전송 중 오류가 발생했습니다. 다시 시도해주세요.');
+              console.error('Error:', error)
+              alert('전송 중 오류가 발생했습니다. 다시 시도해주세요.')
             })
             .finally(() => {
-              submitBtn.disabled = false;
-              submitBtn.innerHTML = '제안하기';
-            });
-        });
+              submitBtn.disabled = false
+              submitBtn.innerHTML = '제안하기'
+            })
+        })
       }
     
       // 북마크 기능
-      const bookmarkBtn = document.querySelector('.bookmark-btn');
+      const bookmarkBtn = document.querySelector('.bookmark-btn')
       if (bookmarkBtn) {
         bookmarkBtn.addEventListener('click', function () {
-          const profileId = this.dataset.profileId;
-          
+          const profileId = this.dataset.profileId
+    
           fetch(`/coffeechat/${profileId}/bookmark/`, {
             method: 'POST',
             headers: {
@@ -206,23 +210,23 @@
           })
             .then((res) => {
               if (!res.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Network response was not ok')
               }
-              return res.json();
+              return res.json()
             })
             .then((data) => {
               if (data.bookmarked) {
-                this.classList.add('active');
+                this.classList.add('active')
               } else {
-                this.classList.remove('active');
+                this.classList.remove('active')
               }
             })
             .catch((error) => {
-              console.error('Error:', error);
-              alert('북마크 처리 중 오류가 발생했습니다.');
-            });
-        });
+              console.error('Error:', error)
+              alert('북마크 처리 중 오류가 발생했습니다.')
+            })
+        })
       }
-    });
+    })
   </script>
 {% endblock %}

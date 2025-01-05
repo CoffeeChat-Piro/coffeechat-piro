@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/coffeechat/main.css' %}">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/coffeechat/main.css' %}" />
 
-<div class="mentors-container">
-    <!-- <div class="search-bar">
+  <div class="mentors-container">
+    <!--  <div class="search-bar">
         <form method="get" class="search-form">
             <input type="text" 
                    name="search"
@@ -20,95 +20,89 @@
                 검색
             </button>
         </form>
-    </div> -->
+    </div>  -->
     <div class="search-bar">
-        <form method="get" class="search-form">
-            <input type="text"
-                   name="search"
-                   placeholder="원하는 피로그래밍 선배님 검색"
-                   class="search-input"
-                   value="{{ request.GET.search|default:'' }}">
-            <button type="submit" class="search-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <span>검색</span>
-            </button>
-        </form>
+      <form method="get" class="search-form">
+        <input type="text" name="search" placeholder="원하는 피로그래밍 선배님 검색" class="search-input" value="{{ request.GET.search|default:'' }}" />
+        <button type="submit" class="search-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span>검색</span>
+        </button>
+      </form>
     </div>
 
     <div class="mentors-grid">
-        {% for mentor in profiles %}
-            {% if mentor.user != request.user %}
-            <a href="{% url 'coffeechat:coffeechat_detail' mentor.pk %}" class="mentor-card">
-                <div class="mentor-info">
-                    <div class="mentor-image">
-                        {% if mentor.receiver.profile_image %}
-                            <img src="{{ mentor.receiver.profile_image.url }}" alt="{{ mentor.receiver.username }}">
-                        {% else %}
-                            <i class="fa-solid fa-user profile-img"></i>
-                        {% endif %}
-                    </div>
-                    <div class="mentor-details">
-                        <div class="mentor-header">
-                            <h3 class="mentor-name">{{ mentor.user.username }}</h3>
-                            <span class="mentor-status {{ mentor.profile_status|lower }}">
-                                {{ mentor.get_profile_status_display }}
-                            </span>
-                        </div>
-                        <p class="mentor-generation">피로 {{ mentor.user.cohort|default:"-" }}기</p>
-                    </div>
+      {% for mentor in profiles %}
+        {% if mentor.user != request.user %}
+          <a href="{% url 'coffeechat:coffeechat_detail' mentor.pk %}" class="mentor-card">
+            <div class="mentor-info">
+              <div class="mentor-image">
+                {% if mentor.user.profile_image %}
+                  <img src="{{ mentor.user.profile_image.url }}" alt="{{ mentor.user.username }}" />
+                {% else %}
+                  <i class="fa-solid fa-user profile-img"></i>
+                {% endif %}
+              </div>
+              <div class="mentor-details">
+                <div class="mentor-header">
+                  <h3 class="mentor-name">{{ mentor.user.username }}</h3>
+                  <span class="mentor-status {{ mentor.profile_status|lower }}">{{ mentor.get_profile_status_display }}</span>
                 </div>
-                <div class="mentor-tags">
-                    {% for tag in mentor.hashtags.all %}
-                    <span class="tag">#{{ tag.name }}</span>
-                    {% endfor %}
-                </div>
-            </a>
-            {% endif %}
-        {% endfor %}
+                <p class="mentor-generation">피로 {{ mentor.user.cohort|default:'-' }}기</p>
+              </div>
+            </div>
+            <div class="mentor-tags">
+              {% for tag in mentor.hashtags.all %}
+                <span class="tag">#{{ tag.name }}</span>
+              {% endfor %}
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
     </div>
 
     <!-- 페이지네이션 -->
     {% if profiles.has_other_pages %}
-    <div class="pagination">
+      <div class="pagination">
         {% if profiles.has_previous %}
-            <a href="?page={{ profiles.previous_page_number }}" class="pagination-arrow">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M15 18l-6-6 6-6"/>
-                </svg>
-            </a>
+          <a href="?page={{ profiles.previous_page_number }}" class="pagination-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </a>
         {% endif %}
-        
+
         <span class="pagination-info">{{ profiles.number }} / {{ profiles.paginator.num_pages }}</span>
 
         {% if profiles.has_next %}
-            <a href="?page={{ profiles.next_page_number }}" class="pagination-arrow">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 18l6-6-6-6"/>
-                </svg>
-            </a>
+          <a href="?page={{ profiles.next_page_number }}" class="pagination-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </a>
         {% endif %}
-    </div>
+      </div>
     {% endif %}
 
     {% if user.is_authenticated %}
-        {% if not user_has_profile %}
+      {% if not user_has_profile %}
         <a href="{% url 'coffeechat:coffeechat_create' %}" class="floating-button create-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
-                <path d="M12 2v20"></path>
-                <path d="M2 12h20"></path>
-            </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+            <path d="M12 2v20"></path>
+            <path d="M2 12h20"></path>
+          </svg>
         </a>
-        {% else %}
+      {% else %}
         <a href="{% url 'coffeechat:coffeechat_detail' user_profile_id %}" class="floating-button profile-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-            </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
         </a>
-        {% endif %}
+      {% endif %}
     {% endif %}
-</div>
+  </div>
 {% endblock %}
