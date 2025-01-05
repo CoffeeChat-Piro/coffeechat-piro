@@ -21,6 +21,7 @@ urlpatterns = [
 
     #review 관련 메서드
     path('review/<int:pk>/create', views.create_review, name='create_review'),
+    path('review/<int:pk>/get', views.get_review, name='get_review'),
 
     #complete로 전환
     path('coffeechat/<int:pk>/complete', views.coffeechat_to_complete, name='coffeechat_to_complete'),
