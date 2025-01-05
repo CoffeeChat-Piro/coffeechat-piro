@@ -40,33 +40,58 @@
 
     <div class="mentors-grid">
         {% for mentor in profiles %}
-        <a href="{% url 'coffeechat:coffeechat_detail' mentor.pk %}" class="mentor-card">
-            <div class="mentor-info">
-                <div class="mentor-image">
-                    {% if mentor.receiver.profile_image %}
-                        <img src="{{ mentor.receiver.profile_image.url }}" alt="{{ mentor.receiver.username }}">
-                    {% else %}
-                        <i class="fa-solid fa-user profile-img"></i>
-                    {% endif %}
-                </div>
-                <div class="mentor-details">
-                    <div class="mentor-header">
-                        <h3 class="mentor-name">{{ mentor.user.username }}</h3>
-                        <span class="mentor-status {{ mentor.profile_status|lower }}">
-                            {{ mentor.get_profile_status_display }}
-                        </span>
+            {% if mentor.user != request.user %}
+            <a href="{% url 'coffeechat:coffeechat_detail' mentor.pk %}" class="mentor-card">
+                <div class="mentor-info">
+                    <div class="mentor-image">
+                        {% if mentor.receiver.profile_image %}
+                            <img src="{{ mentor.receiver.profile_image.url }}" alt="{{ mentor.receiver.username }}">
+                        {% else %}
+                            <i class="fa-solid fa-user profile-img"></i>
+                        {% endif %}
                     </div>
-                    <p class="mentor-generation">피로 {{ mentor.user.cohort|default:"-" }}기</p>
+                    <div class="mentor-details">
+                        <div class="mentor-header">
+                            <h3 class="mentor-name">{{ mentor.user.username }}</h3>
+                            <span class="mentor-status {{ mentor.profile_status|lower }}">
+                                {{ mentor.get_profile_status_display }}
+                            </span>
+                        </div>
+                        <p class="mentor-generation">피로 {{ mentor.user.cohort|default:"-" }}기</p>
+                    </div>
                 </div>
-            </div>
-            <div class="mentor-tags">
-                {% for tag in mentor.hashtags.all %}
-                <span class="tag">#{{ tag.name }}</span>
-                {% endfor %}
-            </div>
-        </a>
+                <div class="mentor-tags">
+                    {% for tag in mentor.hashtags.all %}
+                    <span class="tag">#{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            </a>
+            {% endif %}
         {% endfor %}
     </div>
+
+    <!-- 페이지네이션 -->
+    {% if profiles.has_other_pages %}
+    <div class="pagination">
+        {% if profiles.has_previous %}
+            <a href="?page={{ profiles.previous_page_number }}" class="pagination-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </a>
+        {% endif %}
+        
+        <span class="pagination-info">{{ profiles.number }} / {{ profiles.paginator.num_pages }}</span>
+
+        {% if profiles.has_next %}
+            <a href="?page={{ profiles.next_page_number }}" class="pagination-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
 
     {% if user.is_authenticated %}
         {% if not user_has_profile %}

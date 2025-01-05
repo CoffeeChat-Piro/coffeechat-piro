@@ -19,7 +19,7 @@ from apps.accounts.forms import CustomUserChangeForm
 # from apps.review.models import Review, Comment as ReviewComment
 # from apps.corboard.models import Corboard, Comment as CorboardComment
 # from apps.trend.models import Trend, Comment as TrendComment
-from apps.coffeechat.models import Profile, CoffeeChat, Scrap, Memo
+from apps.coffeechat.models import Profile, CoffeeChat, Scrap, Memo, Review
 from apps.coffeechat.forms import WayToContect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash 
@@ -416,12 +416,40 @@ def coffeechat_completed(request):
     # 잘못된 요청 처리
     return render(request, "coffeechat/error.html", {"message": "Invalid request method."}, status=400)
 
+@login_required
+def coffeechat_to_complete(request, pk):
+    coffeechat = get_object_or_404(CoffeeChat, pk=pk)
+
+    coffeechat.status = 'COMPLETED'
+    coffeechat.save()  # 변경 사항 저장
+
+    # JSON 응답 반환
+    return JsonResponse({'success': True, 'message': 'CoffeeChat marked as COMPLETED.'})
+
+def coffeechat_to_rejected(request, pk):
+    coffeechat = get_object_or_404(CoffeeChat, pk=pk)
+
+    coffeechat.status = 'REJECTED'
+    coffeechat.save()  # 변경 사항 저장
+
+    # JSON 응답 반환
+    return JsonResponse({'success': True, 'message': 'CoffeeChat marked as REJECTED.'})
+
+
+
+
 #메모 조회 및 수정 가능한 상태
 @login_required
-def memo(request, pk):
+def memo(request, pk, re):
 
     saved_memo = get_object_or_404(Memo, pk=pk, user=request.user)
     context = memo_context(saved_memo)
+
+    #출력할 HTML 결정
+    if re == 'ing':
+        reHTML = 'mypage/mychatingdetail.html'
+    else:
+        reHTML = 'mypage/mychatenddetail.html'
 
     if request.method == "POST":
         # 폼 데이터에서 내용 가져오기
@@ -432,9 +460,12 @@ def memo(request, pk):
         saved_memo.content = content
         saved_memo.save()
         messages.success(request, "메모가 성공적으로 저장되었습니다.")
-        return render(request, 'mypage/mychating.html', context)
 
-    return render(request, 'mypage/mychating.html', context)
+        #새로운 페이지 생성
+        context = memo_context(saved_memo)
+        return render(request, reHTML, context)
+
+    return render(request, reHTML, context)
 
 
 def memo_context(saved_memo):
@@ -454,8 +485,59 @@ def memo_context(saved_memo):
     }
     return context
 
+#리뷰 생성 메서드
+def create_review(request, pk):
 
-#스크랩된 프로필 조
+    coffeechat = get_object_or_404(CoffeeChat, pk=pk)
+
+    if request.method == 'POST':
+        user = request.user
+        content = request.content
+        profile = coffeechat.profile
+
+        try:
+            # 이미 Review가 존재하는 경우 예외 처리
+            if Review.objects.filter(coffeechat_request=coffeechat).exists():
+                return {'message': '이미 리뷰를 작성하셨습니다.'}
+
+            review = Review.objects.create(
+                coffeechat_request=coffeechat,
+                user=user,
+                content=content
+            )
+            return redirect('mypage:coffeechat_completed')
+        except Exception as e:
+            return {'message': '리뷰 생성에 실패하였습니다.'}
+
+    # review = get_object_or_404(Review, coffeechat_request=coffeechat)
+    #
+    # # context = {
+    #     "review":
+    #         {
+    #             "id": review.id,
+    #             "profile_user": coffeechat.profile.user.username,
+    #             "review_content": review.content,
+    #         }
+    # }
+
+    context = {
+        'profile_name': coffeechat.profile.user.username
+    }
+
+    return render(request, "mypage/mychatreview.html", context)
+
+# def get_review(request, pk):
+#
+#     profile = get_object_or_404(Profile, pk=pk)
+#     reviews = Review.objects.filter(coffeechat_request__profile=profile)
+#
+#
+#
+
+'''
+    지금 사용 안하는 메서드
+    스크랩 정보는 mypage 접근하면서 같이 전송
+'''
 @login_required
 def scraped(request):
     # 현재 사용자와 관련된 모든 Scrap 객체 가져오기

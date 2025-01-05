@@ -76,7 +76,7 @@
             {% for review in reviews %}
               <div class="review-card">
                 <div class="review-header">
-                  <span class="reviewer-name">{{ review.reviewer.username }}</span>
+                  <span class="reviewer-name">{{ review.user.username }}</span>
                   <span class="review-date">{{ review.created_at|date:'Y.m.d' }}</span>
                 </div>
                 <p class="review-content">{{ review.content }}</p>
@@ -147,8 +147,15 @@
     
       // 폼 제출시 처리
       const requestForm = document.querySelector('.request-form')
+      const submitBtn = document.querySelector('.submit-btn')
+    
       requestForm.addEventListener('submit', function (e) {
         e.preventDefault()
+    
+        // 버튼 비활성화 및 텍스트 변경
+        submitBtn.disabled = true
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 전송 중...'
+    
         const formData = new FormData(this)
     
         fetch(window.location.href, {
@@ -157,13 +164,22 @@
           headers: {
             'X-CSRFToken': '{{ csrf_token }}'
           }
-        }).then((response) => {
-          if (response.ok) {
-            modal.style.display = 'none'
-            alert('커피챗 신청이 완료되었습니다.')
-            window.location.reload()
-          }
         })
+          .then((response) => {
+            if (response.ok) {
+              modal.style.display = 'none'
+              alert('커피챗 신청이 완료되었습니다.')
+              window.location.reload()
+            }
+          })
+          .catch((error) => {
+            alert('전송 중 오류가 발생했습니다. 다시 시도해주세요.')
+          })
+          .finally(() => {
+            // 버튼 상태 복구
+            submitBtn.disabled = false
+            submitBtn.innerHTML = '제안하기'
+          })
       })
       // 북마크 기능
       const bookmarkBtn = document.querySelector('.bookmark-btn')
