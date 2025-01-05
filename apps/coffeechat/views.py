@@ -267,10 +267,6 @@ def reject_request(request, request_id):
 
     coffeechat_request.status = "REJECTED"
     coffeechat_request.save()
-    
-    profile = coffeechat_request.profile
-    profile.count -= 1
-    profile.save()
 
     profile = coffeechat_request.profile
     subject = f"PiroTime: {request.user}님이 커피챗 요청을 거절하셨습니다!"
