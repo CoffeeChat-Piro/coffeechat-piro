@@ -4,13 +4,13 @@ from datetime import timedelta
 
 # Django 모듈
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
+
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.html import strip_tags
+
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
@@ -18,6 +18,7 @@ from apps.coffeechat.forms import WayToContect
 from django.core.paginator import Paginator
 
 # 프로젝트 내 모듈
+from .mailing_service import send_request_mail, send_accept_mail, send_reject_mail
 from .models import Profile, Hashtag, CoffeeChat, Review, User, informationAgree, Scrap
 from .forms import CoffeeChatForm, ReviewForm, CoffeechatRequestForm
 
@@ -134,18 +135,8 @@ def detail(request, pk):
         if waiting_requests < 2:
             form = CoffeechatRequestForm(request.POST)
             if form.is_valid():
-                message = form.cleaned_data['requestContent']
-
-                subject = "PiroTime: 커피챗 신청이 왔습니다!"
-                content = f"{profile.user}님! 작성하신 커피챗 프로필에 요청한 사람이 있습니다. 아래 링크로 들어와 확인해 보세요: <a href='https://www.pirotime.com'>www.pirotime.com</a>"
-                sending_mail(profile.user, request.user, subject, content, message)
-
-                CoffeeChat.objects.create(
-                    user=request.user,
-                    profile=profile,
-                    status='WAITING',
-                    letterToSenior=message
-                )
+                #요청 메일 전송
+                send_request_mail(form, profile, request)
         else:
             profile.profile_status = 'LIMITED'
             profile.save()
@@ -188,6 +179,9 @@ def detail(request, pk):
         'bookmarked': bookmarked,
     }
     return render(request, 'coffeechat/detail.html', ctx)
+
+
+
 
 @login_required
 def coffeechat_request(request, post_id):
@@ -243,17 +237,8 @@ def accept_request(request, request_id):
     #     content=""
     # )
 
+    return send_accept_mail(coffeechat_request, profile, request)
 
-    subject = f"PiroTime: {request.user}님이 커피챗 요청을 수락했습니다!"
-    content = f"{coffeechat_request.user}님! 요청하신 커피챗 요청이 수락되었습니다! 아래에 있는 연락처로 연락해보세요!"
-    message = ""
-
-    try:
-        sending_mail(profile.user, coffeechat_request.user, subject, content, message)
-    except Exception as e:
-        return JsonResponse({"error": "메일을 보내는 중 문제가 발생했습니다."}, status=503)
-
-    return JsonResponse({"status": "accepted"})
 
 @login_required
 @require_POST
@@ -269,18 +254,10 @@ def reject_request(request, request_id):
     coffeechat_request.save()
 
     profile = coffeechat_request.profile
-    subject = f"PiroTime: {request.user}님이 커피챗 요청을 거절하셨습니다!"
-    message = f"{coffeechat_request.user}님! 선배님의 개인 사정으로 인해 커피챗 요청이 거절되었습니다. 다른 선배님과의 커피챗은 어떠하신가요?"
-    content = ""
+    return send_reject_mail(coffeechat_request, profile, request)
 
-    try:
-        sending_mail(profile.user, coffeechat_request.user, subject, content, message)
-    except Exception as e:
-        return JsonResponse({"error": "메일을 보내는 중 문제가 발생했습니다."}, status=503)
 
-    return JsonResponse({"status": "rejected"})
-
-@login_required 
+@login_required
 def update(req, pk):
     profile = get_object_or_404(Profile, pk=pk)
     if req.method == "POST":
@@ -316,39 +293,6 @@ def delete(req, pk):
         profile.delete()
         return redirect('coffeechat:main')
     return render(req, 'coffeechat/delete.html', {'profile': profile})
-
-def generate_email_content(sender, receiver):
-    subject = "PiroTime: 커피챗 신청이 왔습니다!"
-    message = f"{sender.username}님으로 부터 협력 제안이 왔습니다. PiroTime에 접속해서 내용을 확인하세요!"
-    from_email = 'pirotimeofficial@gmail.com'
-    recipient_list = [receiver.email]
-    return subject, message, from_email, recipient_list
-
-def sending_mail(receiver, sender, subject, content, message):
-    from_email = 'pirotimeofficial@gmail.com'
-    recipient_list = [receiver.email]
-
-    # HTML 메시지 직접 생성
-    html_message = f"""
-    <div style="padding: 20px; background-color: #f9f9f9;">
-        <h2 style="color: #333;">PiroTime 커피챗</h2>
-        <h3 style="color: #444;">{content}</h3>
-        <p style="margin: 15px 0;">{message}</p>
-        <hr style="border: 1px solid #eee;">
-        <p style="color: #666;">From: {sender.username}</p>
-        <p style="color: #666;">To: {receiver.username}</p>
-    </div>
-    """
-    
-    plain_message = strip_tags(html_message)
-    send_mail(
-        subject,
-        plain_message,
-        from_email,
-        recipient_list,
-        html_message=html_message,
-    )
-    return True
 
 def howto(request):  
     return render(request, 'coffeechat/howto.html')
