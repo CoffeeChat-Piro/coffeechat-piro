@@ -17,7 +17,7 @@ urlpatterns = [
     path('ajax/coffeechat/in-progress', views.coffeechat_in_progress, name='coffeechat_in_progress'),     #커피챗 현황-진행중
     path('ajax/coffeechat/completed', views.coffeechat_completed, name='coffeechat_completed'),           #커피챗 현황-완료
     path('memo/<int:pk>', views.memo, name='coffeechat_memo'),                                           #메모 조회 수정
-    path('memo/<int:pk>', views.scraped, name='scraped_profiled'),
+    # path('memo/<int:pk>', views.scraped, name='scraped_profiled'),
     ####4
 
     path('ajax/activities/', views.ActivitiesAjaxView.as_view, name='ajax_activities'),

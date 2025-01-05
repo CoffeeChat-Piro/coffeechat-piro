@@ -203,18 +203,20 @@ def accept_request(request, request_id):
         way = inp.cleaned_data['way']
 
     coffeechat_request.status = 'ONGOING'
+    coffeechat_request.accepted_at = timezone.now()
     coffeechat_request.save()
 
     profile = coffeechat_request.profile
     profile.count += 1
     profile.save()
 
+
     subject = f"PiroTime: {request.user}님이 커피챗 요청을 수락했습니다!"
     content = f"{coffeechat_request.user}님! 요청하신 커피챗 요청이 수락되었습니다! 아래에 있는 연락처로 연락해보세요!"
     message = ""
 
     try:
-        sending_mail_info(profile.user, coffeechat_request.user, subject, content, message)
+        sending_mail(profile.user, coffeechat_request.user, subject, content, message)
     except Exception as e:
         return JsonResponse({"error": "메일을 보내는 중 문제가 발생했습니다."}, status=503)
 

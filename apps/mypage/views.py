@@ -366,7 +366,7 @@ def coffeechat_in_progress(request):
                     "name": chat.profile.user.username,
                     "cohort": chat.profile.user.cohort,
                     "created_at": chat.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                    # "memo": chat.memo.id,
+                    "memo": chat.memo,
                     "letterToSenior": chat.letterToSenior,
                 }
                 for chat in chats
@@ -416,6 +416,7 @@ def coffeechat_completed(request):
 def memo(request, pk):
 
     saved_memo = get_object_or_404(Memo, pk=pk, user=request.user)
+    context = memo_context(saved_memo)
 
     if request.method == "POST":
         # 폼 데이터에서 내용 가져오기
@@ -426,9 +427,28 @@ def memo(request, pk):
         saved_memo.content = content
         saved_memo.save()
         messages.success(request, "메모가 성공적으로 저장되었습니다.")
-        return redirect('coffeechat_memo', pk=saved_memo.pk)
+        return render(request, 'mypage/mychating.html', context)
 
-    return render(request, 'mypage/mychating.html', {'memo': saved_memo})
+    return render(request, 'mypage/mychating.html', context)
+
+
+def memo_context(saved_memo):
+
+    coffeechat = saved_memo.coffeechat
+    profile_user = coffeechat.profile.user
+    context = {
+        "memo":
+            {
+                "id": saved_memo.id,
+                "accepted_date": coffeechat.accepted_at,
+                "profile_user": profile_user.name,
+                "coffeechat": coffeechat.id,
+                "memo_content": saved_memo.content,
+
+            }
+    }
+    return context
+
 
 #스크랩된 프로필 조
 @login_required

@@ -55,6 +55,7 @@ class CoffeeChat(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='WAITING')
     created_at = models.DateTimeField(default=timezone.now)
+    accepted_at = models.DateTimeField(null=True)
     letterToSenior = models.TextField(null=True, blank=True)
 
     def __str__(self):

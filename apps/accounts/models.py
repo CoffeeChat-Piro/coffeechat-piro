@@ -4,6 +4,9 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
+from apps.coffeechat.models import CoffeeChat
+
+
 def validate_img_size(image):
     if image.size > 20 * 1024 * 1024:  # 20MB
         raise ValidationError("이미지의 최대 크기는 20MB입니다.")
@@ -26,7 +29,7 @@ class User(AbstractUser):
 
 class Memo(models.Model):
     user = models.ForeignKey(User, related_name='memos', on_delete=models.CASCADE)
-    coffeeChatRequest = models.OneToOneField('coffeechat.CoffeeChat', related_name='memo', on_delete=models.CASCADE)
+    coffeeChatRequest = models.OneToOneField(CoffeeChat, related_name='memo', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
     content = models.CharField(max_length=5000, blank=True)
 
