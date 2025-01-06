@@ -53,9 +53,13 @@ def home(request):
     page_obj = paginator.get_page(page)
     
     user_profile = Profile.objects.filter(user=request.user).first()
+    
+    waiting_requests = CoffeeChat.objects.filter(profile__user=request.user, status='WAITING').count()
+    is_limited = waiting_requests >= 2 or (user_profile and user_profile.count >= 2)
    
     context = {
         "profiles": page_obj,
+        "is_limited": is_limited,
         "user_has_profile": bool(user_profile),
         "user_profile_id": user_profile.id if user_profile else None
     }
@@ -137,13 +141,10 @@ def detail(request, pk):
             if form.is_valid():
                 #요청 메일 전송
                 send_request_mail(form, profile, request)
-        else:
-            profile.profile_status = 'LIMITED'
-            profile.save()
     
     is_waiting = CoffeeChat.objects.filter(user=request.user, profile=profile, status='WAITING').exists()
     waiting_requests = CoffeeChat.objects.filter(profile=profile, status='WAITING').count()
-    is_limited = waiting_requests >= 2
+    is_limited = waiting_requests >= 2 or profile.count >= 2
     is_ongoing = CoffeeChat.objects.filter(user=request.user, profile=profile, status='ONGOING').exists()
     is_completed = CoffeeChat.objects.filter(user=request.user, profile=profile, status='COMPLETED').exists()
     hashtags = profile.hashtags.all()
