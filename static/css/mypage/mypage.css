@@ -209,7 +209,6 @@ img.profile-img {
 
 .scrap-list:not(.empty) {
     background-color: white;
-    border: 1px solid #CCCCCC;
     border-radius: var(--base-radius);
 }
 
@@ -219,6 +218,15 @@ img.profile-img {
     align-items: center;
     padding: var(--spacing-xl);
     font-size: var(--font-m);
+    border: 1px solid #CCCCCC;
+    border-radius: var(--base-radius);
+    margin-bottom: var(--spacing-md); 
+    text-decoration: none;
+    color: black;
+}
+
+.scrap-item:last-child {
+    margin-bottom: 0;  
 }
 
 .scrap-info {

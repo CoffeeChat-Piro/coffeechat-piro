@@ -1,4 +1,5 @@
 # Django 내장 모듈
+import os
 import profile
 
 from django.views.generic import TemplateView, UpdateView
@@ -55,9 +56,37 @@ class mypageEditView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def form_valid(self, form):
-        print("Form is valid, redirecting to success_url")
-        response = super().form_valid(form)
-        return response
+        user = form.save(commit=False)
+        
+        # 이미지 삭제 요청 확인 (문자열 'true'로 전송됨)
+        delete_profile = self.request.POST.get('delete_profile_image') == 'true'
+        has_new_image = 'profile_image' in self.request.FILES
+        
+        # 이미지 삭제 처리
+        if delete_profile and user.profile_image:
+            try:
+                if hasattr(user.profile_image, 'path'):
+                    if os.path.exists(user.profile_image.path):
+                        os.remove(user.profile_image.path)
+                user.profile_image = None
+            except Exception as e:
+                print(f"Error deleting image: {e}")
+                
+        # 새 이미지 업로드 처리
+        elif has_new_image:
+            if user.profile_image:
+                try:
+                    if hasattr(user.profile_image, 'path'):
+                        if os.path.exists(user.profile_image.path):
+                            os.remove(user.profile_image.path)
+                except Exception as e:
+                    print(f"Error removing old image: {e}")
+            user.profile_image = self.request.FILES['profile_image']
+        
+        user.save()
+        messages.success(self.request, '회원정보가 성공적으로 수정되었습니다.')
+        return super().form_valid(form)
+
 
     def form_invalid(self, form):
         print("Form is invalid, reloading the form")
@@ -135,25 +164,28 @@ def password_change(request):
         # 현재 사용자
         user = request.user
 
+        errors = {}
+
         # 기존 비밀번호 확인
-        if not check_password(current_password, user.password):     #내장함수: 비밀번호 검증
-            messages.error(request, "현재 비밀번호가 일치하지 않습니다.")
-            return render(request, 'mypage/modifypwd.html')
+        if not check_password(current_password, user.password):
+            errors["current_password"] = "현재 비밀번호가 일치하지 않습니다."
 
         # 새로운 비밀번호와 확인 비밀번호가 일치하지 않는 경우
         if new_password != confirm_password:
-            messages.error(request, "새 비밀번호와 확인 비밀번호가 일치하지 않습니다.")
-            return render(request, 'mypage/modifypwd.html')
+            errors["confirm_password"] = "새 비밀번호와 확인 비밀번호가 일치하지 않습니다."
+
+        if errors:
+            return render(request, 'mypage/modifypwd.html', {"errors": errors})
 
         # 비밀번호 변경
         user.set_password(new_password)
         user.save()
 
-        #로그아웃 방지
+        # 로그아웃 방지
         update_session_auth_hash(request, user)
 
         messages.success(request, "비밀번호가 성공적으로 변경되었습니다.")
-        return redirect('mypage:profile')  # 성공 후 리디렉션
+        return redirect('mypage:profile')
 
     return render(request, 'mypage/modifypwd.html')
 

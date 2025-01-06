@@ -12,32 +12,124 @@
 <body>
     <div class="content">
         <div class="header">
-            <button class="back-button" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+            <button class="back-button" onclick="location.href='{% url 'mypage:profile' %}'"><i class="fas fa-arrow-left"></i></button>
         </div>
         <h2>비밀번호 수정</h2>
         <div class="form-container">
-            <form method="POST">
+            <form method="POST" id="passwordForm">
                 {% csrf_token %}
+
+                <!-- 새 비밀번호 입력 -->
                 <div class="input-group">
-                    <label class="label">새비밀번호</label>
-                    <input type="password" name="new_password" class="input-field" placeholder="변경할 비밀번호를 입력해주세요.">
+                    <label class="label">새 비밀번호</label>
+                    <input type="password" 
+                           name="new_password" 
+                           id="newPassword" 
+                           class="input-field" 
+                           placeholder="변경할 비밀번호를 입력해주세요.">
+                    <div class="error-message" id="newPasswordError"></div>
                 </div>
                 
+                <!-- 새 비밀번호 확인 -->
                 <div class="input-group">
-                    <label class="label">새비밀번호 확인</label>
-                    <input type="password" name="confirm_password" class="input-field" placeholder="변경할 비밀번호를 다시한번 입력해주세요.">
+                    <label class="label">새 비밀번호 확인</label>
+                    <input type="password" 
+                           name="confirm_password" 
+                           id="confirmPassword" 
+                           class="input-field" 
+                           placeholder="변경할 비밀번호를 다시 한 번 입력해주세요.">
+                    <div class="error-message" id="confirmPasswordError">
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if "새 비밀번호와 확인 비밀번호가 일치하지 않습니다" in message.message %}
+                                    <p class="error">{{ message }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
 
+                <!-- 기존 비밀번호 입력 -->
                 <div class="input-group">
                     <label class="label">기존 비밀번호 입력</label>
-                    <input type="password" name="current_password" class="input-field" placeholder="기존의 비밀번호를 입력해주세요.">
+                    <input 
+                        type="password" 
+                        name="current_password" 
+                        id="currentPassword" 
+                        class="input-field" 
+                        placeholder="기존의 비밀번호를 입력해주세요.">
+                    <div class="error-message" id="currentPasswordError">
+                        {% if errors.current_password %}
+                            <p class="error">{{ errors.current_password }}</p>
+                        {% endif %}
+                    </div>
                 </div>
-
+                
+                <!-- 버튼 -->
                 <div class="button-container">
                     <button type="submit" class="btn-submit">변경하기</button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const errorMessages = document.querySelectorAll('.error-message p.error');
+            if (errorMessages.length > 0) {
+                // 서버에서 반환된 에러 메시지를 표시
+                for (let error of errorMessages) {
+                    error.parentElement.classList.add('show');
+                }
+            }
+        });
+
+        document.getElementById('passwordForm').addEventListener('submit', function(event) {
+            resetErrors();
+
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const currentPassword = document.getElementById('currentPassword').value;
+
+            let isValid = true;
+
+            // 새 비밀번호 입력 확인
+            if (!newPassword) {
+                showError('newPasswordError', '새 비밀번호를 입력해주세요.');
+                isValid = false;
+            }
+
+            // 새 비밀번호와 확인 비밀번호 일치 여부 확인
+            if (newPassword !== confirmPassword) {
+                showError('confirmPasswordError', '새 비밀번호가 일치하지 않습니다.');
+                isValid = false;
+            }
+
+            // 기존 비밀번호 입력 확인
+            if (!currentPassword) {
+                showError('currentPasswordError', '기존 비밀번호를 입력해주세요.');
+                isValid = false;
+            }
+
+            // 유효하지 않을 경우 제출 중단
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+        }
+
+        function resetErrors() {
+            const errorElements = document.getElementsByClassName('error-message');
+            for (let error of errorElements) {
+                error.textContent = ''; // 에러 메시지 텍스트 제거
+                error.classList.remove('show'); // 에러 메시지의 스타일 클래스 제거
+            }
+        }
+    </script>
 </body>
 </html>

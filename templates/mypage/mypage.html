@@ -90,19 +90,20 @@
             </div>
         </div>
 
+        
         <!-- 스크랩한 프로필 탭 -->
         <div id="scrap" class="content-panel">
             <div class="scrap-list {% if not profiles %}empty{% endif %}">
                 {% for profile in profiles %}
-                    <div class="scrap-item">
+                    <a href="{% url 'coffeechat:coffeechat_detail' profile.id %}" class="scrap-item">
                         <div class="scrap-info">
                             <span class="scrap-name">{{ profile.user.username }}</span>
                             <span class="scrap-th">피로그래밍 {{ profile.user.cohort }}기</span>
                         </div>
-                        <i class="fa-solid fa-bookmark bookmark" 
-                           onclick="toggleBookmark('{{ profile.id }}')"
-                           data-profile-id="{{ profile.id }}"></i>
-                    </div>
+                        <i class="fa-solid fa-bookmark bookmark {% if profile.is_bookmarked %}active{% endif %}"
+                        onclick="toggleBookmark(event, '{{ profile.id }}')"
+                        data-profile-id="{{ profile.id }}"></i>
+                    </a>
                 {% empty %}
                     <div class="empty-message">
                         <p>스크랩한 프로필이 없습니다.</p>
@@ -143,28 +144,39 @@
     });
 
     // 북마크 토글 함수
-    function toggleBookmark(profileId) {
+    function toggleBookmark(event, profileId) {
+        event.preventDefault();
+        event.stopPropagation();
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        
-        fetch('/mypage/bookmark/' + profileId + '/', {
+        const bookmarkIcon = document.querySelector(`[data-profile-id="${profileId}"]`);
+        const scrapItem = bookmarkIcon.closest('.scrap-item');
+
+        fetch(`/coffeechat/${profileId}/bookmark/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
+        .then(response => response.json())
+        .then(data => {
             if (data.bookmarked !== undefined) {
-                const bookmark = document.querySelector('[data-profile-id="' + profileId + '"]');
-                bookmark.classList.toggle('active');
+                if (data.bookmarked) {
+                    bookmarkIcon.classList.add('active');
+                } else {
+                    bookmarkIcon.classList.remove('active');
+                    scrapItem.remove();
+
+                    const scrapList = document.querySelector('.scrap-list');
+                    if (!scrapList.children.length) {
+                        scrapList.classList.add('empty');
+                        scrapList.innerHTML = '<div class="empty-message"><p>스크랩한 프로필이 없습니다.</p></div>';
+                    }
+                }
             }
         })
-        .catch(function(error) {
-            console.error('Error:', error);
-        });
+        .catch(error => console.error('Error:', error));
     }
 </script>
 {% endblock %}

@@ -46,6 +46,7 @@ class CustomUserCreationForm(forms.ModelForm):
 class CustomUserChangeForm(UserChangeForm):
     delete_profile_image = forms.BooleanField(required=False, label="프로필 이미지 삭제")
     password = None
+    profile_image = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-input--img'}))
 
     class Meta:
         model = User
@@ -53,21 +54,12 @@ class CustomUserChangeForm(UserChangeForm):
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-input'}),
             'email': forms.EmailInput(attrs={'class': 'form-input'}),
-            'profile_image': forms.FileInput(attrs={'class': 'form-input--img'}),
             'cohort': forms.NumberInput(attrs={'class': 'form-input'}),
         }
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-
-        # 이미지 삭제 처리
-        if self.cleaned_data.get('delete_profile_image'):
-            user.profile_image.delete(save=False)  # 이미지 파일 삭제
-            user.profile_image = None  # 필드를 None으로 설정
-            
-        if commit:
-            user.save()
-        return user
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['profile_image'].required = False
 
 # 로그인 폼
 class CustomAuthenticationForm(AuthenticationForm):

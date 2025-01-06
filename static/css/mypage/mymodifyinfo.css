@@ -77,12 +77,53 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    position: relative;
  }
  
  .profile-circle i {
     font-size: 32px;
     color: var(--text-tertiary);
  }
+
+ .profile-upload-area {
+   width: 100%;
+   height: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+}
+
+.profile-img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+}
+
+.camera-icon {
+   font-size: 40px;
+   color: #999;
+}
+
+.delete-profile-btn {
+   margin-top: var(--spacing-md);
+   background: none;
+   border: none;
+   color: var(--text-secondary);
+   font-size: var(--font-s);
+   cursor: pointer;
+   text-decoration: underline;
+   transition: color 0.2s;
+   padding: var(--spacing-xs) var(--spacing-sm);
+   width: 100%;  
+   text-align: center;  
+   display: block;
+}
+
+.delete-profile-btn:hover {
+   color: #D63031;
+}
  
  .input-group {
     margin-bottom: var(--spacing-lg);
@@ -177,4 +218,40 @@
 @keyframes fadeIn {
    from { opacity: 0; transform: translateY(-10px); }
    to { opacity: 1; transform: translateY(0); }
+}
+
+.error-message {
+   display: none;
+   color: #D63031;
+   font-size: 13px;
+   margin-top: 8px;
+   padding: 8px 12px;
+   background-color: #FFE6E6;
+   border-radius: 4px;
+}
+
+.error-message.show {
+   display: block;
+   animation: scaleIn var(--transition-normal);
+}
+
+.input-field.error {
+   border-color: #D63031;
+}
+
+@keyframes scaleIn {
+   from {
+       opacity: 0;
+       transform: translateY(-10px);
+   }
+   to {
+       opacity: 1;
+       transform: translateY(0);
+   }
+}
+
+@media (max-width: 768px) {
+   .error {
+       font-size: 12px;
+   }
 }
