@@ -21,14 +21,19 @@
             <div class="profile-info">
               <div class="profile-main">
                 <div class="profile-name">{{ profile.user.username }}</div>
-                <div class="status-badges">
-                  {% if profile.profile_status == 'F2F' %}
-                    <span class="status-badge">대면</span>
+                <div class="mentor-status {{ profile.profile_status|lower }}">
+                  {% if profile.profile_status == 'LIMITED' %}
+                      <span class="status-badge">LIMIT</span>
+                  {% elif profile.profile_status == 'OFF' %}
+                      <span class="status-badge">비활성화</span>
+                  {% elif profile.profile_status == 'F2F' %}
+                      <span class="status-badge">대면</span>
+                  {% elif profile.profile_status == 'ONLINE' %}
+                      <span class="status-badge">비대면</span>
+                  {% else %}
+                      <span class="status-badge">{{ mentor.get_profile_status_display }}</span>
                   {% endif %}
-                  {% if profile.profile_status == 'ONLINE' %}
-                    <span class="status-badge">비대면</span>
-                  {% endif %}
-                </div>
+              </div>              
               </div>
               <p class="cohort">피로그래밍 {{ profile.user.cohort }}기</p>
               <div class="hashtags">

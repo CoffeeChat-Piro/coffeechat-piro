@@ -48,7 +48,6 @@
                     <button type="button" class="editor-btn" data-cmd="bold">B</button>
                     <button type="button" class="editor-btn" data-cmd="italic">I</button>
                     <button type="button" class="editor-btn" data-cmd="underline">U</button>
-                    <button type="button" class="editor-btn" data-cmd="createLink">링크</button>
                 </div>
                 <div class="editor-content" 
                      contenteditable="true" 
@@ -127,9 +126,18 @@
             } else {
                 document.execCommand(command, false, null);
             }
+
+            this.classList.toggle('active', document.queryCommandState(command));
         });
     });
 
+    document.getElementById('content').addEventListener('input', function () {
+        document.querySelectorAll('.editor-btn').forEach(button => {
+            const command = button.dataset.cmd;
+            button.classList.toggle('active', document.queryCommandState(command));
+        });
+    });
+    
     document.querySelector('form').addEventListener('submit', function(e) {
         e.preventDefault();
         document.getElementById('content_input').value = 
