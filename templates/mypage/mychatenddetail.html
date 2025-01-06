@@ -9,6 +9,15 @@
 {% endblock %}
 
 {% block content %}
+{% if messages %}     
+    <script>         
+        window.onload = function() {             
+            {% for message in messages %}                 
+                alert("{{ message }}");             
+            {% endfor %}         
+        }     
+    </script> 
+{% endif %} 
 <div class="content">
     <div class="header">
         <button class="close-button" onclick="location.href='{% url 'mypage:coffeechat_completed' %}'">

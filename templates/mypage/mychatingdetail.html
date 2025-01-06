@@ -9,9 +9,18 @@
 {% endblock %}
 
 {% block content %}
+{% if messages %}     
+    <script>         
+        window.onload = function() {             
+            {% for message in messages %}                 
+                alert("{{ message }}");             
+            {% endfor %}         
+        }     
+    </script> 
+{% endif %} 
 <div class="content">
     <div class="header">
-        <button class="close-button" onclick="history.back()">
+        <button class="close-button" onclick="location.href='{% url 'mypage:coffeechat_in_progress' %}'">
             <i class="fa-solid fa-times"></i>
         </button>
         <h1>{{ memo.profile_user }}님과 진행중인 커피챗</h1>

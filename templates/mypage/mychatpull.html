@@ -94,6 +94,9 @@
             try {
                 const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
                 
+                this.disabled = true;
+                this.textContent = isAccept ? '수락 중...' : '거절 중...';
+                
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -120,11 +123,14 @@
                             document.getElementById('chatList').innerHTML = 
                                 '<div class="empty-state">아직 신청받은 커피챗이 없습니다.</div>';
                         }
+                        alert(isAccept ? '커피챗이 수락되었습니다.' : '커피챗이 거절되었습니다.');
                     }, 300);
                 }
             } catch (error) {
                 console.error('Error:', error);
                 alert('요청 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+                this.disabled = false;
+                this.textContent = isAccept ? '수락' : '거절';
             }
         });
     });
