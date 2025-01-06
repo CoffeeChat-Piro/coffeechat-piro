@@ -125,7 +125,7 @@
     // 에디터 기능     
     document.querySelectorAll('.editor-btn').forEach(button => {         
         button.addEventListener('click', function(e) {             
-            e.preventDefault();             
+            e.preventDefault();
             const command = this.dataset.cmd;
             document.execCommand(command, false, null);
             
