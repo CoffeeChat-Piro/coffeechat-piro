@@ -1,0 +1,126 @@
+@import url('../variables.css');
+@import url('./common.css');
+
+.signup-container {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    animation: scaleIn var(--transition-normal);
+}
+
+.signup-form {
+    margin: var(--spacing-lg) 0;
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.profile-upload {
+    margin: var(--spacing-lg) 0;
+    text-align: center;
+}
+
+.profile-upload p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.upload-button {
+    width: 60px;
+    height: 60px;
+    border: 2px dashed #ddd;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    overflow: hidden;
+    position: relative;
+}
+
+.upload-button:hover {
+    border-color: var(--button-first-color);
+    background-color: rgba(108, 163, 110, 0.05);
+}
+
+.camera-icon {
+    font-size: 24px;
+    color: #CCCCCC;
+    transition: opacity var(--transition-fast);
+}
+
+.preview-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload-button.has-image {
+    border-style: solid;
+}
+
+.upload-button.has-image .camera-icon {
+    display: none;
+}
+
+.upload-button:hover .camera-icon {
+    opacity: 0.8;
+}
+
+.login-link {
+    margin-top: var(--spacing-xl);
+    text-align: center;
+    font-size: 13px;
+}
+
+.login-link p {
+    color: var(--text-secondary);
+}
+
+.login-link a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    position: relative;
+}
+
+.login-link a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--button-first-color);
+    transform: scaleX(0);
+    transition: transform var(--transition-normal);
+}
+
+.login-link a:hover {
+    color: var(--button-first-color);
+}
+
+.login-link a:hover::after {
+    transform: scaleX(1);
+}
+
+@media (max-width: 768px) {
+    .signup-container {
+        max-width: 280px;
+    }
+
+    .upload-button {
+        width: 50px;
+        height: 50px;
+    }
+
+    .login-link {
+        font-size: 12px;
+    }
+}

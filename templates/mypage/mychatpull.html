@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{# header 블록을 비워서 오버라이드(header없애기 위함) #}
+{% block header %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/mypage/mychatlist.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="header">
+        <button class="back-button" onclick="history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+    </div>
+    <h1 class="title">신청받은 커피챗</h1>
+    <div id="chatList" class="chat-list">
+        {% if chats %}
+            {% for chat in chats %}
+            <div class="chat-item pull">
+                <div class="message-icon" data-letter="{{ chat.letterToSenior }}">
+                    <i class="fas fa-comment"></i>
+                </div>
+                <div class="chat-info">
+                    <span class="user-name">{{ chat.name }}</span>
+                    <span class="user-th">피로그래밍 {{ chat.cohort }}기</span>
+                    <div class="chat-date">커피챗 신청일: {{ chat.created_at }}</div>
+                </div>
+                <div class="button-group">
+                    {% csrf_token %}
+                    <button class="btn btn-accept" data-chat-id="{{ chat.id }}">수락</button>
+                    <button class="btn btn-reject" data-chat-id="{{ chat.id }}">거절</button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                아직 신청받은 커피챗이 없습니다.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- 모달 -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><span id="modalSender"></span>님께서 보낸 메시지</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="modalMessage"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // 메시지 모달 관련 코드
+    document.querySelectorAll('.message-icon').forEach(icon => {
+        icon.addEventListener('click', function() {
+            const letter = this.dataset.letter;
+            const modal = document.getElementById('messageModal');
+            const senderName = this.closest('.chat-item').querySelector('.user-name').textContent;
+            
+            document.getElementById('modalSender').textContent = senderName;
+            document.getElementById('modalMessage').textContent = letter;
+            modal.classList.add('show');
+        });
+    });
+
+    document.querySelector('.close').addEventListener('click', function() {
+        const modal = document.getElementById('messageModal');
+        modal.classList.remove('show');
+    });
+
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('messageModal');
+        if (event.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+
+    // 수락/거절 버튼 처리
+    document.querySelectorAll('.btn-accept, .btn-reject').forEach(button => {
+        button.addEventListener('click', async function() {
+            const chatId = this.dataset.chatId;
+            const isAccept = this.classList.contains('btn-accept');
+            const url = isAccept ? 
+                `/coffeechat/accept_request/${chatId}/` : 
+                `/coffeechat/reject_request/${chatId}/`;
+            
+            try {
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                this.disabled = true;
+                this.textContent = isAccept ? '수락 중...' : '거절 중...';
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                if (data.status === (isAccept ? 'accepted' : 'rejected')) {
+                    const chatItem = this.closest('.chat-item');
+                    chatItem.style.animation = 'slideOut 0.3s forwards';
+                    
+                    setTimeout(() => {
+                        chatItem.remove();
+                        // 목록이 비었는지 확인
+                        if (document.querySelectorAll('.chat-item').length === 0) {
+                            document.getElementById('chatList').innerHTML = 
+                                '<div class="empty-state">아직 신청받은 커피챗이 없습니다.</div>';
+                        }
+                        alert(isAccept ? '커피챗이 수락되었습니다.' : '커피챗이 거절되었습니다.');
+                    }, 300);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('요청 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+                this.disabled = false;
+                this.textContent = isAccept ? '수락' : '거절';
+            }
+        });
+    });
+</script>
+{% endblock %}

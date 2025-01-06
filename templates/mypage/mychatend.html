@@ -1,0 +1,56 @@
+{% extends 'base.html' %} 
+{% load static %}  
+
+{% block header %}{% endblock %}  
+
+{% block extra_head %} 
+<link rel="stylesheet" href="{% static 'css/mypage/mychatlist.css' %}"> 
+{% endblock %}  
+
+{% block content %} 
+{% if messages %}     
+    <script>         
+        window.onload = function() {             
+            {% for message in messages %}                 
+                alert("{{ message }}");             
+            {% endfor %}         
+        }     
+    </script> 
+{% endif %} 
+<div class="content">     
+    <div class="header">         
+        <button class="back-button" onclick="location.href='{% url 'mypage:profile' %}'">             
+            <i class="fa-solid fa-arrow-left"></i>         
+        </button>     
+    </div>     
+    <h1 class="title">완료된 커피챗</h1>     
+    <div id="chatList" class="chat-list">         
+        {% if chats %}             
+            {% for chat in chats %}
+            <div class="chat-item end">
+                <!-- 메모 링크를 div.chat-info에만 적용 -->
+                <div class="chat-info" {% if chat.is_requester and chat.memo_id %}onclick="location.href='{% url 'mypage:coffeechat_memo' pk=chat.memo_id re='end' %}'"{% endif %}>
+                    <span class="user-name">{{ chat.name }}</span>
+                    <span class="user-th">피로그래밍 {{ chat.cohort }}기</span>
+                    <div class="chat-date">커피챗 수락일: {{ chat.accepted_at }}</div>
+                    {% if chat.is_requester and chat.memo_id %}
+                        <i class="fa-solid fa-chevron-right arrow-right"></i>
+                    {% endif %}
+                </div>
+                {% if chat.is_requester %}
+                    {% if not chat.review_done %}
+                        <span class="status-badge write" onclick="event.stopPropagation(); location.href='{% url 'mypage:create_review' pk=chat.id %}'">리뷰 작성하기</span>
+                    {% else %}
+                        <span class="status-badge" onclick="event.stopPropagation(); location.href='{% url 'mypage:get_review' pk=chat.id %}'">리뷰 작성완료</span>
+                    {% endif %}
+                {% endif %}
+            </div>             
+            {% endfor %}         
+        {% else %}             
+            <div class="empty-state">                 
+                아직 완료된 커피챗이 없습니다.             
+            </div>         
+        {% endif %}     
+    </div> 
+</div> 
+{% endblock %}

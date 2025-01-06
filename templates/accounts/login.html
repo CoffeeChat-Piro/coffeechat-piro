@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>PiroTime 로그인</title>
+   {% load static %}
+   <link rel="stylesheet" href="{% static 'css/accounts/login.css' %}" />
+   <link href="https://fonts.googleapis.com/css2?family=Hubballi&display=swap" rel="stylesheet" />
+ </head>
+ <body>
+   <!-- 인트로 애니메이션 -->
+   <div class="intro-animation">
+    <div class="logo-character">
+      <!-- SVG 코드 추가 -->
+      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- 그림자 -->
+        <ellipse cx="200" cy="350" rx="40" ry="10" fill="#a3c7a7" opacity="0.3">
+          <animate attributeName="rx" values="40;35;40" dur="1s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.3;0.2;0.3" dur="1s" repeatCount="indefinite" />
+        </ellipse>
+
+        <!-- 캐릭터 그룹 -->
+        <g transform="translate(200 200)">
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            values="200 200; 200 190; 200 200"
+            dur="2s"
+            repeatCount="indefinite"
+          />
+
+          <!-- 귀 (ears) -->
+          <circle cx="-50" cy="-80" r="15" fill="#0BEC12" stroke="#2a5a2d" stroke-width="5">
+            <animate attributeName="cy" values="-80;-83;-80" dur="2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="50" cy="-80" r="15" fill="#0BEC12" stroke="#2a5a2d" stroke-width="5">
+            <animate attributeName="cy" values="-80;-83;-80" dur="2s" repeatCount="indefinite" />
+          </circle>
+
+          <!-- 메인 얼굴 (face) -->
+          <circle cx="0" cy="0" r="80" fill="#0BEC12" stroke="#2a5a2d" stroke-width="5" />
+          
+          <!-- 내부 얼굴 (inner face) -->
+          <circle cx="0" cy="0" r="60" fill="white" stroke="#2a5a2d" stroke-width="5" />
+          
+          <!-- 눈 (eyes) -->
+          <g class="eyes">
+            <circle cx="-20" cy="-10" r="8" fill="#2a5a2d">
+              <animate attributeName="ry" values="8;1;8" dur="3s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="20" cy="-10" r="8" fill="#2a5a2d">
+              <animate attributeName="ry" values="8;1;8" dur="3s" repeatCount="indefinite" />
+            </circle>
+          </g>
+
+          <!-- 볼 (cheeks) -->
+          <circle cx="-30" cy="10" r="10" fill="#0BEC12" opacity="0.5" />
+          <circle cx="30" cy="10" r="10" fill="#0BEC12" opacity="0.5" />
+
+          <!-- 입 (smile) -->
+          <path d="M-20,20 Q0,35 20,20" fill="none" stroke="#2a5a2d" stroke-width="5" stroke-linecap="round">
+            <animate
+              attributeName="d"
+              values="M-20,20 Q0,35 20,20;M-20,20 Q0,32 20,20;M-20,20 Q0,35 20,20"
+              dur="2s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+   <!-- 메인 로그인 컨테이너 -->
+   <div class="container hide">
+     <div class="form-container">
+       <div class="login-container">
+         <div class="logo">
+           <img src="{% static 'images/logo.png' %}" alt="PiroTime Logo" />
+           <h1>PiroTime</h1>
+         </div>
+
+         <form method="post" class="login-form">
+           {% csrf_token %}
+           <div class="form-group">
+             <input 
+               type="text" 
+               class="form-input {% if form.username.errors %}error{% endif %}" 
+               name="username" 
+               placeholder="이름" 
+               value="{{ form.username.value|default_if_none:'' }}" 
+               required 
+             />
+             {% for error in form.username.errors %}
+               <div class="error">{{ error }}</div>
+             {% endfor %}
+           </div>
+
+           <div class="form-group">
+             <input 
+               type="password" 
+               class="form-input {% if form.password.errors %}error{% endif %}" 
+               name="password" 
+               placeholder="비밀번호" 
+               required 
+             />
+             {% for error in form.password.errors %}
+               <div class="error">{{ error }}</div>
+             {% endfor %}
+           </div>
+
+           {% if form.non_field_errors %}
+             {% for error in form.non_field_errors %}
+               <div class="error">{{ error }}</div>
+             {% endfor %}
+           {% endif %}
+
+           <button type="submit" class="button login-button">로그인</button>
+         </form>
+
+         <div class="signup-link">
+           <p>계정이 없으신가요? <a href="{% url 'accounts:signup' %}" class="link">회원가입하기</a></p>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   {% if messages %}
+     <ul>
+       {% for message in messages %}
+         <li>{{ message }}</li>
+       {% endfor %}
+     </ul>
+   {% endif %}
+
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(() => {
+            const container = document.querySelector('.container');
+            const intro = document.querySelector('.intro-animation');
+            
+            container.classList.remove('hide');
+            container.classList.add('show');
+            
+            setTimeout(() => {
+                intro.style.display = 'none';
+            }, 1400);
+        }, 1400);
+    });
+  </script>
+ </body>
+</html>

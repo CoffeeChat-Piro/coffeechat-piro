@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{# header 블록을 비워서 오버라이드(header없애기 위함) #}
+{% block header %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/mypage/mychatdetail.css' %}">
+{% endblock %}
+
+{% block content %}
+{% if messages %}     
+    <script>         
+        window.onload = function() {             
+            {% for message in messages %}                 
+                alert("{{ message }}");             
+            {% endfor %}         
+        }     
+    </script> 
+{% endif %} 
+<div class="content">
+    <div class="header">
+        <button class="close-button" onclick="location.href='{% url 'mypage:coffeechat_completed' %}'">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <h1>{{ memo.profile_user }}님과 완료된 커피챗</h1>
+    </div>
+    <div class="review-date">커피챗 수락일: {{ memo.accepted_date }}</div>
+    <div class="main-content">
+        <h3>기록한 내용</h3>
+        <form method="POST">
+            {% csrf_token %}
+            <textarea name="content" class="question-input">{{ memo.memo_content }}</textarea>
+            <button type="submit" class="submit-button">저장하기</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

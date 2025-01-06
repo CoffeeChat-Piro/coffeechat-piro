@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/coffeechat/chatcreate.css' %}">
+
+<div class="profile-container">
+    <h1 class="profile-title">프로필 수정하기</h1>
+    
+    <form method="post" class="profile-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="job">직업(전공)</label>
+            <input type="text" 
+                   id="job" 
+                   name="job" 
+                   class="form-input" 
+                   value="{{ profile.job }}"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label for="hashtags">해시태그</label>
+            <div class="hashtag-input-container">
+                <input type="text" 
+                       id="hashtag_input" 
+                       class="form-input" 
+                       placeholder="#을 사용해 입력해주세요">
+                <div class="hashtags-container"></div>
+                <input type="hidden" name="hashtags" id="hashtags">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>커피챗 유형</label>
+            <div class="type-selector">
+                <button type="button" class="type-button{% if profile.profile_status == 'F2F' %} active{% endif %}" data-value="F2F">대면</button>
+                <button type="button" class="type-button{% if profile.profile_status == 'ONLINE' %} active{% endif %}" data-value="ONLINE">비대면</button>
+                <button type="button" class="type-button{% if profile.profile_status == 'OFF' %} active{% endif %}" data-value="OFF">OFF</button>
+            </div>
+            <input type="hidden" name="profile_status" id="selected_type" value="{{ profile.profile_status }}">
+        </div>
+
+        <div class="form-group">
+            <label for="content">자기소개</label>
+            <div class="editor-container">
+                <div class="editor-toolbar">
+                    <button type="button" class="editor-btn" data-cmd="bold">B</button>
+                    <button type="button" class="editor-btn" data-cmd="italic">I</button>
+                    <button type="button" class="editor-btn" data-cmd="underline">U</button>
+                </div>
+                <div class="editor-content" 
+                     contenteditable="true" 
+                     id="content">{{ profile.content|safe }}</div>
+            </div>
+            <input type="hidden" name="content" id="content_input">
+        </div>
+
+        <button type="submit" class="submit-button">수정하기</button>
+    </form>
+</div>
+
+<script>
+    const initialTags = [{% for tag in profile.hashtags.all %}'{{ tag.name }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+    const hashtagsArray = initialTags.map(tag => '#' + tag);
+
+    document.querySelectorAll('.type-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.type-button').forEach(btn => 
+                btn.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById('selected_type').value = this.dataset.value;
+        });
+    });
+
+    const hashtagInput = document.getElementById('hashtag_input');
+    const hashtagsContainer = document.querySelector('.hashtags-container');
+    const hashtagsHidden = document.getElementById('hashtags');
+
+    renderTags();
+
+    hashtagInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const value = this.value.trim();
+            if (value) {
+                const tag = value.startsWith('#') ? value : '#' + value;
+                if (!hashtagsArray.includes(tag)) {
+                    hashtagsArray.push(tag);
+                    renderTags();
+                    updateHiddenInput();
+                }
+                this.value = '';
+            }
+        }
+    });
+
+    function renderTags() {
+        hashtagsContainer.innerHTML = '';
+        hashtagsArray.forEach((tag, index) => {
+            const tagElement = document.createElement('span');
+            tagElement.className = 'tag';
+            tagElement.innerHTML = `${tag} <button type="button" data-index="${index}">&times;</button>`;
+            hashtagsContainer.appendChild(tagElement);
+            
+            tagElement.querySelector('button').addEventListener('click', function() {
+                hashtagsArray.splice(this.dataset.index, 1);
+                renderTags();
+                updateHiddenInput();
+            });
+        });
+    }
+
+    function updateHiddenInput() {
+        hashtagsHidden.value = JSON.stringify(hashtagsArray.map(tag => tag.replace('#', '')));
+    }
+
+    document.querySelectorAll('.editor-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const command = this.dataset.cmd;
+            if (command === 'createLink') {
+                const url = prompt('링크를 입력해주세요');
+                if (url) document.execCommand(command, false, url);
+            } else {
+                document.execCommand(command, false, null);
+            }
+
+            this.classList.toggle('active', document.queryCommandState(command));
+        });
+    });
+
+    document.getElementById('content').addEventListener('input', function () {
+        document.querySelectorAll('.editor-btn').forEach(button => {
+            const command = button.dataset.cmd;
+            button.classList.toggle('active', document.queryCommandState(command));
+        });
+    });
+    
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('content_input').value = 
+            document.getElementById('content').innerHTML;
+        updateHiddenInput();
+        this.submit();
+    });
+</script>
+{% endblock %}

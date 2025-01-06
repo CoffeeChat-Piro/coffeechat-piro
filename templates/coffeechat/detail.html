@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/coffeechat/detail.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+  <div class="detail-container">
+    <!-- 프로필 섹션 -->
+    <div class="profile-section">
+      <div class="profile-section-inner">
+        <div class="profile-header">
+          <div class="profile-left">
+            <div class="profile-image">
+              {% if profile.user.profile_image %}
+                <img src="{{ profile.user.profile_image.url }}" alt="{{ profile.user.username }}" />
+              {% else %}
+                <i class="fa-solid fa-user" style="color: #CCCCCC; font-size: 24px;"></i>
+              {% endif %}
+            </div>
+            <div class="profile-info">
+              <div class="profile-main">
+                <div class="profile-name">{{ profile.user.username }}</div>
+                <div class="mentor-status {{ profile.profile_status|lower }}">
+                  {% if profile.profile_status == 'LIMITED' %}
+                      <span class="status-badge">LIMIT</span>
+                  {% elif profile.profile_status == 'OFF' %}
+                      <span class="status-badge">OFF</span>
+                  {% elif profile.profile_status == 'F2F' %}
+                      <span class="status-badge">대면</span>
+                  {% elif profile.profile_status == 'ONLINE' %}
+                      <span class="status-badge">비대면</span>
+                  {% else %}
+                      <span class="status-badge">{{ mentor.get_profile_status_display }}</span>
+                  {% endif %}
+              </div>              
+              </div>
+              <p class="cohort">피로그래밍 {{ profile.user.cohort }}기</p>
+              <div class="hashtags">
+                {% for tag in profile.hashtags.all %}
+                  <span class="hashtag">#{{ tag.name }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            {% if user == profile.user %}
+              <a href="{% url 'coffeechat:coffeechat_update' profile.pk %}" class="edit-btn">프로필 수정하기</a>
+            {% else %}
+              <div class="bookmark-container">
+                <button class="bookmark-btn {% if bookmarked %}active{% endif %}" data-profile-id="{{ profile.pk }}"><i class="fas fa-bookmark"></i></button>
+              </div>
+              {% if user.is_authenticated %}
+                {% if is_limited %}
+                  <button class="action-btn limited">커피챗 불가</button>
+                {% elif is_waiting %}
+                  <button class="action-btn waiting">수락대기중</button>
+                {% elif is_ongoing %}
+                  <button class="action-btn ongoing">진행중</button>
+                {% else %}
+                  <button id="requestBtn" class="action-btn">커피챗 제안하기</button>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭 메뉴 -->
+    <div class="tab-menu">
+      <button class="tab-btn active" data-tab="intro">피로그래머 소개</button>
+      <button class="tab-btn" data-tab="reviews">리뷰</button>
+    </div>
+
+    <!-- 탭 컨텐츠 -->
+    <div id="intro" class="tab-content active">
+      <div class="content-box">{{ profile.content|safe }}</div>
+    </div>
+
+    <div id="reviews" class="tab-content">
+      <div class="content-box">
+        {% if reviews %}
+          <div class="review-list">
+            {% for review in reviews %}
+              <div class="review-card">
+                <div class="review-header">
+                  <span class="reviewer-name">{{ review.user.username }}</span>
+                  <span class="review-date">{{ review.created_at|date:'Y.m.d' }}</span>
+                </div>
+                <p class="review-content">{{ review.content }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="no-reviews">아직 작성된 리뷰가 없습니다</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- 커피챗 신청 모달 -->
+  <div id="requestModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>커피챗 제안하기</h3>
+        <button class="close-btn">&times;</button>
+      </div>
+      <form method="post" class="request-form">
+        {% csrf_token %}
+        <textarea name="requestContent" placeholder="선배님께 궁금한 점이나 자기소개를 작성해주세요..." required></textarea>
+        <button type="submit" class="submit-btn">제안하기</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // CSRF 토큰 설정
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    
+      // 탭 전환 기능
+      const tabBtns = document.querySelectorAll('.tab-btn')
+      const tabContents = document.querySelectorAll('.tab-content')
+    
+      tabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.dataset.tab
+    
+          tabBtns.forEach((b) => b.classList.remove('active'))
+          tabContents.forEach((c) => c.classList.remove('active'))
+    
+          btn.classList.add('active')
+          document.getElementById(tabId).classList.add('active')
+        })
+      })
+    
+      // 모달 관련 기능
+      const requestBtn = document.getElementById('requestBtn')
+      const modal = document.getElementById('requestModal')
+      const closeBtn = document.querySelector('.close-btn')
+      const submitBtn = document.querySelector('.submit-btn')
+      const requestForm = document.querySelector('.request-form')
+    
+      if (requestBtn) {
+        requestBtn.addEventListener('click', () => {
+          modal.style.display = 'flex'
+        })
+      }
+    
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          modal.style.display = 'none'
+        })
+      }
+    
+      // 모달 외부 클릭시 닫기
+      window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none'
+        }
+      })
+    
+      // 커피챗 제안 폼 제출
+      if (requestForm) {
+        requestForm.addEventListener('submit', function (e) {
+          e.preventDefault()
+    
+          submitBtn.disabled = true
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 전송 중...'
+    
+          const formData = new FormData(this)
+    
+          fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-CSRFToken': csrfToken,
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          })
+            .then((response) => {
+              if (response.ok) {
+                modal.style.display = 'none'
+                alert('커피챗 신청이 완료되었습니다.')
+                window.location.reload()
+              } else {
+                throw new Error('Network response was not ok')
+              }
+            })
+            .catch((error) => {
+              console.error('Error:', error)
+              alert('전송 중 오류가 발생했습니다. 다시 시도해주세요.')
+            })
+            .finally(() => {
+              submitBtn.disabled = false
+              submitBtn.innerHTML = '제안하기'
+            })
+        })
+      }
+    
+      // 북마크 기능
+      const bookmarkBtn = document.querySelector('.bookmark-btn')
+      if (bookmarkBtn) {
+        bookmarkBtn.addEventListener('click', function () {
+          const profileId = this.dataset.profileId
+    
+          fetch(`/coffeechat/${profileId}/bookmark/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': csrfToken,
+              'X-Requested-With': 'XMLHttpRequest',
+              'Content-Type': 'application/json'
+            }
+          })
+            .then((res) => {
+              if (!res.ok) {
+                throw new Error('Network response was not ok')
+              }
+              return res.json()
+            })
+            .then((data) => {
+              if (data.bookmarked) {
+                this.classList.add('active')
+              } else {
+                this.classList.remove('active')
+              }
+            })
+            .catch((error) => {
+              console.error('Error:', error)
+              alert('북마크 처리 중 오류가 발생했습니다.')
+            })
+        })
+      }
+    })
+  </script>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiroTime</title>
+    <link rel="icon" href="{% static 'images/logo.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/variables.css">
+    <link rel="stylesheet" href="/static/css/mypage/mymodifyinfo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    {% if messages %}
+        <script>
+            window.onload = function() {
+                {% for message in messages %}
+                    alert("{{ message }}");
+                {% endfor %}
+            }
+        </script>
+    {% endif %}
+    <div class="content">
+        <div class="header">
+            <button class="back-button" onclick="location.href='{% url 'mypage:profile' %}'"><i class="fas fa-arrow-left"></i></button>
+        </div>
+        <h2>회원정보 수정</h2>
+        <div class="form-container">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="user-info">
+                    <div class="profile-circle">
+                        <label for="profile_image" class="profile-upload-area">
+                            {% if user.profile_image %}
+                                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" class="profile-img" id="preview-image">
+                            {% else %}
+                                <i class="fas fa-camera camera-icon" id="default-icon"></i>
+                            {% endif %}
+                        </label>
+                        <input type="file" 
+                               id="profile_image" 
+                               name="profile_image" 
+                               accept="image/*" 
+                               style="display: none;" 
+                               onchange="previewImage(this)">
+                        <input type="hidden" name="delete_profile_image" id="delete_profile_image" value="false">
+                    </div>
+                    {% if user.profile_image %}
+                        <button type="button" class="delete-profile-btn" onclick="deleteProfileImage()">
+                            프로필 사진 삭제하기
+                        </button>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <label class="label">이름</label>
+                    <input type="text" name="username" value="{{ form.username.value|default:'' }}" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">이메일</label>
+                    <input type="email" name="email" value="{{ form.email.value|default:'' }}" class="input-field">
+                </div>
+                
+                <div class="input-group">
+                    <label class="label">기수</label>
+                    <input type="number" name="cohort" value="{{ form.cohort.value|default:'' }}" class="input-field">
+                </div>
+
+                <div class="button-container">
+                    <button type="submit" class="btn-submit">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        function deleteProfileImage() {
+            // hidden input의 값을 true로 설정
+            document.getElementById('delete_profile_image').value = "true";
+            
+            // 이미지 프리뷰를 카메라 아이콘으로 변경
+            const profileArea = document.querySelector('.profile-upload-area');
+            profileArea.innerHTML = '<i class="fas fa-camera camera-icon" id="default-icon"></i>';
+            
+            // 파일 input 초기화
+            const fileInput = document.getElementById('profile_image');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            
+            // 삭제 버튼 숨기기
+            const deleteBtn = document.querySelector('.delete-profile-btn');
+            if (deleteBtn) {
+                deleteBtn.style.display = 'none';
+            }
+        }
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                // 이미지가 선택되면 삭제 플래그를 false로 설정
+                document.getElementById('delete_profile_image').value = "false";
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const profileArea = document.querySelector('.profile-upload-area');
+                    profileArea.innerHTML = `<img src="${e.target.result}" alt="프로필 이미지" class="profile-img" id="preview-image">`;
+                    
+                    // 삭제 버튼 표시
+                    let deleteBtn = document.querySelector('.delete-profile-btn');
+                    if (!deleteBtn) {
+                        deleteBtn = document.createElement('button');
+                        deleteBtn.type = 'button'; 
+                        deleteBtn.className = 'delete-profile-btn';
+                        deleteBtn.onclick = deleteProfileImage;
+                        deleteBtn.innerText = '프로필 사진 삭제하기';
+                        document.querySelector('.user-info').appendChild(deleteBtn);
+                    }
+                    deleteBtn.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

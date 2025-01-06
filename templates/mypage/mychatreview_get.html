@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{# header 블록을 비워서 오버라이드(header없애기 위함) #}
+{% block header %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/variables.css' %}">
+<link rel="stylesheet" href="{% static 'css/mypage/mychatdetail.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="content">
+    <div class="header">
+        <button class="close-button" onclick="history.back()"><i class="fas fa-times"></i></button>
+        <h1>{{ review.profile_user }}님과의 커피챗에 대해서 <br/>작성한 리뷰</h1>
+    </div>
+    <div class="main-content">
+        <textarea class="question-input" readonly>{{ review.review_content }}</textarea>
+    </div>
+</div>
+{% endblock %}
