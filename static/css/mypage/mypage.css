@@ -179,6 +179,16 @@ img.profile-img {
     color: var(--text-primary);
 }
 
+.btn-primary:hover {
+    background-color: #436444;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #cccccc;
+    color: var(--text-primary);
+}
+
 .chat-list {
     padding: 0 var(--font-m);
     background-color: var(--background-color);
@@ -200,6 +210,14 @@ img.profile-img {
 
 .chat-item:last-child {
     border-bottom: none;
+}
+
+.chat-item .arrow {
+    transition: transform 0.3s ease;
+}
+
+.chat-item:hover .arrow {
+    transform: scale(1.2);
 }
 
 .arrow {

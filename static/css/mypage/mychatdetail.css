@@ -34,6 +34,10 @@
     color: #333;
 }
 
+.close-button i:hover {
+    transform: scale(1.1);
+}
+
 .header h1 {
     font-size: var(--font-xl);
     margin: 0;
@@ -47,6 +51,12 @@
     border-radius: 20px;
     font-size: var(--font-s);
     cursor: pointer;
+}
+
+.complete-button:hover {
+    background-color: var(--button-first-color);
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .review-date {
@@ -101,6 +111,11 @@
     font-size: var(--font-m);
     cursor: pointer;
     border-radius: var(--font-l);
+}
+
+.submit-button:hover {
+    background-color: #436444;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @media screen and (max-width: 400px) {
