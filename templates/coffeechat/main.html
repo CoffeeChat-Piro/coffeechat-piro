@@ -55,7 +55,11 @@
               </div>
             </div>
             <div class="mentor-tags">
-              {% for tag in mentor.hashtags.all %}
+              {% comment %} {% for tag in mentor.hashtags.all %}
+                <span class="tag">#{{ tag.name }}</span>
+              {% endfor %} {% endcomment %}
+
+              {% for tag in mentor.hashtags.all|slice:":3" %}
                 <span class="tag">#{{ tag.name }}</span>
               {% endfor %}
             </div>

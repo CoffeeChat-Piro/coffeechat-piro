@@ -143,7 +143,7 @@ def detail(request, pk):
     
     is_waiting = CoffeeChat.objects.filter(user=request.user, profile=profile, status='WAITING').exists()
     waiting_requests = CoffeeChat.objects.filter(profile=profile, status='WAITING').count()
-    is_limited = waiting_requests >= 2 and not is_waiting
+    is_limited = waiting_requests >= 2
     is_ongoing = CoffeeChat.objects.filter(user=request.user, profile=profile, status='ONGOING').exists()
     is_completed = CoffeeChat.objects.filter(user=request.user, profile=profile, status='COMPLETED').exists()
     hashtags = profile.hashtags.all()
