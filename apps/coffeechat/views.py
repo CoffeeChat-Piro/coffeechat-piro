@@ -131,12 +131,12 @@ def detail(request, pk):
     ).exists()
 
     if request.method == "POST" and request.user != profile.user:
-        waiting_requests = CoffeeChat.objects.filter(
+        profile_requests = CoffeeChat.objects.filter(
             profile=profile,
             status__in=['WAITING', 'ONGOING', 'ACCEPTED', 'COMPLETED']
         ).count()
 
-        if waiting_requests < 2:
+        if profile_requests < 2:
             form = CoffeechatRequestForm(request.POST)
             if form.is_valid():
                 #요청 메일 전송
@@ -162,6 +162,7 @@ def detail(request, pk):
 
     ctx = {
         'profile': profile,
+        'profile_requests': profile_requests,
         'is_waiting': is_waiting,
         'is_limited': is_limited,
         'is_ongoing': is_ongoing,

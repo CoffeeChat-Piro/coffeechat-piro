@@ -47,10 +47,10 @@ def sending_mail(receiver, sender, subject, content, message):
     <div style="padding: 20px; background-color: #f9f9f9;">
         <h2 style="color: #333;">PiroTime 커피챗</h2>
         <h3 style="color: #444;">{content}</h3>
-        <p style="margin: 15px 0;">{message}</p>
         <hr style="border: 1px solid #eee;">
         <p style="color: #666;">From: {sender.username}</p>
         <p style="color: #666;">To: {receiver.username}</p>
+        <p style="margin: 15px 0;">{message}</p>
     </div>
     """
 
