@@ -50,12 +50,12 @@
                 <div class="mentor-header">
                   <h3 class="mentor-name">{{ mentor.user.username }}</h3>
                   <span class="mentor-status {{ mentor.profile_status|lower }}">
-                    {% if is_limited %}
-                      LIMIT
+                    {% if waiting_requests >= 2 %}
+                        LIMIT
                     {% else %}
-                      {{ mentor.get_profile_status_display }}
+                        {{ mentor.get_profile_status_display }}
                     {% endif %}
-                  </span>
+                </span>                
                 </div>
                 <p class="mentor-generation">피로 {{ mentor.user.cohort|default:'-' }}기</p>
               </div>

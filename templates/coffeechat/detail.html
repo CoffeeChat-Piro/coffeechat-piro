@@ -22,18 +22,18 @@
               <div class="profile-main">
                 <div class="profile-name">{{ profile.user.username }}</div>
                 <div class="mentor-status {{ profile.profile_status|lower }}">
-                  {% if profile.profile_status == 'LIMITED' %}
-                      <span class="status-badge">LIMIT</span>
-                  {% elif profile.profile_status == 'OFF' %}
-                      <span class="status-badge">OFF</span>
-                  {% elif profile.profile_status == 'F2F' %}
-                      <span class="status-badge">대면</span>
-                  {% elif profile.profile_status == 'ONLINE' %}
-                      <span class="status-badge">비대면</span>
-                  {% else %}
-                      <span class="status-badge">{{ mentor.get_profile_status_display }}</span>
+                  {% if user.is_authenticated %}
+                    {% if is_waiting %}
+                      <button class="action-btn waiting">수락대기중</button>
+                    {% elif is_ongoing %}
+                      <button class="action-btn ongoing">진행중</button>
+                    {% elif waiting_requests >= 2 %}
+                      <button class="action-btn limited">커피챗 불가</button>
+                    {% else %}
+                      <button id="requestBtn" class="action-btn">커피챗 제안하기</button>
+                    {% endif %}
                   {% endif %}
-              </div>              
+                </div>
               </div>
               <p class="cohort">피로그래밍 {{ profile.user.cohort }}기</p>
               <div class="hashtags">
