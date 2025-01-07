@@ -51,12 +51,12 @@
                 <button class="bookmark-btn {% if bookmarked %}active{% endif %}" data-profile-id="{{ profile.pk }}"><i class="fas fa-bookmark"></i></button>
               </div>
               {% if user.is_authenticated %}
-                {% if is_limited %}
-                  <button class="action-btn limited">커피챗 불가</button>
-                {% elif is_waiting %}
+                {% if is_waiting %}
                   <button class="action-btn waiting">수락대기중</button>
                 {% elif is_ongoing %}
                   <button class="action-btn ongoing">진행중</button>
+                {% elif is_limited %}
+                  <button class="action-btn limited">커피챗 불가</button>
                 {% else %}
                   <button id="requestBtn" class="action-btn">커피챗 제안하기</button>
                 {% endif %}

@@ -47,7 +47,18 @@ db.sqlite3
 local_settings.py
 
 db.sqlite3-journal
-media
+
+
+# Media files
+media/
+mediafiles/
+
+# Static files
+staticfiles/
+static/admin/
+static/debug_toolbar/
+*.css.map
+*.js.map
 
 
 # PyInstaller
