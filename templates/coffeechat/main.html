@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="{% static 'css/coffeechat/main.css' %}" />
 
   <div class="mentors-container">
-    <!--   <div class="search-bar">
+    <!--    <div class="search-bar">
         <form method="get" class="search-form">
             <input type="text" 
                    name="search"
@@ -20,7 +20,7 @@
                 검색
             </button>
         </form>
-    </div>   -->
+    </div>    -->
     <div class="search-bar">
       <form method="get" class="search-form">
         <input type="text" name="search" placeholder="원하는 피로그래밍 선배님 검색" class="search-input" value="{{ request.GET.search|default:'' }}" />
@@ -49,13 +49,7 @@
               <div class="mentor-details">
                 <div class="mentor-header">
                   <h3 class="mentor-name">{{ mentor.user.username }}</h3>
-                  <span class="mentor-status {{ mentor.profile_status|lower }}">
-                    {% if waiting_requests >= 2 %}
-                        LIMIT
-                    {% else %}
-                        {{ mentor.get_profile_status_display }}
-                    {% endif %}
-                </span>                
+                  <span class="mentor-status {{ mentor.profile_status|lower }}">{{ mentor.get_profile_status_display }}</span>
                 </div>
                 <p class="mentor-generation">피로 {{ mentor.user.cohort|default:'-' }}기</p>
               </div>
