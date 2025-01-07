@@ -124,6 +124,11 @@ def detail(request, pk):
     profile = get_object_or_404(Profile, pk=pk)
     reviews = Review.objects.filter(coffeechat_request__profile=profile)
 
+    profile_requests = CoffeeChat.objects.filter(
+        profile=profile,
+        status__in=['WAITING', 'ONGOING', 'ACCEPTED', 'COMPLETED']
+    ).count()
+     
     has_pending_request = CoffeeChat.objects.filter(
         user=profile.user,
         profile__user=request.user,
@@ -131,15 +136,10 @@ def detail(request, pk):
     ).exists()
 
     if request.method == "POST" and request.user != profile.user:
-        profile_requests = CoffeeChat.objects.filter(
-            profile=profile,
-            status__in=['WAITING', 'ONGOING', 'ACCEPTED', 'COMPLETED']
-        ).count()
-
         if profile_requests < 2:
             form = CoffeechatRequestForm(request.POST)
             if form.is_valid():
-                #요청 메일 전송
+                # 요청 메일 전송
                 send_request_mail(form, profile, request)
     
     is_waiting = CoffeeChat.objects.filter(user=request.user, profile=profile, status='WAITING').exists()
