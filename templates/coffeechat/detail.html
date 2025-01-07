@@ -46,7 +46,7 @@
                   <button class="action-btn waiting">수락대기중</button>
                 {% elif is_ongoing %}
                   <button class="action-btn ongoing">진행중</button>
-                {% elif waiting_requests >= 2 %}
+                {% elif profile_requests >= 2 or is_limited %}
                   <button class="action-btn limited">커피챗 마감</button>
                 {% elif profile.profile_status == 'OFF' %}
                   <button class="action-btn limited">커피챗 불가</button>
