@@ -15,10 +15,6 @@ from ..coffeechat.models import Profile
 # from ..review.models import Review
 # from ..trend.models import Trend
 
-
-def index(request):
-    return render(request, 'accounts/login.html')
-
 def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)

@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 def send_request_mail(form, profile, request):
     message = form.cleaned_data['requestContent']
     subject = "PiroTime: 커피챗 신청이 왔습니다!"
-    content = f"{profile.user}님! 작성하신 커피챗 프로필에 요청한 사람이 있습니다. 아래 링크로 들어와 확인해 보세요: <a href='https://www.pirotime.com'>www.pirotime.com</a>"
+    content = f"{profile.user}님, {request.user}님이 커피챗을 신청했습니다! 피로타임으로 들어와 확인해 보세요: <a href='https://www.pirotime.com'>www.pirotime.com</a>"
     sending_mail(profile.user, request.user, subject, content, message)
     CoffeeChat.objects.create(
         user=request.user,
@@ -19,7 +19,7 @@ def send_request_mail(form, profile, request):
 
 def send_accept_mail(coffeechat_request, profile, request):
     subject = f"PiroTime: {request.user}님이 커피챗 요청을 수락했습니다!"
-    content = f"{coffeechat_request.user}님! 요청하신 커피챗 요청이 수락되었습니다! 아래 메일로 연락해보세요: <a href='mailto:{request.user.email}'>{request.user.email}</a>"
+    content = f"{coffeechat_request.user}님, 요청하신 커피챗 요청이 수락되었습니다! 아래 메일로 연락해보세요: <a href='mailto:{request.user.email}'>{request.user.email}</a>"
     message = ""
     try:
         sending_mail(coffeechat_request.user, profile.user, subject, content, message)
@@ -29,7 +29,7 @@ def send_accept_mail(coffeechat_request, profile, request):
 
 def send_reject_mail(coffeechat_request, profile, request):
     subject = f"PiroTime: {request.user}님이 커피챗 요청을 거절하셨습니다!"
-    message = f"{coffeechat_request.user}님! 선배님의 개인 사정으로 인해 커피챗 요청이 거절되었습니다. 다른 선배님과의 커피챗은 어떠하신가요?"
+    message = f"{coffeechat_request.user}님, 선배님의 개인 사정으로 인해 커피챗 요청이 거절되었습니다. 다른 선배님과의 커피챗은 어떠하신가요?"
     content = ""
     try:
         sending_mail(coffeechat_request.user, profile.user, subject, content, message)
