@@ -56,16 +56,10 @@ def home(request):
     
     waiting_requests = CoffeeChat.objects.filter(profile__user=request.user, status='WAITING').count()
     is_limited = waiting_requests >= 2 or (user_profile and user_profile.count >= 2)
-    
-    profile_requests = CoffeeChat.objects.filter(
-        profile=profiles,
-        status__in=['WAITING', 'ONGOING', 'ACCEPTED', 'COMPLETED']
-    ).count()
    
     context = {
         "profiles": page_obj,
         "is_limited": is_limited,
-        "profile_requests": profile_requests,
         "user_has_profile": bool(user_profile),
         "user_profile_id": user_profile.id if user_profile else None
     }
