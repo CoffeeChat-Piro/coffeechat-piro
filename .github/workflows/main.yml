@@ -18,18 +18,13 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            # 프로젝트 폴더 이동 및 최신 코드 가져오기
-            cd /home/ubuntu/coffeechat-piro
-            
-            # GitHub 호스트 신뢰 및 Deploy Key 추가
+            # GitHub 호스트 신뢰 등록
             mkdir -p ~/.ssh
-            echo "${{ secrets.GIT_DEPLOY_KEY }}" > ~/.ssh/github_deploy_key
-            chmod 600 ~/.ssh/github_deploy_key
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts
             chmod 600 ~/.ssh/known_hosts
 
-            # Git Pull을 위한 SSH 설정
-            export GIT_SSH_COMMAND="ssh -i ~/.ssh/github_deploy_key -o StrictHostKeyChecking=no"
+            # 프로젝트 폴더 이동 및 최신 코드 가져오기
+            cd /home/ubuntu/coffeechat-piro
             git pull origin main || { echo "git pull failed"; exit 1; }
             
             # 가상환경 체크 및 활성화
@@ -46,10 +41,8 @@ jobs:
             DB_HOST=${{ secrets.DB_HOST }}
             EOF
 
-            # Django 마이그레이션 및 정적파일 수집
+            # Django 마이그레이션 및 서비스 재시작
             ./venv/bin/python manage.py collectstatic --noinput
             ./venv/bin/python manage.py migrate
-
-            # 서비스 재시작 (에러 로그 출력 포함)
-            sudo systemctl restart gunicorn || sudo journalctl -u gunicorn --no-pager
-            sudo systemctl restart nginx || sudo journalctl -u nginx --no-pager
+            sudo systemctl restart gunicorn
+            sudo systemctl restart nginx
