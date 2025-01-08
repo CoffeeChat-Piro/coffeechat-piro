@@ -23,7 +23,7 @@ jobs:
             
             # GitHub 호스트 신뢰 및 Deploy Key 추가
             mkdir -p ~/.ssh
-            echo "${{ secrets.GITHUB_DEPLOY_KEY }}" > ~/.ssh/github_deploy_key
+            echo "${{ secrets.GIT_DEPLOY_KEY }}" > ~/.ssh/github_deploy_key
             chmod 600 ~/.ssh/github_deploy_key
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts
             chmod 600 ~/.ssh/known_hosts
