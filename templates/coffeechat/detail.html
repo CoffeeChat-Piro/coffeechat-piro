@@ -26,7 +26,7 @@
                   <span class="status-badge">{{ profile.get_profile_status_display }}</span>
                 </div>
               </div>
-              <p class="cohort">피로그래밍 {{ profile.user.cohort }}기</p>
+              <p class="cohort">피로그래밍 {{ profile.user.cohort }}기 / {{ profile.job }}</p>
               <div class="hashtags">
                 {% for tag in profile.hashtags.all %}
                   <span class="hashtag">#{{ tag.name }}</span>
