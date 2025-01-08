@@ -45,5 +45,5 @@ jobs:
             # Django 마이그레이션 및 서비스 재시작
             ./venv/bin/python manage.py collectstatic --noinput
             ./venv/bin/python manage.py migrate
-            sudo systemctl restart gunicorn
+            sudo systemctl restart pirotime
             sudo systemctl restart nginx
