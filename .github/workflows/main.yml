@@ -1,0 +1,52 @@
+name: Deploy to AWS EC2
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            # 프로젝트 폴더 이동 및 최신 코드 가져오기
+            cd /home/ubuntu/coffeechat-piro
+            
+            # GitHub 호스트 신뢰 등록
+            mkdir -p ~/.ssh
+            ssh-keygen -F github.com || ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+            chmod 600 ~/.ssh/known_hosts
+
+            export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
+            git pull origin main || { echo "git pull failed"; exit 1; }
+            
+            # 가상환경 체크 및 활성화
+            [ -d "venv" ] || python3 -m venv venv
+            source venv/bin/activate
+            pip install -r requirements.txt
+
+            # 기존 환경변수 백업 후 재설정
+            cp .env .env.bak || true
+            cat <<EOF > .env
+            DB_NAME=${{ secrets.DB_NAME }}
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_HOST=${{ secrets.DB_HOST }}
+            EOF
+
+            # Django 마이그레이션 및 정적파일 수집
+            ./venv/bin/python manage.py collectstatic --noinput
+            ./venv/bin/python manage.py migrate
+
+            # 서비스 재시작 (에러 로그 출력 포함)
+            sudo systemctl restart gunicorn || sudo journalctl -u gunicorn --no-pager
+            sudo systemctl restart nginx || sudo journalctl -u nginx --no-pager
