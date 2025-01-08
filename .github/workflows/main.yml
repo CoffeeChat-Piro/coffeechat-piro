@@ -26,8 +26,8 @@ jobs:
             ssh-keygen -F github.com || ssh-keyscan -H github.com >> ~/.ssh/known_hosts
             chmod 600 ~/.ssh/known_hosts
 
-            export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa"
-            git pull origin main
+            export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
+            git pull origin main || { echo "git pull failed"; exit 1; }
             
             # 가상환경 체크 및 활성화
             [ -d "venv" ] || python3 -m venv venv
