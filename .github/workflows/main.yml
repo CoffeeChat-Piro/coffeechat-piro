@@ -21,12 +21,15 @@ jobs:
             # 프로젝트 폴더 이동 및 최신 코드 가져오기
             cd /home/ubuntu/coffeechat-piro
             
-            # GitHub 호스트 신뢰 등록
+            # GitHub 호스트 신뢰 및 Deploy Key 추가
             mkdir -p ~/.ssh
-            ssh-keygen -F github.com || ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+            echo "${{ secrets.GITHUB_DEPLOY_KEY }}" > ~/.ssh/github_deploy_key
+            chmod 600 ~/.ssh/github_deploy_key
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
             chmod 600 ~/.ssh/known_hosts
 
-            export GIT_SSH_COMMAND="ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no"
+            # Git Pull을 위한 SSH 설정
+            export GIT_SSH_COMMAND="ssh -i ~/.ssh/github_deploy_key -o StrictHostKeyChecking=no"
             git pull origin main || { echo "git pull failed"; exit 1; }
             
             # 가상환경 체크 및 활성화
