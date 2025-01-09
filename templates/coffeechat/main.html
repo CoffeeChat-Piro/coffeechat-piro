@@ -49,7 +49,13 @@
               <div class="mentor-details">
                 <div class="mentor-header">
                   <h3 class="mentor-name">{{ mentor.user.username }}</h3>
-                  <span class="mentor-status {{ mentor.profile_status|lower }}">{{ mentor.get_profile_status_display }}</span>
+                  <span class="mentor-status {{ mentor.profile_status|lower }}">
+                    {% if mentor.profile_status == 'OFF' %}
+                        {{ mentor.profile_status }}
+                    {% else %}
+                        {{ mentor.get_profile_status_display }}
+                    {% endif %}
+                </span>
                 </div>
                 <p class="mentor-generation">피로 {{ mentor.user.cohort|default:'-' }}기 / {{ mentor.job }}</p>
               </div>

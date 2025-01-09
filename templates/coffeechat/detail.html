@@ -22,8 +22,12 @@
               <div class="profile-main">
                 <div class="profile-name">{{ profile.user.username }}</div>
 
-                <div class="mentor-status {{ profile.profile_status|lower }}">
-                  <span class="status-badge">{{ profile.get_profile_status_display }}</span>
+                <div class="status-badge {{ profile.profile_status|lower }}">
+                  {% if profile.profile_status == 'OFF' %}
+                      {{ profile.profile_status }}
+                  {% else %}
+                      {{ profile.get_profile_status_display }}
+                  {% endif %}
                 </div>
               </div>
               <p class="cohort">피로그래밍 {{ profile.user.cohort }}기 / {{ profile.job }}</p>
