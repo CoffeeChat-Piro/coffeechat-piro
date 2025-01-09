@@ -206,6 +206,7 @@ img.profile-img {
     font-size: var(--font-s);
     cursor: pointer;
     text-decoration: none;
+    transition: var(--transition-fast);
 }
 
 .chat-item:last-child {
@@ -243,8 +244,12 @@ img.profile-img {
     color: black;
 }
 
+.scrap-item:hover {
+    transform: scale(1.01);
+}
+
 .scrap-item:last-child {
-    margin-bottom: 0;  
+    margin-bottom: 60px;  
 }
 
 .scrap-info {

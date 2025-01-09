@@ -274,11 +274,15 @@
 
 /* 페이지네이션 */
 .pagination {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 40px 1fr 40px; 
     align-items: center;
-    margin: var(--spacing-xl) 0;
+    margin: var(--spacing-xl) 0 0 0;
     gap: var(--spacing-lg);
+    width: 100%;
+    max-width: 300px;  
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .pagination-arrow {
@@ -302,6 +306,12 @@
     box-shadow: var(--shadow-md);
 }
 
+/* 화살표가 없을 때를 위한 빈 공간 */
+.pagination-arrow-placeholder {
+    width: 40px;
+    height: 40px;
+}
+
 .pagination-info {
     font-size: 14px;
     color: var(--text-secondary);
@@ -309,6 +319,8 @@
     background-color: white;
     border-radius: var(--button-radius);
     box-shadow: var(--shadow-sm);
+    text-align: center;
+    grid-column: 2;
 }
 
 @media (max-width: 768px) {
@@ -334,6 +346,7 @@
     }
     
     .pagination {
+        max-width: 250px;
         margin: var(--spacing-lg) 0;
     }
     
