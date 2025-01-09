@@ -1,5 +1,16 @@
 @import url('./variables.css');
 
+/* html과 body에도 적용 */
+html, body {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
+
 .container {
     width: var(--max-width);
     min-height: 100vh;
