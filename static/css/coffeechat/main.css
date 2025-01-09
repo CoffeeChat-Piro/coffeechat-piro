@@ -347,7 +347,9 @@
     
     .pagination {
         max-width: 250px;
-        margin: var(--spacing-lg) 0;
+        margin: var(--spacing-lg) auto;  
+        gap: var(--spacing-md); 
+        grid-template-columns: 36px 1fr 36px; 
     }
     
     .pagination-arrow {
@@ -358,5 +360,8 @@
     .pagination-info {
         font-size: 13px;
         padding: 6px 12px;
+        grid-column: 2; 
+        width: 100%; 
+        box-sizing: border-box; 
     }
 }
