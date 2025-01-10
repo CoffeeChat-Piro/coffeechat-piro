@@ -94,7 +94,7 @@
                required 
              />
              {% for error in form.username.errors %}
-               <div class="error">{{ error }}</div>
+               <div class="error">{{ error|striptags }}</div>
              {% endfor %}
            </div>
 
@@ -107,13 +107,13 @@
                required 
              />
              {% for error in form.password.errors %}
-               <div class="error">{{ error }}</div>
+               <div class="error">{{ error|striptags }}</div>
              {% endfor %}
            </div>
 
            {% if form.non_field_errors %}
              {% for error in form.non_field_errors %}
-               <div class="error">{{ error }}</div>
+               <div class="error">{{ error|striptags }}</div>
              {% endfor %}
            {% endif %}
 
