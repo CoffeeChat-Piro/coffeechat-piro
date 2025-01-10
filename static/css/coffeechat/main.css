@@ -238,9 +238,9 @@
  }
 
 .floating-button {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
+    position: fixed;
+    bottom: 80px;
+    right: calc((100vw - min(var(--max-width), 100vw - var(--spacing-lg) * 2)) / 2 + 20px);
     width: 44px;
     height: 44px;
     border-radius: 50%;
@@ -278,9 +278,9 @@
     grid-template-columns: 40px 1fr 40px; 
     align-items: center;
     margin: var(--spacing-xl) 0 0 0;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
     width: 100%;
-    max-width: 300px;  
+    max-width: 240px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -315,7 +315,7 @@
 .pagination-info {
     font-size: 14px;
     color: var(--text-secondary);
-    padding: 8px 16px;
+    padding: 8px;
     background-color: white;
     border-radius: var(--button-radius);
     box-shadow: var(--shadow-sm);
@@ -323,7 +323,7 @@
     grid-column: 2;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .mentors-container {
         padding: var(--spacing-md);
     }
@@ -346,10 +346,10 @@
     }
     
     .pagination {
-        max-width: 250px;
+        max-width: 200px;
         margin: var(--spacing-lg) auto;  
         gap: var(--spacing-md); 
-        grid-template-columns: 36px 1fr 36px; 
+        grid-template-columns: 32px 1fr 32px;
     }
     
     .pagination-arrow {
@@ -359,9 +359,14 @@
     
     .pagination-info {
         font-size: 13px;
-        padding: 6px 12px;
+        padding: 6px 8px;
         grid-column: 2; 
         width: 100%; 
         box-sizing: border-box; 
+    }
+    
+    .floating-button {
+        right: 16px; 
+        bottom: 70px;
     }
 }
