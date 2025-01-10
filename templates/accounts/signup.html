@@ -30,7 +30,7 @@
                                value="{{ form.username.value|default_if_none:'' }}" 
                                required>
                         {% if form.username.errors %}
-                            <div class="error">{{ form.username.errors }}</div>
+                            <div class="error">{{ form.username.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
@@ -42,7 +42,7 @@
                                value="{{ form.email.value|default_if_none:'' }}" 
                                required>
                         {% if form.email.errors %}
-                            <div class="error">{{ form.email.errors }}</div>
+                            <div class="error">{{ form.email.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
@@ -54,7 +54,7 @@
                                value="{{ form.cohort.value|default_if_none:'' }}" 
                                required>
                         {% if form.cohort.errors %}
-                            <div class="error">{{ form.cohort.errors }}</div>
+                            <div class="error">{{ form.cohort.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
@@ -65,7 +65,7 @@
                                placeholder="비밀번호" 
                                required>
                         {% if form.password1.errors %}
-                            <div class="error">{{ form.password1.errors }}</div>
+                            <div class="error">{{ form.password1.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
@@ -76,7 +76,7 @@
                                placeholder="비밀번호 확인" 
                                required>
                         {% if form.password2.errors %}
-                            <div class="error">{{ form.password2.errors }}</div>
+                            <div class="error">{{ form.password2.errors|striptags }}</div>
                         {% endif %}
                     </div>
 
