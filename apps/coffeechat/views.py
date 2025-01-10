@@ -30,9 +30,10 @@ def home(request):
     profile_status_filter = request.GET.get('status')
     page = request.GET.get('page', 1)
     
-    items_per_page = 8  # 기본값 8개
-    if request.GET.get('mobile') == 'true':
-        items_per_page = 6
+    if request.user_agent.is_mobile or request.user_agent.is_tablet:
+        items_per_page = 8
+    else:
+        items_per_page = 12
 
     profiles = Profile.objects.all()
 
@@ -45,10 +46,8 @@ def home(request):
     if profile_status_filter:
         profiles = profiles.filter(profile_status=profile_status_filter)
     
-    # 현재 로그인한 사용자의 프로필 제외
     profiles = profiles.exclude(user=request.user)
     
-    # 페이지네이션
     paginator = Paginator(profiles, items_per_page)
     page_obj = paginator.get_page(page)
     
