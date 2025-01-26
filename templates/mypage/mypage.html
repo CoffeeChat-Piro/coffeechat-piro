@@ -28,7 +28,7 @@
         </div>
         <div class="profile-image-container">
             {% if user.profile_image %}
-                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" class="profile-img">
+                <img src="{{ user.profile_image.url }}" alt="로딩 중" class="profile-img">
             {% else %}
                 <i class="fa-solid fa-user profile-img"></i>
             {% endif %}
