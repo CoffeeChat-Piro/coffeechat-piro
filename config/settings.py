@@ -87,17 +87,24 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 import environ
+import os
 
+# 환경 변수 초기화
 env = environ.Env()
 environ.Env.read_env(BASE_DIR / '.env')
 
+# .env 파일 읽기
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# 데이터베이스 설정
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "HOST": env("DB_HOST"),
         "NAME": env("DB_NAME"),
         "USER": env("DB_USER"),
         "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT", default="5432"),  # 기본 PostgreSQL 포트
     }
 }
 
@@ -178,3 +185,6 @@ CSRF_USE_SESSIONS = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280  # 30MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 31457280  # 30MB

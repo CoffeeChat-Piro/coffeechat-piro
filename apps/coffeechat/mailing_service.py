@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 def send_request_mail(form, profile, request):
     message = form.cleaned_data['requestContent']
     subject = "PiroTime: 커피챗 신청이 왔습니다!"
-    content = f"{profile.user}님, {request.user}님이 커피챗을 신청했습니다! 피로타임으로 들어와 확인해 보세요: <a href='https://www.pirotime.com'>www.pirotime.com</a>"
+    content = f"{profile.user}님, 커피챗 신청이 들어왔습니다! 피로타임으로 들어와 확인해 보세요: <a href='https://www.pirotime.com'>www.pirotime.com</a>"
     sending_mail(profile.user, request.user, subject, content, message)
     CoffeeChat.objects.create(
         user=request.user,
