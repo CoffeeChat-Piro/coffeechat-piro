@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-%%&ov9zcz=)%v9-a3^7qd0x5tf9u5buxn)s)eru+7p6!4!7bh7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']  # In production, add your domain here
+ALLOWED_HOSTS = ["*"]  # In production, add your domain here
 
 # Application definition
 
@@ -87,17 +87,24 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 import environ
+import os
 
+# 환경 변수 초기화
 env = environ.Env()
 environ.Env.read_env(BASE_DIR / '.env')
 
+# .env 파일 읽기
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# 데이터베이스 설정
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "HOST": env("DB_HOST"),
         "NAME": env("DB_NAME"),
         "USER": env("DB_USER"),
         "PASSWORD": env("DB_PASSWORD"),
+        "HOST": env("DB_HOST"),
+        "PORT": env("DB_PORT", default="5432"),  # 기본 PostgreSQL 포트
     }
 }
 
