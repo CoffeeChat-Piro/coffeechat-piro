@@ -278,20 +278,20 @@ def coffeechat_in_progress(request):
                 other_user = chat.profile.user
             else:  # 내가 신청받은 사람인 경우
                 other_user = chat.user
+            
+            chat_data = {
+                "id": chat.id,
+                "name": other_user.username,
+                "cohort": other_user.cohort,
+                "accepted_at": chat.created_at,
+                "letterToSenior": chat.letterToSenior,
+                "memo_id": chat.memo.id if chat.user == current_user else False,
+                "is_requester": True if chat.user == current_user else False,
+            }
+            chat_list.append(chat_data)
 
         context = {
-            "chats": [
-                {
-                    "id": chat.id,
-                    "name": other_user.username,
-                    "cohort": other_user.cohort,
-                    "accepted_at": chat.created_at,
-                    "letterToSenior": chat.letterToSenior,
-                    "memo_id": chat.memo.id if chat.user == current_user else False,
-                    "is_requester": True if chat.user == current_user else False,
-                }
-                for chat in chats
-            ]
+            "chats": chat_list
         }
         
         return render(request, "mypage/mychating.html", context)
