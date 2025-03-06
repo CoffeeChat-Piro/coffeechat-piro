@@ -23,6 +23,42 @@
   <img src="https://github.com/user-attachments/assets/b2164ca9-34a8-4b22-b189-5f2088b427a7" height="500">
 </p>
 
+#### 멘토 프로필 탐색 페이지
+- 맨토의 프로필 클릭 가능
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b4fe943e-4dcc-484b-88ab-552eaa0f6f3b" height="500">
+  <img src="https://github.com/user-attachments/assets/67158378-4624-4801-8bca-2abf6a64d256" height="500">
+</p>
+
+#### 커피챗 신청 페이지
+- 멘토의 프로필을 구경 후 '커피챗 신청' 버튼 클릭을 통해 신청 가능
+- 커피챗 2회 제한을 두어 신청 횟수가 다 차면 '커피챗 마감' 버튼으로 변경 
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1408ade1-9580-4510-949a-41371b960782" height="500">
+  <img src="https://github.com/user-attachments/assets/d8f6c908-2081-47e0-8e08-792426552f8c" height="500">
+</p>
+
+#### 마이페이지 - 커피챗 현황(신청/진행/완료) 확인 
+- 신청한 커피챗 내역과 신청 받은 내역 확인 가능
+- 신청 받은 내역에서 커피챗 수락이나 거절 가능
+- 완료 시 커피챗에 대한 리뷰 작성 가능
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8a4cd153-30fe-4ee2-a92e-834901dc6e22" height="500">
+  <img src="https://github.com/user-attachments/assets/1351dd0f-128b-488b-85d9-8b13cf7b6cfb" height="500">
+</p>
+
+#### 마이페이지 - 내 정보 수정, 프로필 스크랩 페이지
+- 내 정보 탭: 닉네임, 기수, 이메일 변경 가능
+- 스크랩 탭: 멘토 프로필 스크랩 가능, 클릭 시 멘토 프로필 상세페이지로 이동
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cce9b324-d83d-43d9-9019-f95e100fab1e" height="500">
+  <img src="https://github.com/user-attachments/assets/e5d5328b-319f-4631-acd4-1de34ca15e28" height="500">
+</p>
+
 
 ## 🎯 기본 기술 스택
 - **백엔드**: Python 3.8, Django 4.2, Django Rest Framework (DRF)  
