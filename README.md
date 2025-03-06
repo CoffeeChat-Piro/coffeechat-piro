@@ -1,11 +1,28 @@
-# ☕ CoffeeChat-Piro  
+# ☕ PiroChat  
 피로그래머들을 위한 커피챗 플랫폼
 
-## 📖 소개
-**CoffeeChat-Piro**는 피로그래머들을 연결하고 소통을 촉진하는 커뮤니티 플랫폼입니다.  
-피로그래밍 21기 최종 프로젝트로 개발되었으며, **커피챗**을 통해 선후배 간의 네트워킹을 돕고, 프로젝트 리뷰와 IT 동향을 공유하는 공간을 제공합니다.
+## 📖 OverView
+**PiroChat**는 피로그래머들을 연결하고 소통을 촉진하는 커뮤니티 플랫폼입니다.  
+피로그래밍 21기 최종 프로젝트로 개발되었으며, **커피챗** 플랫폼으로 리팩토링 했습니다.
 
----
+## 🌟협업 페이지 링크
+
+[노션 링크](https://www.notion.so/PiroTime-5d7fb0a939be45ee9e663767952b0b3c)
+
+## 🖥️서비스 화면
+
+### 모든 페이지 모바일(아이폰 14 Pro Max 기준 max-width: 430px) 반응형 지원
+
+#### 홈(랜딩페이지)
+- 피로그래머들의 접근을 더 편리하게 하기 위해 메인페이지에 로그인 화면 노출
+- 로그인 및 회원가입 버튼 생성
+- 회원가입 시 멘토 프로필 리스트 화면으로 이동
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/9054bbff-ceb1-45be-acb3-124bc41a9e89" height="500">
+  <img src="https://github.com/user-attachments/assets/b2164ca9-34a8-4b22-b189-5f2088b427a7" height="500">
+</p>
+
 
 ## 🎯 기본 기술 스택
 - **백엔드**: Python 3.8, Django 4.2, Django Rest Framework (DRF)  
