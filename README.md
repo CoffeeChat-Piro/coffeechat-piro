@@ -77,13 +77,13 @@
 - **CI/CD 도구**: GitHub Actions, appleboy/ssh-action
 
 # 📂기획 및 설계 산출물
-## 💭요구사항 정의 및 기능 명세([Notion](https://www.notion.so/ebb329f0e6f749e0947046f1dfa628d8?v=fd2c8b8ab04d4e06a10654310a2e4638)) - 일부 캡쳐
+## 💭요구사항 정의 및 기능 명세([Notion](https://www.notion.so/REFAC-a83511059aa4464faca56b94dfa60135)) - 일부 캡쳐
 <img src="https://github.com/user-attachments/assets/83eb6190-721c-4535-b879-59ec85f7f08b" alt="기능 명세서" width="800"  height="500">
 
 ## 🎨화면 설계([Figma](https://www.figma.com/design/GNy9zyW1y3IQk1oaukzBrK/PiroTime?node-id=70-4&t=HZbUcis6l2gl7siK-0))- 일부 캡쳐
 <img src="https://github.com/user-attachments/assets/5d007748-9b92-4d79-a2ad-84594e9ba3ee" alt="기능 명세서" width="800"  height="500">
 
-## 📜[ERD](https://www.erdcloud.com/d/SEz3HouJH7wNG4B8W)
+## 📜[ERD](https://www.erdcloud.com/d/7zKaYteiMHxbz34pf)
 <img src="https://github.com/user-attachments/assets/c263d3b1-1639-411a-b98b-2a12efc023b1" alt="ERD" width="1000"  height="500">
 
 
