@@ -65,6 +65,7 @@
 - CI/CD 구축하여 빌드 및 배포 자동화
 - 실제 21/22기 플랫폼 사용(50명 사용자 유치)
 
+
 ## 🎯 개발 환경
 - **백엔드**: Python 3.8, Django 4.2, Django Rest Framework (DRF)  
 - **프론트엔드**: HTML5, CSS3, JavaScript  
@@ -84,6 +85,7 @@
 
 ## 📜[ERD](https://www.erdcloud.com/d/SEz3HouJH7wNG4B8W)
 <img src="https://github.com/user-attachments/assets/c263d3b1-1639-411a-b98b-2a12efc023b1" alt="ERD" width="1000"  height="500">
+
 
 # 💞팀원 소개
 
