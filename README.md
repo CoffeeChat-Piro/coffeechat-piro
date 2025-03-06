@@ -1,7 +1,7 @@
 # ☕ PiroChat  
 피로그래머들을 위한 커피챗 플랫폼
 
-## 📖 OverView
+## 📖 소개
 **PiroChat**는 피로그래머들을 연결하고 소통을 촉진하는 커뮤니티 플랫폼입니다.  
 피로그래밍 21기 최종 프로젝트로 개발되었으며, **커피챗** 플랫폼으로 리팩토링 했습니다.
 
@@ -75,4 +75,47 @@
 - **버전 관리 및 협업**: Git, GitHub, Notion, Zep, Figma  
 - **CI/CD 도구**: GitHub Actions, appleboy/ssh-action
 
-## 
+# 📂기획 및 설계 산출물
+## 💭요구사항 정의 및 기능 명세([Notion](https://www.notion.so/ebb329f0e6f749e0947046f1dfa628d8?v=fd2c8b8ab04d4e06a10654310a2e4638)) - 일부 캡쳐
+<img src="https://github.com/user-attachments/assets/83eb6190-721c-4535-b879-59ec85f7f08b" alt="기능 명세서" width="800"  height="500">
+
+## 🎨화면 설계([Figma](https://www.figma.com/design/GNy9zyW1y3IQk1oaukzBrK/PiroTime?node-id=70-4&t=HZbUcis6l2gl7siK-0))- 일부 캡쳐
+<img src="https://github.com/user-attachments/assets/5d007748-9b92-4d79-a2ad-84594e9ba3ee" alt="기능 명세서" width="800"  height="500">
+
+## 📜[ERD](https://www.erdcloud.com/d/SEz3HouJH7wNG4B8W)
+<img src="https://github.com/user-attachments/assets/c263d3b1-1639-411a-b98b-2a12efc023b1" alt="ERD" width="1000"  height="500">
+
+# 💞팀원 소개
+
+#### PiroTime을 개발한 피로그래밍 21기 팀원들을 소개합니다!
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/JuheeeKim">
+        <img src="https://github.com/user-attachments/assets/8904c618-4873-40ec-ab9d-789d2c8f55db" width="250px;" alt="나"><br>
+        <b>FE/BE 팀장: 김주희</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/YourLink1">
+        <img src="https://github.com/user-attachments/assets/64d688b5-173e-4a3e-bcc8-5be6fe3f2a70" width="250px;" alt="수용빠"><br>
+        <b>FE/BE 팀원: 이수용</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/nawkwoo">
+        <img src="https://github.com/user-attachments/assets/ef2e635a-001d-4250-8bcc-6abe958be91d" width="250px;" alt="관우빠"><br>
+        <b>FE/BE 팀원: 손관우</b>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/C2hazelnut">
+        <img src="https://github.com/user-attachments/assets/188861f6-37dc-4d84-8857-a2de6882e38d" width="250px;" alt="연진"><br>
+        <b>FE/BE 팀원: 이연진</b>
+      </a>
+    </td>
+  </tr>
+</table>
+
+
