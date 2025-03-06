@@ -59,8 +59,13 @@
   <img src="https://github.com/user-attachments/assets/e5d5328b-319f-4631-acd4-1de34ca15e28" height="500">
 </p>
 
+## 💫리팩토링 후 개선점
+- 사용자 피드백 반영(글씨체와 글씨 크기 조절 및 랜딩페이지를 로그인 페이지로 사용)
+- 필요없는 코드나 변수 정리 후 클린코드 작성
+- CI/CD 구축하여 빌드 및 배포 자동화
+- 실제 21/22기 플랫폼 사용(50명 사용자 유치)
 
-## 🎯 기본 기술 스택
+## 🎯 개발 환경
 - **백엔드**: Python 3.8, Django 4.2, Django Rest Framework (DRF)  
 - **프론트엔드**: HTML5, CSS3, JavaScript  
 - **데이터베이스**: PostgreSQL 16.4  
@@ -68,4 +73,6 @@
 - **웹 서버**: Nginx 1.23 (Reverse Proxy)  
 - **WSGI 서버**: Gunicorn 20.1.0  
 - **버전 관리 및 협업**: Git, GitHub, Notion, Zep, Figma  
-- **CI/CD 도구**: GitHub Actions, appleboy/ssh-action  
+- **CI/CD 도구**: GitHub Actions, appleboy/ssh-action
+
+## 
